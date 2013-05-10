@@ -165,9 +165,9 @@ class CSpaceAuthN(object):
             result = True
 
         if result:
-            logger.debug('User: {} authenticated with Host: {}'.format(username, self.hostname))
+            logger.debug('User: %s authenticated with Host: %s' % (username, self.hostname))
         else:
-            logger.debug('User: {} could not authenticate with Host: {}'.format(username, self.hostname))
+            logger.debug('User: %s could not authenticate with Host: %s' % (username, self.hostname))
 
         return result
 

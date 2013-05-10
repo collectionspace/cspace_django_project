@@ -1,9 +1,13 @@
-__author__ = 'remillet'
+
+__author__ = 'remillet,jblowe'
 
 from os import path
 from ConfigParser import NoOptionError
 import urllib2
 import ConfigParser
+import time
+import re
+
 
 CONFIG_SUFFIX = ".cfg"
 CONFIGSECTION_SERVICES_CONNECT = 'cspace_services_connect'
@@ -86,8 +90,51 @@ def make_get_request(realm, uri, hostname, protocol, port, username, password):
     return result
 
 
+def postxml(realm, uri, hostname, protocol, port, username, password, payload, requestType):
+
+
+    server = protocol + "://" + hostname + ":" + port
+    passMgr = urllib2.HTTPPasswordMgr()
+    passMgr.add_password(realm, server, username, password)
+    authhandler = urllib2.HTTPBasicAuthHandler(passMgr)
+    opener = urllib2.build_opener(authhandler)
+    urllib2.install_opener(opener)
+    url = "%s/%s" % (server, uri)
+
+    elapsedtime = 0.0
+
+    elapsedtime = time.time()
+    request = urllib2.Request(url, payload, { 'Content-Type': 'application/xml' })
+    # default method for urllib2 with payload is POST
+    if requestType == 'PUT': request.get_method = lambda: 'PUT'
+
+    try:
+        f = urllib2.urlopen(request)
+        statusCode = f.getcode()
+        data = f.read()
+        info = f.info()
+        print 'data:',len(data)
+        return (url, data, statusCode, time.time() - elapsedtime)
+    except urllib2.HTTPError, e:
+        print 'The server couldn\'t fulfill the request.'
+        print 'Error code: ', e.code
+        return (url, None, e.code, time.time() - elapsedtime)
+    except urllib2.URLError, e:
+        print 'We failed to reach a server.'
+        print 'Reason: ', e.reason
+        return (url, None, e.reason, time.time() - elapsedtime)
+
+    # if a POST, the Location element contains the new CSID
+    if info.getheader('Location'):
+        csid = re.search(uri+'/(.*)',info.getheader('Location'))
+        csid = csid.group(1)
+    else:
+        csid = ''
+    elapsedtime = time.time() - elapsedtime
+    return (url,data,csid,elapsedtime)
+
 class connection:
-    def __init__(self, realm, uri, hostname, protocol, port, username, password):
+    def __init__(self, realm, uri, hostname, protocol, port, username, password, payload, requesttype):
         self.realm = realm
         self.uri = uri
         self.hostname = hostname
@@ -95,6 +142,8 @@ class connection:
         self.port = port
         self.username = username
         self.password = password
+        self.payload = payload
+        self.requesttype = requesttype
 
     @classmethod
     def create_connection(cls, config, user):
@@ -108,7 +157,8 @@ class connection:
         hostname = getConfigOptionWithSection(config, CONFIGSECTION_SERVICES_CONNECT, CSPACE_HOSTNAME_PROPERTY)
         protocol = getConfigOptionWithSection(config, CONFIGSECTION_SERVICES_CONNECT, CSPACE_PROTOCOL_PROPERTY)
         port = getConfigOptionWithSection(config, CONFIGSECTION_SERVICES_CONNECT, CSPACE_PORT_PROPERTY)
-        return connection(realm, None, hostname, protocol, port, user.username, user.cspace_password)
+        return connection(realm, None, hostname, protocol, port, user.username, user.cspace_password, None, None
+        )
 
     def make_get_request(self, uri=None):
         """
@@ -122,5 +172,24 @@ class connection:
 
         result = make_get_request(self.realm, requestUri, self.hostname, self.protocol, self.port,
                                   self.username, self.password)
+
+        return result
+
+
+    def postxml(self, uri=None, payload=None, requesttype=None):
+        requestUri = uri
+        if requestUri is None:
+            requestUri = self.uri
+
+        requestPayload = payload
+        if requestPayload is None:
+            requestPayload = self.payload
+
+        requestRequesttype = requesttype
+        if requestRequesttype is None:
+            requestRequesttype = self.requesttype
+
+        result = postxml(self.realm, requestUri, self.hostname, self.protocol, self.port,
+                                  self.username, self.password, requestPayload, requestRequesttype)
 
         return result
