@@ -1,0 +1,10 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'The Rem Django site admin' %}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">{% trans 'The Django administration for REM' %}</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
