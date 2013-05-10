@@ -1,2 +1,2 @@
 *.pyc
-cspace_django_site/db.sqlite3
+db.sqlite3
