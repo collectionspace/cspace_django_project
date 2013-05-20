@@ -1,5 +1,5 @@
 cspace-django-project
-+===================+
+-===================-
 
 This is a simple example Django-based webapp that can be configured to connect to an instance of the CollectionSpace services.
 
