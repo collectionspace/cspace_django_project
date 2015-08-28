@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<berkeleymapper>
+  <metadata>
+    <name>PAHMA Berkeley Mapper Configuration File</name>
+    <abstract>GIS configuration file for Phoebe A. Hearst Museum of Anthropology query interface</abstract>
+    <mapkeyword keyword="objects"></mapkeyword>
+    <logo img="http://hearstmuseum.berkeley.edu/sites/default/files/images/00_sitewide_imgs/Logo_Red.jpg" url="http://hearstmuseum.berkeley.edu/" />
+  </metadata>
+  <recordlinkback>
+    <linkback method="root" linkurl="https://webapps.cspace.berkeley.edu/pahma/search/search/?displayType=full&amp;maxresults=1&amp;start=0" text="View Details" fieldname="Full Record" key1="musno" value1="char120:1" />
+  </recordlinkback>
+  <concepts xlmns:darwin="http://digir.net/schema/conceptual/darwin/2003/1.0">
+    <concept viewlist="1" colorlist="0" datatype="char120:1" alias="Museum Number" />
+    <concept viewlist="1" colorlist="0" datatype="char120:2" alias="Object Name" />
+    <concept viewlist="1" colorlist="0" datatype="char255:1" alias="Collection Place" />
+    <concept viewlist="1" colorlist="1" datatype="char120:3" alias="Culture" />
+    <concept viewlist="0" colorlist="0" datatype="darwin:decimallatitude" alias="DecimalLatitude" />
+    <concept viewlist="0" colorlist="0" datatype="darwin:decimallongitude" alias="DecimalLongitude" />
+  </concepts>
+  <colors method="dynamicfield" fieldname="char120:3" label="Culture"/>
+</berkeleymapper>

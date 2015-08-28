@@ -1,0 +1,36 @@
+{% spaceless %}
+    {% if summarizeon %}
+        <table cellspace="1" id="statsListing" class="tablesorter-blue">
+            <thead>
+            <tr>
+                <th>{{ summarizeonlabel }}</th>
+                <th>Count</th>
+                {% for f in summarylabels %}
+                    <th>{{ f }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in summaryrows %}
+                <tr>
+                    <td><b>{{ row.0 }}</b></td>
+                    <td>{{ row.1 }}</td>
+                    {% for cells in row.2 %}
+                        <td>
+                            {% for cell in cells %}
+                                {{ cell|safe }}<br/>
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if time %}
+            <hr/>
+            search: {{ time }} seconds;
+            the rest: {{ summarytime }} seconds;
+            {{ count }} items examined. {{ itemlisted }} items displayed.
+        {% endif %}
+    {% endif %}
+{% endspaceless %}

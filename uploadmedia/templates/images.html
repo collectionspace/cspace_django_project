@@ -1,0 +1,45 @@
+<hr/>
+{% if validateonly %}
+    <h2><span style="color:red">Validation only! {{ count }} files examined!</span></h2>
+{% else %}
+    <h1>{{ count }} files uploaded</h1>
+{% endif %}
+<table cellspace="1" id="resultsListing" class="tablesorter">
+    <thead>
+    <tr>
+        <th>File Name</th>
+        <th>Object Number</th>
+        <th>File Size</th>
+        <th>Date Created</th>
+        <th>Creator</th>
+        <th>Contributor</th>
+        <th>Rights Holder</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for image in images %}
+        <tr>
+            <td>{{ image.name }}</td>
+            <td>
+                {% if image.objectCSID %}
+                    <a href="{{ image.objectCSID }}">{{ image.objectnumber }}</a>
+                {% else %}
+                    {{ image.objectnumber }}
+                {% endif %}
+            </td>
+            <td>{{ image.size }}</td>
+            {% if image.error %}
+                <td colspan="4"><span style="color:red">{{ image.error }}</span></td>
+            {% else %}
+                <td>{{ image.date }}</td>
+                <td>{% if image.creator != '' %}<span style="color:green">{{ image.creatorDisplayname }}</span>
+                {% else %}{{ image.creatorDisplayname }}{% endif %}</td>
+                <td>{{ image.contributor }}</td>
+                <td>{% if image.rightsholder != '' %}<span style="color:green">{{ image.rightsholderDisplayname }}
+                    </span>
+                {% else %}{{ image.rightsholderDisplayname }}{% endif %}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

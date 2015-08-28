@@ -1,0 +1,20 @@
+{% if errors %}
+    <hr/>
+    <h1>{{ errorcount }} image{{ errorcount|pluralize }} not properly ingested</h1>
+    <table cellspace="1" id="resultsListing" class="tablesorter">
+        <thead>
+        <tr>
+            <th>Job Number</th>
+            <th>Image Filename</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for e in errors %}
+            <tr>
+                <td>{{ e.0 }}</td>
+                <td>{{ e.1 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

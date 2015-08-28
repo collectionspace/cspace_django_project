@@ -1,41 +1,22 @@
-"""
-WSGI config for cspace_django_site project.
-
-This module contains the WSGI application used by Django's development server
-and any production WSGI deployments. It should expose a module-level variable
-named ``application``. Django's ``runserver`` and ``runfcgi`` commands discover
-this application via the ``WSGI_APPLICATION`` setting.
-
-Usually you will have the standard Django WSGI application here, but it also
-might make sense to replace the whole Django WSGI application with a custom one
-that later delegates to the Django one. For example, you could introduce WSGI
-middleware here, or combine a Django application with an application of another
-framework.
-
-"""
 import os
+import sys
+import django.core.handlers.wsgi
 
-# We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
-# if running multiple sites in the same mod_wsgi process. To fix this, use
-# mod_wsgi daemon mode with each site in its own daemon process, or use
-# os.environ["DJANGO_SETTINGS_MODULE"] = "cspace_django_site.settings"
-SITE_NAME = "cspace_django_site"
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", SITE_NAME + ".settings")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.dirname(BASE_DIR)
+PROJECT_NAME = os.path.basename(PROJECT_DIR)
+ 
+if PROJECT_DIR not in sys.path:
+    sys.path.append(PROJECT_DIR)
+ 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cspace_django_site.settings")
 
 #
 # By setting a WSGI_BASE value in the environment, the target application
 # can detect the path for the WSGI's Apache mount point.  This value must
 # correspond the the value used to set Apache's WSGIScriptAlias mount point.
 #
-WSGI_BASE = '/webapps'
-os.environ.setdefault(SITE_NAME + ".WSGI_BASE", WSGI_BASE)
-
-# This application object is used by any WSGI server configured to use this
-# file. This includes Django's development server, if the WSGI_APPLICATION
-# setting points here.
-from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
-
-# Apply WSGI middleware here.
-# from helloworld.wsgi import HelloWorldApplication
-# application = HelloWorldApplication(application)
+WSGI_BASE = '/%s' % PROJECT_NAME
+os.environ.setdefault("cspace_django_site.WSGI_BASE", WSGI_BASE)
+ 
+application = django.core.handlers.wsgi.WSGIHandler()

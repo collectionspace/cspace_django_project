@@ -1,0 +1,53 @@
+{% load staticfiles %}
+
+{% for item in items %}
+    <div style="min-height: 110px;">
+        <div style="float:right;">
+            {% if item.blobs %}
+                {% for t in item.blobs %}
+                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img height="100px" src="{{ imageserver }}/blobs/{{ t }}/derivatives/Thumbnail/content"/></a>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="result-title">
+            <b><a href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a></b>
+        </div>
+        <div>
+
+
+        <h4>{{ item.mainentry }}</h4>
+
+            {% if item.labelheader %}
+                <h4><b>{{ labels.labelheader }}: {{ item.labelheader }}</b></h4>{% endif %}
+            {% if item.determinationdetails %}
+                <div>{{ labels.determinationdetails }}: {{ item.determinationdetails }}</div>{% endif %}
+            <a class="facet-item" data-facetType="majorgroup">{{ item.majorgroup }}</a>
+            {% if item.previousdeterminations %}
+                <h4>{{ labels.previousdeterminations }}</h4>
+                {% for t in item.previousdeterminations %}
+                    <li>{{ t }}</li>
+                {% endfor %}
+            {% endif %}
+
+            {% if item.location %}
+                <div>LatLong: {{ item.location }}
+                    {% if item.marker %}
+                        <a class="map-item">[click for map]</a>
+                        <div data-marker="{{ item.marker }}" class="small-map" style="display:none;">
+                            <div style="height: 40px;">
+                                <small><a target="_map" href="https://maps.google.com/maps/i?q=loc:{{ item.marker }}&amp;source=embed">Larger Map</a>
+                                </small>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% for i in item.otherfields %}
+                {% if i.value %}<div>{{ i.label }}: <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value }}</a></div>{% endif %}
+            {% endfor %}
+
+        </div>
+    </div>
+    <hr/>
+{% endfor %}

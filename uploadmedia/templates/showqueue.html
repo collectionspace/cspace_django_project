@@ -1,0 +1,47 @@
+{% if jobs %}
+    <hr/>
+    <h1>{{ jobcount }} job{{ count|pluralize }} in the queue.
+    {% if jobcount > jobs|length %}
+        Only the first {{ jobs|length }} displayed.
+    {% endif %}
+    </h1>
+    <table cellspace="1" id="resultsListing" class="tablesorter">
+        <thead>
+        <tr>
+            <th>Job Number</th>
+            <th>Job Summary</th>
+            <th>Job Errors</th>
+            <th>Job Flag</th>
+            <th>Download Job Files</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for jobno,jobfailed,jobinfo,jobsummary in jobs %}
+            <tr>
+                <td>{{ jobno }}</td>
+                <td>{{ jobsummary.0 }} submitted, {{ jobsummary.1 }} ingested.</td>
+                    {% if jobsummary.2 > 0 %}
+                        <td style="max-width: 600px;">
+                        <span style="color: red">{{ jobsummary.2 }} image{{ jobsummary.2|pluralize }} failed to load.</span>
+                        {% for image in jobsummary.3 %}
+                            {{ image }}
+                        {% endfor %}
+                        </td>
+                    {% else %}
+                        <td/>
+                    {% endif %}
+                {% if jobfailed == True %}
+                    <td><span style="color: red">Failed.</span></td>
+                {% else %}
+                    <td/>
+                {% endif %}
+                <td>
+                {% for j in jobinfo %}
+                    <a href="showresults/{{ j.0 }}">{{ j.1 }}</a>
+                {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

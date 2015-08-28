@@ -1,0 +1,13 @@
+{% load staticfiles %}
+<div id="configuration">
+    <table>
+        {% for p in PARMS %}
+            <tr>
+                <td>{{ p }}</td>
+                {% for k,v in PARMS.p.items %}
+                    <td>{{ k }} {{ v }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>

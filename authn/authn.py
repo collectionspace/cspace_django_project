@@ -38,6 +38,7 @@ class CSpaceAuthN(object):
     hostname = None
     protocol = None
     port = None
+    tenant = None
     authNDictionary = dict()
 
     def __init__(self):
@@ -95,6 +96,9 @@ class CSpaceAuthN(object):
         if self.port is None:
             isMissingProperties = True
             logger.error(errMsg % cspace.CSPACE_PORT_PROPERTY)
+        if self.tenant is None:
+            isMissingProperties = True
+            logger.error(errMsg % cspace.CSPACE_TENANT_PROPERTY)
         if self.authNDictionary is None:
             isMissingProperties = True
             logger.error(errMsg % "CSpaceAuthN.authNDictionary")
@@ -136,6 +140,10 @@ class CSpaceAuthN(object):
 
             if self.port is None or self.overrideWithConfig:
                 self.port = getConfigOption(self.config, cspace.CSPACE_PORT_PROPERTY)
+                self.configFileUsed = True
+
+            if self.tenant is None or self.overrideWithConfig:
+                self.tenant = getConfigOption(self.config, cspace.CSPACE_TENANT_PROPERTY)
                 self.configFileUsed = True
 
         except Exception as e:

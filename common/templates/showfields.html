@@ -1,0 +1,13 @@
+<h2>Search Terms Used</h2>
+<table width="100%">
+    {% for label,value in searchValues.items %}
+        <tr>
+            <td>
+                <label>{{label }}</label>
+            </td>
+            <td>
+                {{ value }}
+            </td>
+        <tr>
+    {% endfor %}
+</table>

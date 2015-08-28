@@ -1,0 +1,194 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+{% load staticfiles %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-1.10.0.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-ui-1.10.3.custom.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "search/js/jquery.tablesorter.min.js" %}"></script>
+{% endblock %}
+
+<!-- Overwrite default placement of login button, included below in branding block -->
+{% block loginBtn %}{% endblock %}
+
+{% block branding %}
+    <h4 class="bannerLeft"></h4>
+    <h4 class="bannerRight"></h4>
+    <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
+
+    <!-- div class="user-tools" -->
+    <div class="unitnav">
+        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="showqueue/" %}
+    </div>
+    <div class="unitnav">
+        <a href="#" id="about">About</a>
+        <a href="#" id="help">Help</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <ol>
+            <h2>
+                <li>Select Files to Upload</li>
+            </h2>
+
+            <form enctype="multipart/form-data" action="{% url 'uploadmedia:uploadfiles' %}" method="post">
+                {% csrf_token %}
+                {% if status == 'down' %}
+                    <h2><span style="color:red">System is down, please standby!</span></h2>
+                {% else %}
+                    <input type="file" name="imagefiles" multiple>
+                    <input type="checkbox" name="validateonly"> Validate files and filenames only, do not process.
+                    <hr/>
+                    {% if dropdowns.allowintervention == 'True' %}
+                        <h2>
+                            <li>Override values in image files, if desired</li>
+                        </h2>
+                        <table>
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                                <th>Override Conditions</th>
+                                <!-- th>Instructions</th -->
+                            </tr>
+                            <tr>
+                                <td>Creator</td>
+                                <td>
+                                    <select id="creator" name="creator">
+                                        <option value="">Please select</option>
+                                        {% for displayname,refname in dropdowns.creators.items %}
+                                            <option value="{{ displayname }}">{{ displayname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="overridecreator" name="overridecreator">
+                                        <option value="">Please select</option>
+                                        {% for option in overrides %}
+                                            <option value="{{ option.0 }}">{{ option.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <!-- td rowspan="4">{% include "instructions.html" %}</td -->
+                            </tr>
+                            <tr>
+                                <td>Contributor</td>
+                                <td><input type="text" name="contributor" value="{{ constants.contributor }}"></td>
+                                <td>
+                                    <select id="overridecontributor" name="overridecontributor">
+                                        <option value="">Please select</option>
+                                        {% for option in overrides %}
+                                            <option value="{{ option.0 }}">{{ option.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Rights Holder</td>
+                                <td>
+                                    <select id="rightsholder" name="rightsholder">
+                                        <option value="">Please select</option>
+                                        {% for displayname,refname in dropdowns.rightsholders.items %}
+                                            <option value="{{ displayname }}">{{ displayname }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="overriderightsholder" name="overriderightsholder">
+                                        <option value="">Please select</option>
+                                        {% for option in overrides %}
+                                            <option value="{{ option.0 }}">{{ option.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    {% else %}
+                        <input type="hidden" id="creator" name="creator" value="">
+                        <input type="hidden" id="overridecreator" name="overridecreator" value="always">
+                        <input type="hidden" id="rightsholder" name="rightsholder" value="">
+                        <input type="hidden" id="overriderightsholder" name="overriderightsholder" value="always">
+                        <input type="hidden" id="contributor" name="contributor" value="">
+                        <input type="hidden" id="overridecontributor" name="overridecontributor" value="always">
+                    {% endif %}
+                    <h2>
+                        <li>Select action to perform</li>
+                    </h2>
+                    <input type="submit" name="createmedia"
+                           value="Upload to CSpace and Create Media Records NOW (100 media files max)">
+                    <br/><br/>
+                    <input type="submit" name="uploadmedia"
+                           value="Upload to CSpace and Queue for LATER CSpace Ingestion"></td>
+                    <!-- <input type="submit" name="deletemedia"
+                                   value="DELETE CSpace Blob and Media records associated with these images">
+                    -->
+
+                    {% if images %}
+                        {% include "images.html" %}
+                    {% endif %}
+
+                    {% if jobinfo %}
+                        <hr/>
+                        {% if jobinfo.status == 'uploadmedia' %}
+                            <h2>Job {{ jobinfo.jobnumber }} enqueued; {{ count }} images.</h2>
+                            <!-- h2>Job {{ jobinfo.jobnumber }} enqueued. Estimated time to
+                            run: {{ jobinfo.estimatedtime }} minutes.</h2 -->
+                        {% endif %}
+                        {% if jobinfo.status == 'createmedia' %}
+                            <h2>Job {{ jobinfo.jobnumber }} completed. Time required: {{ elapsedtime }} seconds.</h2>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </form>
+            <h2>
+                <li>Check on jobs and uploads</li>
+            </h2>
+            <form action="{% url 'uploadmedia:showqueue' %}" method="post">
+                {% csrf_token %}
+                <input type="submit" name="checkjobs" value="View the Job Queue">
+                <input type="submit" name="showerrors" value="List Images That Failed to Load">
+                {% include "showerrors.html" %}
+                {% include "showqueue.html" %}
+            </form>
+        </ol>
+        <hr/>
+        <!-- form action="{% url 'uploadmedia:checkfilename' %}" method="post">
+            <h2>Check filename syntax</h2>
+            {% csrf_token %}
+            <button name="checkfilename">Filename(s) to check (separated by blanks):</button>
+            <input type="text" name="filenames2check" style="width:500px;" value="{{ filenames2check }}">
+            {% if objectnumbers %}
+                <table>
+                    <tr>
+                        <th>filename</th>
+                        <th>object number</th>
+                        <th>image number</th>
+                    </tr>
+                    {% for o in objectnumbers %}
+                        <tr>
+                            <td>{{ o.0 }}</td>
+                            <td>{{ o.1 }}</td>
+                            <td>{{ o.2 }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </form -->
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <table width="100%">
+        <tbody>
+        <tr>
+            <td style="vertical-align: middle">Current time: {{ timestamp }}. This is the <span
+                    style="color:{{ serverinfo.serverlabelcolor }}">{{ serverinfo.serverlabel }}</span> version.
+            </td>
+            <td style="vertical-align: middle;width: 70px;">powered by</td>
+            <td style="text-align: right; width: 160px;"><img
+                    src="{% static "cspace_django_site/images/header-logo-cspace.png" %}" height="30px"></td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}

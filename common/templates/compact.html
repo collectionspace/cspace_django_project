@@ -1,0 +1,41 @@
+{% load staticfiles %}
+
+{% for item in items %}
+    <div style="min-height: 280px;">
+        <div style="float:right;">
+            {% if item.blobs %}
+                {% for t in item.blobs %}
+                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: {{ sizecompact }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativecompact }}/content"/></a>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="result-title">
+                <input type="checkbox" name="item-{{ item.counter }}" value="{{ item.csid }}" checked>
+                <b><a href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a></b>
+            {% if user.is_active and user.is_staff %}
+                <a target="cspace"
+                   href="{{ cspaceserver }}/collectionspace/ui/{{ institution }}/html/cataloging.html?csid={{ item.csid }}"><img
+                        src="{% static "search/images/open_cspace.png" %}" class="cspaceLink">Open in CSpace</a>
+            {% endif %}
+        </div>
+        <div>
+            <p><h4>{{ item.mainentry|safe }}</h4></p>
+            {% if item.location %}
+                <div>LatLong: {{ item.location }}
+                    {% if item.marker %}
+                        <a class="map-item">[click for map]</a>
+                        <div data-marker="{{ item.marker }}" class="small-map" style="display:none;"></div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% for i in item.otherfields %}
+                {% if i.value %}
+                    <div>{{ i.label }}: <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value }}</a></div>
+                {% endif %}
+            {% endfor %}
+
+        </div>
+    </div>
+    <hr/>
+{% endfor %}

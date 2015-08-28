@@ -1,0 +1,37 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n staticfiles %}
+
+{% block content %}
+    <div id="report-params">
+        <h2>{{ report }}</h2>
+        <form method="post" action=".">
+            {% csrf_token %}
+            <table>
+            {% for field in form.visible_fields %}
+                <tr>
+                <td>
+                    <div>
+                    {{ field.errors }}
+                    <span class="filter-label">{{ field.label_tag }}</span>
+                    </div>
+                </td>
+                <td>
+                    {{ field }}
+                </td>
+                <td>
+                    {{ field.help_text }}
+                </td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% for field in form.hidden_fields %}
+             <div style="display:none;">{{ field }}</div>
+        {% endfor %}
+            <hr/>
+            <button type="submit" id="params-submit" class="prettyBtn">report</button>
+            <button type="reset" id="params-reset" class="prettyBtn">reset</button>
+            <input type="button" onclick="history.back();" value="back">
+
+        </form>
+    </div>
+{% endblock %}
