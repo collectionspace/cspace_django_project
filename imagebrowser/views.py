@@ -9,27 +9,24 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, render_to_response
 
 from common.utils import doSearch, setConstants, loginfo
-from common.appconfig import loadConfiguration, loadFields
+from common.appconfig import loadConfiguration, loadFields, getParms
 from common import cspace
 from cspace_django_site import settings
 from os import path
 
-config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'imagebrowser')
-
-# read common config file
-common = 'common'
-prmz = loadConfiguration(common)
-print 'Configuration for %s successfully read' % common
 # read common config file
 common = 'common'
 prmz = loadConfiguration(common)
 print 'Configuration for %s successfully read' % common
 
-prmz.MAXRESULTS = int(config.get('imagebrowser', 'MAXRESULTS'))
-prmz.TITLE = config.get('imagebrowser', 'TITLE')
-prmz.FIELDDEFINITIONS = config.get('imagebrowser', 'FIELDDEFINITIONS')
+searchConfig = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'imagebrowser')
+prmz.SOLRSERVER = searchConfig.get('imagebrowser', 'SOLRSERVER')
+prmz.SOLRCORE = searchConfig.get('imagebrowser', 'SOLRCORE')
+prmz.MAXRESULTS = int(searchConfig.get('imagebrowser', 'MAXRESULTS'))
+prmz.TITLE = searchConfig.get('imagebrowser', 'TITLE')
+prmz.FIELDDEFINITIONS = searchConfig.get('imagebrowser', 'FIELDDEFINITIONS')
 
-# on startup, setup this webapp layout...
+# add in the the field definitions...
 prmz = loadFields(prmz.FIELDDEFINITIONS, prmz)
 
 # Get an instance of a logger, log some startup info

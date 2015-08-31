@@ -14,6 +14,9 @@
         <th>Creator</th>
         <th>Contributor</th>
         <th>Rights Holder</th>
+        {% if dropdowns.usebmuoptions == 'True' %}
+            <th>Handling</th>
+        {% endif %}
     </tr>
     </thead>
     <tbody>
@@ -38,6 +41,9 @@
                 <td>{% if image.rightsholder != '' %}<span style="color:green">{{ image.rightsholderDisplayname }}
                     </span>
                 {% else %}{{ image.rightsholderDisplayname }}{% endif %}</td>
+                {% if dropdowns.usebmuoptions == 'True' %}
+                    <td>{{ image.handling }}</td>
+                {% endif %}
             {% endif %}
         </tr>
     {% endfor %}

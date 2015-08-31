@@ -2,6 +2,7 @@
 {% if errormsg %}
    <span style="color: red">{{ errormsg }}</span>
 {% endif %}
+{% if count > 0 %}
 <form method="post" class="searchForm" id="selectedItems" action="../csv/">
     {% csrf_token %}
     <input type="hidden" name="count" value="{{ count }}"/>
@@ -27,3 +28,4 @@
             <!--  include "configuration.html"  -->
         </div>
 </form>
+{% endif %}

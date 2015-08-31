@@ -57,11 +57,12 @@ def uploadmedia(mediaElements, config):
         raise
 
     # for ucjeps
-    for extra in 'imagetype copyright source'.split(' '):
-        try:
-            mediaElements[extra] = config.get('info', extra)
-        except:
-            mediaElements[extra] = ''
+    if mediaElements['handling'] == 'slide':
+        for extra in 'imagetype copyright source'.split(' '):
+            try:
+                mediaElements[extra] = config.get('info', extra)
+            except:
+                mediaElements[extra] = ''
 
     objectCSID = getCSID('objectnumber', mediaElements['objectnumber'], config)
     if objectCSID == [] or objectCSID is None:
@@ -117,6 +118,7 @@ def uploadmedia(mediaElements, config):
         else:
             pass
 
+    # what about mediaElements['handling']?
     if objectCSID is not None:
         # now relate media record to collection object
 
@@ -211,7 +213,7 @@ if __name__ == "__main__":
         elapsedtimetotal = time.time()
         mediaElements = {}
         for v1, v2 in enumerate(
-                'name size objectnumber blobCSID date creator contributor rightsholder imagenumber filenamewithpath'.split(' ')):
+                'name size objectnumber blobCSID date creator contributor rightsholder imagenumber handling filenamewithpath'.split(' ')):
             mediaElements[v2] = r[v1]
         # print mediaElements
         print 'objectnumber %s' % mediaElements['objectnumber']

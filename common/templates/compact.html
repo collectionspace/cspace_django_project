@@ -19,19 +19,36 @@
             {% endif %}
         </div>
         <div>
-            <p><h4>{{ item.mainentry|safe }}</h4></p>
+            <p><h3>{{ item.mainentry|safe }}</h3></p>
             {% if item.location %}
                 <div>LatLong: {{ item.location }}
                     {% if item.marker %}
                         <a class="map-item">[click for map]</a>
-                        <div data-marker="{{ item.marker }}" class="small-map" style="display:none;"></div>
+                        <div data-marker="{{ item.marker }}" class="small-map" style="display:none; margin-bottom:10px;">
+                            <div class="map-replace"></div>
+                            {% for i in item.mapfields %}
+                                {% if i.value %}
+                                    <div>{{ i.label }}: <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value }}</a></div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     {% endif %}
                 </div>
             {% endif %}
 
             {% for i in item.otherfields %}
                 {% if i.value %}
-                    <div>{{ i.label }}: <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value }}</a></div>
+                    {% if i.multi %}
+                        <div><i>{{ i.label }}:</i>
+                            <ul style="text-indent: 15px">
+                                {% for t in i.value %}
+                                    <li><a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></div>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
 

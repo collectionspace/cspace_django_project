@@ -10,7 +10,8 @@ from django.core.servers.basehttp import FileWrapper
 #from django import forms
 from os import path
 import time, datetime
-from utils import SERVERINFO, POSTBLOBPATH, getDropdowns, handle_uploaded_file, assignValue, getCSID, getNumber, get_exif, writeCsv, \
+from getNumber import getNumber
+from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, getDropdowns, handle_uploaded_file, assignValue,  get_exif, writeCsv, \
     getJobfile, getJoblist, loginfo, getQueue
 import subprocess
 
@@ -32,7 +33,7 @@ def prepareFiles(request, validateonly, dropdowns):
         try:
             print "%s %s: %s %s (%s %s)" % ('id', lineno, 'name', afile.name, 'size', afile.size)
             image = get_exif(afile)
-            filename, objectnumber, imagenumber = getNumber(afile.name)
+            filename, objectnumber, imagenumber = getNumber(afile.name, INSTITUTION)
             # objectCSID = getCSID(objectnumber)
             im.creator, im.creatorRefname = assignValue(im.creatorDisplayname, im.overrideCreator, image, 'Artist',
                                                         dropdowns['creators'])
@@ -54,8 +55,13 @@ def prepareFiles(request, validateonly, dropdowns):
             }
             if not validateonly:
                 handle_uploaded_file(afile)
+            if 'imageoption' in request.POST:
+                imageinfo['handling'] = request.POST['imageoption']
+            else:
+                imageinfo['handling'] = ''
             images.append(imageinfo)
         except:
+            raise
             if not validateonly:
                 # we still upload the file, anyway...
                 handle_uploaded_file(afile)
@@ -68,7 +74,7 @@ def prepareFiles(request, validateonly, dropdowns):
 
         if not validateonly:
             writeCsv(getJobfile(jobnumber) + '.step1.csv', images,
-                     ['name', 'size', 'objectnumber', 'date', 'creator', 'contributor', 'rightsholder', 'imagenumber'])
+                     ['name', 'size', 'objectnumber', 'date', 'creator', 'contributor', 'rightsholder', 'imagenumber', 'handling'])
         jobinfo['estimatedtime'] = '%8.1f' % (len(images) * 10 / 60.0)
 
         if 'createmedia' in request.POST:
@@ -177,7 +183,7 @@ def checkfilename(request):
     if 'filenames2check' in request.POST and request.POST['filenames2check'] != '':
         listoffilenames = request.POST['filenames2check']
         filenames = listoffilenames.split(' ')
-        objectnumbers = [getNumber(o) for o in filenames]
+        objectnumbers = [getNumber(o, INSTITUTION) for o in filenames]
     else:
         objectnumbers = []
         listoffilenames = ''

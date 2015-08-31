@@ -5,7 +5,7 @@
 {% block scripts %}
     <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-1.10.0.min.js" %}"></script>
     <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-ui-1.10.3.custom.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "search/js/jquery.tablesorter.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery.tablesorter.min.js" %}"></script>
 {% endblock %}
 
 <!-- Overwrite default placement of login button, included below in branding block -->
@@ -41,6 +41,18 @@
                     <input type="file" name="imagefiles" multiple>
                     <input type="checkbox" name="validateonly"> Validate files and filenames only, do not process.
                     <hr/>
+                    {% if dropdowns.usebmuoptions == 'True' %}
+                        <h2>
+                            <li>Specify how to handle these images</li>
+                        </h2>
+                        <table>
+                            {% for imageoption in dropdowns.bmuoptions %}
+                                <tr>
+                                    <td><input type="radio" name="imageoption" value="{{ imageoption.1 }}"> {{ imageoption.0 }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}
                     {% if dropdowns.allowintervention == 'True' %}
                         <h2>
                             <li>Override values in image files, if desired</li>

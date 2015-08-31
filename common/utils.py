@@ -246,7 +246,7 @@ def computeStats(requestObject, context, prmz):
 
 def setupCSV(requestObject, context, prmz):
     if 'downloadstats' in requestObject:
-        context = computeStats(requestObject, context)
+        context = computeStats(requestObject, context, prmz)
         csvitems = context['summaryrows']
         format = 'statistics'
     else:
@@ -268,7 +268,7 @@ def setupCSV(requestObject, context, prmz):
     if 'downloadstats' in requestObject:
         fieldset = [context['summarizeonlabel'], 'N'] + context['summarylabels']
     else:
-        fieldset = getfields('CSV', 'name', prmz)
+        fieldset = getfields('inCSV', 'name', prmz)
 
     return format, fieldset, csvitems
 
@@ -415,7 +415,7 @@ def doSearch(context, prmz):
     if 'berkeleymapper' in context:
         displayFields = 'bMapper'
     elif 'csv' in requestObject:
-        displayFields = 'CSV'
+        displayFields = 'inCSV'
     else:
         displayFields = context['displayType'] + 'Display'
 
@@ -581,12 +581,19 @@ def doSearch(context, prmz):
 
         for p in prmz.FIELDS[displayFields]:
             try:
+                multi = True if '_ss' in p['solrfield'] else False
+                # override array handling in display if there is only one value
+                if multi == True and len(rowDict[p['solrfield']]) == 1:
+                    value2use = rowDict[p['solrfield']][0]
+                    multi = False
+                else:
+                    value2use = rowDict[p['solrfield']]
                 otherfields.append(
-                    {'label': p['label'], 'name': p['name'], 'value': extractValue(rowDict, p['solrfield'])})
+                    {'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use})
             except:
-                pass
-                # raise
-                # otherfields.append({'label':p['label'],'value': ''})
+                #raise
+                otherfields.append(
+                    {'label': p['label'], 'name': p['name'], 'multi': multi, 'value': ''})
         item['otherfields'] = otherfields
         if 'csid_s' in rowDict.keys():
             item['csid'] = rowDict['csid_s']

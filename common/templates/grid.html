@@ -18,7 +18,18 @@
         {% endif %}
         <p><h4>{{ item.mainentry|safe }}</h4></p>
         {% for i in item.otherfields %}
-            {% if i.value %}<p class="tiny">{{ i.label }}: {{ i.value|safe }}</p>{% endif %}
+            {% if i.value %}
+                {% if i.multi %}
+                    <p class="tiny">{{ i.label }}:</p>
+                        <ul style="text-indent: 15px">
+                        {% for t in i.value %}
+                            <li><p class="tiny">{{ t|safe }}</p></li>
+                        {% endfor %}
+                        </ul>
+                {% else %}
+                    <p class="tiny">{{ i.label }}: {{ i.value|safe }}</p>
+                {% endif %}
+            {% endif %}
         {% endfor %}
     </div>
 {% endfor %}

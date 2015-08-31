@@ -106,6 +106,7 @@ def csv(request):
                     prmz.CSVPREFIX, datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S"), prmz.CSVEXTENSION)
                 return writeCsv(response, fieldset, csvitems, writeheader=True, csvFormat=csvformat)
             except:
+                raise
                 messages.error(request, 'Problem creating .csv file. Sorry!')
                 context['messages'] = messages
                 return search(request)

@@ -29,7 +29,7 @@ h1, h2, h3, h4, h5 { font-weight: bold; }
 h1 {
     font-size: 18px;
     color: #666;
-    padding: 0 6px 0 0;
+    padding: 20px 6px 0 0;
     margin: 0 0 .5em 0;
 }
 
@@ -136,7 +136,7 @@ li.facet {
 
 #branding {
     padding: 0 10px;
-    margin: 30px 4px 30px 4px;
+    margin: 8px 4px 0px 4px;
 }
 
 #login {
@@ -242,7 +242,7 @@ a#logout:hover { background-color: #333; color: #FFF; }
 #branding h1 {
     /* text-indent: -9999px; Hides the text in the h1 tag, but still makes text available for screenreaders */
     text-indent: 360px;
-    height: 75px; /* The height of the tallest image referenced above in background-image */
+    height: 50px; /* The height of the tallest image referenced above in background-image */
     
     /* To add your own institution's header image, place the image in: 
         cspace_django_project/cspace_django_site/static/cspace_django_site/images/header-logo.png

@@ -16,7 +16,15 @@
                 {% if i.value == item.accession %}
                     <td><a class="facet-item" data-facetType="{{ i.name }}" data-sort="{{ item.sortkey }}">{{ i.value }}</a></td>
                 {% else %}
-                    <td><a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></td>
+                    {% if i.multi %}
+                        <td>
+                        {% for t in i.value %}
+                            <li><a class="facet-item" data-facetType="{{ i.name }}">{{ t }}</a></li>
+                        {% endfor %}
+                        </td>
+                    {% else %}
+                        <td><a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></td>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </tr>

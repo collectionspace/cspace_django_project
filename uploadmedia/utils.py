@@ -5,12 +5,12 @@ import codecs
 import re
 import json
 import logging
+from os import path, listdir
+from os.path import isfile, isdir, join
 from xml.sax.saxutils import escape
 
 from common import cspace  # we use the config file reading function
 from cspace_django_site import settings
-from os import path, listdir
-from os.path import isfile, isdir, join
 
 config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'uploadmedia')
 TEMPIMAGEDIR = config.get('files', 'directory')
@@ -115,12 +115,17 @@ def getQueue(jobtypes):
 
 def getDropdowns():
     allowintervention = config.get('info', 'allowintervention')
+    usebmuoptions = config.get('info', 'usebmuoptions')
+    bmuoptions = config.get('info', 'bmuoptions')
+    bmuoptions = json.loads(bmuoptions.replace('\n', ''))
     creators = config.get('info', 'creators')
     creators = json.loads(creators)
     rightsholders = config.get('info', 'rightsholders')
     rightsholders = json.loads(rightsholders)
     return {
         'allowintervention': allowintervention,
+        'usebmuoptions': usebmuoptions,
+        'bmuoptions': bmuoptions,
         'creators': creators,
         'rightsholders': rightsholders
     }
@@ -138,43 +143,6 @@ def get_exif(fn):
     except:
         pass
     return ret
-
-
-objectnumberpattern = re.compile('([a-z]+)\.([a-zA-Z0-9]+)')
-
-
-def getNumber(filename):
-    imagenumber = ''
-    # the following is only for bampfa filenames...
-    # input is something like: bampfa_1995-46-194-a-199.jpg, output should be: 1995.46.194.a-199
-    if INSTITUTION == 'bampfa':
-        objectnumber = filename.replace('bampfa_', '')
-        try:
-            objectnumber, imagenumber, imagetype = objectnumber.split('_')
-        except:
-            imagenumber = '1'
-        # these legacy statement retained, just in case...
-        # numHyphens = objectnumber.count("-") - 1
-        #objectnumber = objectnumber.replace('-', '.', numHyphens)
-        objectnumber = objectnumber.replace('-', '.')
-        objectnumber = objectnumberpattern.sub(r'\1-\2', objectnumber)
-    elif INSTITUTION == 'ucjeps':
-        # typically, UC1107670.JPG
-        filenameparts = filename.split('.')
-        objectnumber = filenameparts[0]
-        imagenumber = ''
-    elif INSTITUTION == 'cinefiles':
-        # e.g. 56306.p3.300gray.tif
-        filenameparts = filename.split('.')
-        objectnumber = filenameparts[0]
-        imagenumber = filenameparts[1].replace('p','')
-    # for pahma it suffices to split on underscore...
-    elif INSTITUTION == 'pahma':
-        objectnumber = filename
-        objectnumber = objectnumber.split('_')[0]
-    # the following is a last ditch attempt to get an object number from a filename...
-    objectnumber = objectnumber.replace('.JPG', '').replace('.jpg', '').replace('.TIF', '').replace('.tif', '')
-    return filename, objectnumber, imagenumber
 
 
 def getCSID(objectnumber):
