@@ -1,0 +1,36 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+
+
+{% block branding %}
+    <h4 class="bannerLeft"></h4>
+    <h4 class="bannerRight"></h4>
+    <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+
+{% if reportData %}
+    <table>
+    <tr>
+        {% for label in labels %}
+            <th scope="row">{{ label }}</th>
+        {% endfor %}
+    </tr>
+        {% for csid, reportname, file in reportData %}
+        <tr>
+            {% if file == 'CSpace only' or file == 'Found in CSpace, not configured for this webapp' %}
+                <!-- td>{{ reportname }}</td><td>{{ file }}</td -->
+            {% else %}
+                <td><a href="{{ csid }}">{{ reportname }}</a></td><td>{{ file }}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>{% trans "No reports" %}</p>
+{% endif %}
+</div>
+{% endblock %}

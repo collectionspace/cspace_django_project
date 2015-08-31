@@ -1,0 +1,51 @@
+#	parameter specification spreadsheet for a nightly public portal app														x
+#															x
+date	08/24/15														x
+revision	1.9														x
+title	Collections														x
+#															x
+server	http://localhost:8983/solr														
+core	core-public														
+#															
+#		Fields						row,[column]	row,[column]	row,[column]	row,[column]	row,[column]	row,[column]	row,[column]	x
+#															x
+header		Name	Label	SolrField	SearchTarget	Suggestions	Role	Search	Facet	bMapper	listDisplay	fullDisplay	gridDisplay	inCSV	x
+field	1	id	id	id			id								x
+field	2	csid	Object CSID	csid_s			csid							31	x
+field	3	musno	Museum Number	objmusno_s			objectno,accession	2,1		1	1	1		2	x
+field	4	sortnum	Sortable Museum Number	objsortnum_s			string,sortkey							1	x
+field	5	name	Object Name	objname_s		na	keyword,mainentry	5,1	2	2	2	2		10	x
+field	6	altnum	Alternate Number	objaltnum_ss			keyword	3,1				3		11	x
+field	7	type	Object Type	objtype_s			dropdown	6,2	1			4		4	x
+field	8	count	Object Count	objcount_s			string					5		5	x
+field	9	countnote	Count Note	objcountnote_s			keyword					6		7	x
+field	10	dept	Department	objdept_s			keyword					7		3	x
+field	11	keelingser	Keeling Serial Number	objkeelingser_s			keyword					8		8	x
+field	12	fcp	Collection Place	objfcp_s	objfcptree_s	pl	keyword	1,2	6	3		9	1	28	x
+field	13	fcptree	Collection Place (tree)	objfcptree_s			keyword								x
+field	14	fcpverbatim	Collection Place	objfcpverbatim_s		pl	keyword					10		9	x
+field	15	filecode	Ethnographic File Code	objfilecode_ss		fc	dropdown	7,2	3		4	11		12	x
+field	16	assoccult	Culture	objassoccult_ss	objculturetree_ss	cu	keyword	2,2	5	4	3	12	2	27	x
+field	17	culturetree	Culture (tree)	objculturetree_ss		cu	keyword								x
+field	18	inventory	Inventory	objinventory_s			keyword								x
+field	19	collector	Collector	objcollector_ss		pe	keyword	5,2			5	12		23	x
+field	20	descr	Description	objdescr_txt			keyword	6,1				13		14	x
+field	21	contextuse	Context of Use	objcontextuse_s			keyword					14		15	x
+field	22	dimensions	Dimensions	objdimensions_ss			keyword					15	3	16	x
+field	23	materials	Materials	objmaterials_ss			keyword	3,2	4			16	4	17	x
+field	24	inscrtext	Inscription	objinscrtext_ss			keyword	4,2				17		18	x
+field	25	comment	Comment	objcomment_s			keyword					18		19	x
+field	26	title	Title	objtitle_s			keyword					19		20	x
+field	27	colldate	Collection Date	objcolldate_s			keyword	2,3	7		6	20		21	x
+field	28	colldate_begin	Collection Date (earliest)	objcolldate_begin_dt			date								x
+field	29	colldate_end	Collection Date (latest)	objcolldate_end_dt			date								x
+field	30	proddate	Production Date	objproddate_s			keyword	1,3				21		22	x
+field	31	proddate_begin	Production Date (earliest)	objproddate_begin_dt			date								x
+field	32	proddate_end	Production Date (latest)	objproddate_end_dt			date								x
+field	33	accno	Accession Number	objaccno_ss			keyword	4,1				22		24	x
+field	34	accdate	Accession Date	objaccdate_ss			keyword	4,3				23		25	x
+field	35	acqdate	Acquisition Date	objacqdate_ss			keyword	3,3				24		26	x
+field	36	fcpgeoloc	LatLong	objfcpgeoloc_p			location					25		29	x
+field	37	fcpelevation	Collection Place Elevation	objfcpelevation_s			keyword					26		30	x
+field	38	text	Keyword	text			keyword	1,1							x
+field	39	blobs	Blob	blob_ss			blob								x

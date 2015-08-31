@@ -1,0 +1,20 @@
+<div style="height: 45px; padding-top: 15px;">
+    {% if time %}
+        {{ time }} seconds;
+    {% endif %}
+    {% if url %}
+        {% if count > 0 %}
+            {{ count }} items found.
+            {% if recordlimit %}<span style="color: red; font-weight: bold; font-size: larger">{{ recordlimit }}</span>
+            {% endif %}
+            {% if pagesummary %}{{ pagesummary }}{% endif %}
+        {% else %}no items found.
+        {% endif %}
+        emailable version of query: <i><a href="{{ emailableurl }}?{{ url }}">{{ url }}</a></i>
+        <input type="hidden" name="url" value="{{ url }}"/>
+        <br/>
+        {% if querystring %}
+            solr query: <i>{{ querystring }}</i>
+        {% endif %}
+    {% endif %}
+</div>

@@ -1,0 +1,76 @@
+{% spaceless %}
+    <table width="100%">
+        {% for rowid in searchrows %}
+            <tr>
+                {% for colid in searchcolumns %}
+                    {% for i, j in emptycells.items %}
+                        {% for k, x in j.items %}
+                            {% if i == rowid and k == colid %}
+                                <td colspan="3"/>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                    {% for field in FIELDS.Search %}
+                        {% if field.row == rowid and field.column == colid %}
+                            {% if 'dropdown' in field.fieldtype %}
+                                <td {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td colspan="2">
+                                    <select id="{{ field.name }}" name="{{ field.name }}">
+                                        <option value="">Please select</option>
+                                        {% for value in field.dropdowns %}
+                                            <option value="{{ value.0 }}"{% if value.0 == field.value %} selected{% endif %}>{{ value.0|slice:":40" }} ({{ value.1 }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            {% elif 'keyword' in field.fieldtype %}
+                                <td {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td style="width:15px">
+                                    <select id="{{ field.name }}_qualifier" name="{{ field.name }}_qualifier">
+                                        {% for option in qualifiers %}
+                                            {% with ""|add:field.name|add:"_qualifier"|add:":"|add:option.val as qualifier %}
+                                                {% if qualifier in qualfiersInUse %}}
+                                                    <option value="{{ option.val }}" selected>{{ option.dis }}</option>
+                                                {% else %}
+                                                    <option value="{{ option.val }}">{{ option.dis }}</option>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="{{ field.type }}" id="{{ field.name }}" name="{{ field.name }}"
+                                           source="{{ suggestsource }}" value="{{ field.value }}"/>
+                                </td>
+                            {% elif 'string' in field.fieldtype or 'date' in field.fieldtype %}
+                                <td colspan="2" {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td>
+                                    <input type="{{ field.type }}" id="{{ field.name }}" name="{{ field.name }}"
+                                           source="{{ suggestsource }}" value="{{ field.value }}"/>
+                                </td>
+                            {% elif fieldValues.include_child == True %}
+                                <td>
+                                    <label name="{{ field }}_include_child">Include child terms?</label>
+                                    <input type="checkbox" id="{{ field }}_include_child" name="{{ field }}_include_child">
+                                </td>
+                            {% else %}
+                                <td colspan="2" {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td>
+                                    <input type="{{ field.type }}" id="{{ field.name }}" name="{{ field.name }}" value="{{ field.value }}"/>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endspaceless %}

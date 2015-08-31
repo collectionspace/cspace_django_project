@@ -1,0 +1,36 @@
+<div class="grid-wrapper">
+    {% for item in items %}
+    <div class="grid">
+        <div class="tiny" style="padding-bottom: 4px;">
+            <input type="checkbox" name="item-{{ item.counter }}" value="{{ item.csid }}" checked>
+            <a href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a>
+        </div>
+        {% if item.blobs %}
+            <div>
+                {% for t in item.blobs %}
+                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img height="{{ sizegrid }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativegrid }}/content"/></a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="height: {{ sizegrid }}; width: {{ sizegrid }}; background-color: lightgray">
+            <br/>&nbsp;[no image]
+            </div>
+        {% endif %}
+        <p><h4>{{ item.mainentry|safe }}</h4></p>
+        {% for i in item.otherfields %}
+            {% if i.value %}
+                {% if i.multi %}
+                    <p class="tiny">{{ i.label }}:</p>
+                        <ul style="text-indent: 15px">
+                        {% for t in i.value %}
+                            <li><p class="tiny">{{ t|safe }}</p></li>
+                        {% endfor %}
+                        </ul>
+                {% else %}
+                    <p class="tiny">{{ i.label }}: {{ i.value|safe }}</p>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+</div>

@@ -1,0 +1,80 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block content %}
+    <!-- uses jQuery masonry -->
+    <script src="{% static "js/jquery-1.7.1.min.js" %}"></script>
+    <script src="{% static "js/jquery.masonry.min.js" %}"></script>
+    <style>
+        .item {
+            width: 105px;
+            margin: 5px;
+            float: left;
+        }
+
+        #container {
+            width: inherit;
+            margin: 15px;
+        }
+    </style>
+    <h2>{{ report }}</h2>
+    {% if error %}
+        <p style="color: red;">Please submit a search term.</p>
+    {% endif %}
+    <form action="" method="get">
+        <input type="text" name="text" value="{{ text }}"> keywords<br/>
+        <input type="text" name="maxresults" value="{{ maxresults }}"> maximum number of objects to retrieve<br/>
+        <input type="hidden" name="pixonly" value="{{ pixonly }}">
+        <input type="submit" value="Search">
+        {% for field in form.hidden_fields %}
+            <div style="display:none;">{{ field }}</div>
+        {% endfor %}
+
+        <hr/>
+
+        {% if errormsg %}
+            <span style="color: red">{{ errormsg }}</span>
+        {% endif %}
+        {% if url %}
+            <i>Emailable version of this search: <a href="?{{ url }}">{{ url }}</a></i>
+            <hr/>
+        {% endif %}
+        {% if count > 0 %}
+            {{ imagecount }} images displayed for {{ maxresults }} objects out of {{ count }} altogether.
+        {% endif %}
+        {% if time %}
+            solr query took {{ time }} seconds
+            <hr/>
+        {% endif %}
+        {% for field in form.hidden_fields %}
+            <div style="display:none;">{{ field }}</div>
+        {% endfor %}
+    </form>
+    <div id="masonrycontainer">
+        {% for item in items %}
+            <div class="item" style="background-color: #f0f0f0; padding: 3px; min-width: 170px;">
+                {% if item.blobs %}
+                    {% for t in item.blobs %}
+                        <a target="image"
+                           href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content">
+                            <img src="{{ imageserver }}/blobs/{{ t }}/derivatives/Medium/content">
+                        </a>
+                    {% endfor %}
+                    <br/><a target="cspace" href="search/search?displayType=full&maxresults=1&resultsOnly=True&musno=%22{{ item.accession }}%22">{{ item.accession }}</a>
+                    <br/><b>{{ item.mainentry }}</b>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+    </div><!-- #masonrycontainer -->
+    <script>
+        var $container = $('#masonrycontainer');
+        $container.imagesLoaded(function () {
+            $container.masonry({
+                itemSelector: '.item',
+                isAnimated: true
+            });
+
+        });
+    </script>
+{% endblock %}

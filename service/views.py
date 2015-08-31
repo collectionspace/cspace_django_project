@@ -1,4 +1,4 @@
-__author__ = 'remillet'
+__author__ = 'remillet,jblowe'
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -12,11 +12,11 @@ def get_list(request, service):
     config = cspace_django_site.getConfig()
     connection = cspace.connection.create_connection(config, request.user)
     (url, data, statusCode) = connection.make_get_request('cspace-services/%s' % service)
-    return HttpResponse(data, mimetype='application/xml')
+    return HttpResponse(data, content_type='application/xml')
 
 @login_required()
 def get_item(request, service, item_csid):
     config = cspace_django_site.getConfig()
     connection = cspace.connection.create_connection(config, request.user)
     (url, data, statusCode) = connection.make_get_request('cspace-services/%s/%s' % (service,item_csid))
-    return HttpResponse(data, mimetype='application/xml')
+    return HttpResponse(data, content_type='application/xml')

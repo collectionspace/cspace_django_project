@@ -1,0 +1,31 @@
+{% include "searchStats.html" %}
+{% if errormsg %}
+   <span style="color: red">{{ errormsg }}</span>
+{% endif %}
+{% if count > 0 %}
+<form method="post" class="searchForm" id="selectedItems" action="../csv/">
+    {% csrf_token %}
+    <input type="hidden" name="count" value="{{ count }}"/>
+    <input type="hidden" id="lastpage" name="lastpage" value="{{ lastpage }}"/>
+    <input type="hidden" name="start" value="{{ start }}"/>
+    <input type="hidden" name="maxresults" value="{{ maxresults }}"/>
+        <div id="tabs" style="float: left; width: 100%;">
+            <ul>
+                <li><a href="#results">Results</a></li>
+                <li><a href="#facets">Facets</a></li>
+                <li><a href="#maps">Maps</a></li>
+                {% if count <= 10000 %}
+                <li><a href="#statistics">Statistics</a></li>
+                {% endif %}
+                <!-- li><a href="#configuration">Configuration</a></li -->
+            </ul>
+            {% include "results.html" %}
+            {% include "facets.html" %}
+            {% include "maps.html" %}
+            {% if count <= 10000 %}
+            {% include "statistics.html" %}
+            {% endif %}
+            <!--  include "configuration.html"  -->
+        </div>
+</form>
+{% endif %}

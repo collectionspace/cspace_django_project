@@ -1,0 +1,31 @@
+<div id="maps">
+    <p><a target="new" href="https://github.com/BNHM/berkeleymapper/blob/master/README.md">BerkeleyMapper 2.0</a> is a
+        mapping interface for Collections (or other) Databases built on top of Google Maps.
+        If your query results contain items with latitudes and longitudes, you may plot them using this
+        sophisticated interface.
+    </p>
+    <button type="button" name="map-bmapper" id="map-bmapper" class="prettyBtn">map selected with Berkeley Mapper</button>
+    <hr/>
+    <p>The <a target="new" href="https://developers.google.com/maps/documentation/staticmaps/intro">Google Static Maps API</a>
+        lets you embed a Google Maps image on a web page (like this one) without requiring JavaScript or any dynamic page loading.
+        The Static Maps API service creates your map based on URL parameters sent through a standard HTTP request and
+        returns the map as an image you can display on your web page.  Click on the link below to see the map and get the
+        embedabble link. NB: the limit on the number of points plotted is about 100 due to limits on the length of URLs.</p>
+    <button type="button" name="map-google" id="map-google" class="prettyBtn">map selected with Google staticmaps API</button>
+    <div style="height: 30px; padding-top: 15px;">
+    {% for m in mapmsg %}
+        <p style="color:red">{{ m }}</p>
+    {% endfor %}
+    </div>
+    {% if markerlist %}
+    <img src="https://maps.google.com/maps/api/staticmap?size=1000x800&maptype=roadmap&markers={{ markerlist }}&sensor=false"/>
+    <hr/>
+    <a target="new" href="https://maps.google.com/maps/api/staticmap?size=1000x800&maptype=roadmap&markers={{ markerlist }}&sensor=false">This is the link</a>
+        for the map above, in case you want to keep it for future use.
+    {% endif %}
+    {% if berkeleymapper %}
+        <div style="height: 30px; padding-top: 15px;">
+        <a href="{{ bmapperurl }}">{{ bmapperurl }}</a>
+        </div>
+    {% endif %}
+</div>

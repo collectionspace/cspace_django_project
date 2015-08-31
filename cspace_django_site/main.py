@@ -56,6 +56,9 @@ class cspace_django_site:
             authNInstance.port = cspace.getConfigOptionWithSection(config,
                                                                    cspace.CONFIGSECTION_AUTHN_CONNECT,
                                                                    cspace.CSPACE_PORT_PROPERTY)
+            authNInstance.tenant = cspace.getConfigOptionWithSection(config,
+                                                                   cspace.CONFIGSECTION_AUTHN_CONNECT,
+                                                                   cspace.CSPACE_TENANT_PROPERTY)
             logger.info('AuthN initialized')
 
     @classmethod

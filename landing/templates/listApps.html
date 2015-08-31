@@ -1,0 +1,43 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block loginBtn %}
+  {% if user.is_active %}
+    {% include "cspace_django_site/loginBtn.html" %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <h1>{{ apptitle }}</h1>
+        {% if appList %}
+            <table>
+                <tr>
+                    <th scope="row"></th>
+                </tr>
+                {% for app in appList %}
+                    <tr>
+                        <td><a href="{{ base }}/{{ app }}">{{ app }}</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <br><br>
+            {% if not user.is_active %}
+              {% include "cspace_django_site/loginBtn.html" %} to view all available applications
+            {% endif %}
+            <br><br>
+            <hr/>
+            <table>
+                <tr>
+                    <td><a target="_new" href="https://{{ hostname }}">CollectionSpace UI ({{ hostname }})</a>
+                    </td>
+                </tr>
+            </table>
+        {% else %}
+            <p>{% trans "No apps" %}</p>
+            {% if not user.is_active %}
+              {% include "cspace_django_site/loginBtn.html" %} to view all available applications
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

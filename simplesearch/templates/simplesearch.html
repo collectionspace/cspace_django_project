@@ -1,0 +1,59 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+{% load staticfiles %}
+
+<!-- Overwrite default placement of login button, included below in branding block -->
+{% block loginBtn %}{% endblock %}
+
+{% block branding %}
+    <h4 class="bannerLeft"></h4>
+    <h4 class="bannerRight"></h4>
+    <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
+
+    <!-- div class="user-tools" -->
+    <div class="unitnav">
+        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
+    </div>
+    <div class="unitnav">
+        {% for info in additionalInfo %}
+            <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ report }}</h2>
+    {% if error %}
+        <p style="color: red;">Please submit a search term.</p>
+    {% endif %}
+    <form action="" method="get">
+        <input type="text" name="kw" value="{{ kw }}">
+        <input type="submit" value="Search">
+        <hr/>
+        {% for field in form.hidden_fields %}
+            <div style="display:none;">{{ field }}</div>
+        {% endfor %}
+    </form>
+
+    <div id="content-main">
+        <div class="results">
+            <table>
+                <tr>
+                    {% for label in labels %}
+                        <th scope="row">{{ label }}</th>
+                    {% endfor %}
+                </tr>
+                {% for row in results %}
+                    <tr>
+                        <td><a target="cspace" href="{{ row.0 }}">{{ row.1 }}</a></td>
+                        {% for cell in row.2 %}
+                            <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

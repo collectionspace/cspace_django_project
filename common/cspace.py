@@ -1,4 +1,3 @@
-
 __author__ = 'remillet,jblowe'
 
 from os import path
@@ -22,6 +21,7 @@ CSPACE_URI_PROPERTY = 'uri'
 CSPACE_HOSTNAME_PROPERTY = 'hostname'
 CSPACE_PROTOCOL_PROPERTY = 'protocol'
 CSPACE_PORT_PROPERTY = 'port'
+CSPACE_TENANT_PROPERTY = 'tenant'
 
 
 def getConfig(base_path, filename_nosuffix):
@@ -61,11 +61,15 @@ def make_get_request(realm, uri, hostname, protocol, port, username, password):
     :param hostname:
     :param protocol:
     :param port:
+    :param tenant:
     :param username:
     :param password:
     """
 
-    server = protocol + "://" + hostname + ":" + port
+    if port == '':
+        server = protocol + "://" + hostname
+    else:
+        server = protocol + "://" + hostname + ":" + port
     passMgr = urllib2.HTTPPasswordMgr()
     passMgr.add_password(realm, server, username, password)
     authhandler = urllib2.HTTPBasicAuthHandler(passMgr)
@@ -79,11 +83,11 @@ def make_get_request(realm, uri, hostname, protocol, port, username, password):
         data = f.read()
         result = (url, data, statusCode)
     except urllib2.HTTPError, e:
-        print 'The server couldn\'t fulfill the request.'
+        print 'The server (%s) couldn\'t fulfill the request.' % server
         print 'Error code: ', e.code
         result = (url, None, e.code)
     except urllib2.URLError, e:
-        print 'We failed to reach a server.'
+        print 'We failed to reach the server (%s).' % server
         print 'Reason: ', e.reason
         result = (url, None, e.reason)
 
@@ -92,8 +96,10 @@ def make_get_request(realm, uri, hostname, protocol, port, username, password):
 
 def postxml(realm, uri, hostname, protocol, port, username, password, payload, requestType):
 
-
-    server = protocol + "://" + hostname + ":" + port
+    if port == '':
+        server = protocol + "://" + hostname
+    else:
+        server = protocol + "://" + hostname + ":" + port
     passMgr = urllib2.HTTPPasswordMgr()
     passMgr.add_password(realm, server, username, password)
     authhandler = urllib2.HTTPBasicAuthHandler(passMgr)
@@ -101,10 +107,8 @@ def postxml(realm, uri, hostname, protocol, port, username, password, payload, r
     urllib2.install_opener(opener)
     url = "%s/%s" % (server, uri)
 
-    elapsedtime = 0.0
-
     elapsedtime = time.time()
-    request = urllib2.Request(url, payload, { 'Content-Type': 'application/xml' })
+    request = urllib2.Request(url, payload, {'Content-Type': 'application/xml'})
     # default method for urllib2 with payload is POST
     if requestType == 'PUT': request.get_method = lambda: 'PUT'
 
@@ -113,8 +117,13 @@ def postxml(realm, uri, hostname, protocol, port, username, password, payload, r
         statusCode = f.getcode()
         data = f.read()
         info = f.info()
-        print 'data:',len(data)
-        return (url, data, statusCode, time.time() - elapsedtime)
+        # if a POST, the Location element contains the new CSID
+        if info.getheader('Location'):
+            csid = re.search(uri + '/(.*)', info.getheader('Location'))
+            csid = csid.group(1)
+        else:
+            csid = ''
+        return (url, data, csid, time.time() - elapsedtime)
     except urllib2.HTTPError, e:
         print 'The server couldn\'t fulfill the request.'
         print 'Error code: ', e.code
@@ -123,23 +132,18 @@ def postxml(realm, uri, hostname, protocol, port, username, password, payload, r
         print 'We failed to reach a server.'
         print 'Reason: ', e.reason
         return (url, None, e.reason, time.time() - elapsedtime)
+    except:
+        raise
 
-    # if a POST, the Location element contains the new CSID
-    if info.getheader('Location'):
-        csid = re.search(uri+'/(.*)',info.getheader('Location'))
-        csid = csid.group(1)
-    else:
-        csid = ''
-    elapsedtime = time.time() - elapsedtime
-    return (url,data,csid,elapsedtime)
 
 class connection:
-    def __init__(self, realm, uri, hostname, protocol, port, username, password, payload, requesttype):
+    def __init__(self, realm, uri, hostname, protocol, port, tenant, username, password, payload, requesttype):
         self.realm = realm
         self.uri = uri
         self.hostname = hostname
         self.protocol = protocol
         self.port = port
+        self.tenant = tenant
         self.username = username
         self.password = password
         self.payload = payload
@@ -157,7 +161,8 @@ class connection:
         hostname = getConfigOptionWithSection(config, CONFIGSECTION_SERVICES_CONNECT, CSPACE_HOSTNAME_PROPERTY)
         protocol = getConfigOptionWithSection(config, CONFIGSECTION_SERVICES_CONNECT, CSPACE_PROTOCOL_PROPERTY)
         port = getConfigOptionWithSection(config, CONFIGSECTION_SERVICES_CONNECT, CSPACE_PORT_PROPERTY)
-        return connection(realm, None, hostname, protocol, port, user.username, user.cspace_password, None, None
+        tenant = getConfigOptionWithSection(config, CONFIGSECTION_SERVICES_CONNECT, CSPACE_TENANT_PROPERTY)
+        return connection(realm, None, hostname, protocol, port, tenant, user.username, user.cspace_password, None, None
         )
 
     def make_get_request(self, uri=None):
@@ -190,6 +195,6 @@ class connection:
             requestRequesttype = self.requesttype
 
         result = postxml(self.realm, requestUri, self.hostname, self.protocol, self.port,
-                                  self.username, self.password, requestPayload, requestRequesttype)
+                         self.username, self.password, requestPayload, requestRequesttype)
 
         return result

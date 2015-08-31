@@ -1,0 +1,101 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+{% load staticfiles %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/theme.blue.css" %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static "cspace_django_site/css/smoothness/jquery-ui-1.10.3.custom.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/PublicSearch.css" %}"/>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-1.10.0.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-ui-1.10.3.custom.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "common/js/PublicSearch.js" %}"></script>
+    <script type="text/javascript">
+        var googleAnalytics = {{ googleAnalytics }};
+    </script>
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery.tablesorter.min.js" %}"></script>
+{% endblock %}
+
+<!-- Overwrite default placement of login button, included below in branding block -->
+{% block loginBtn %}{% endblock %}
+
+{% block branding %}
+    <h4 class="bannerLeft"></h4>
+    <h4 class="bannerRight"></h4>
+    <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
+
+    <!-- div class="user-tools" -->
+    <div class="unitnav">
+        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
+    </div>
+    <div class="unitnav">
+        {% for info in additionalInfo %}
+            <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        <div class="toggled">
+            {% for info in additionalInfo %}
+                <div id="{{ info.slug }}Target" style="display: none" class="expandedInfo">
+                    <div class="info">
+                        {% if info.contentType == 'HTML' %}
+                            {{ info.content|safe }}
+                        {% elif info.contentType == 'TEXT' %}
+                            <p>{{ info.content }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="searchPanel">
+            {% if resultsOnly %}
+                {% include "showfields.html" %}
+            {% else %}
+                <form class="searchForm" id="search">
+                    {% csrf_token %}
+                    <div id="searchfieldsTarget">
+                        {% include "fields.html" %}
+                        {% include "buttons.html" %}
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+        <div id="waitingImage" style="display: none">
+            <h1><img style="vertical-align: middle" src="{% static "cspace_django_site/images/timer-animated.gif" %}"
+                     alt="Searching..."/> Searching...</h1>
+        </div>
+        <div id="resultsPanel">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if count > 0 %}
+                {% include "searchResults.html" %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <table width="100%">
+        <tbody>
+        <tr>
+            <td style="vertical-align: middle">Current time: {{ timestamp }}. This is version {{ version }}</td>
+            <td style="vertical-align: middle;width: 70px;">powered by</td>
+            <td style="text-align: right; width: 160px;"><img
+                    src="{% static "cspace_django_site/images/header-logo-cspace.png" %}" height="30px"></td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+

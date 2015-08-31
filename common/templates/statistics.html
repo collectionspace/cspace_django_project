@@ -1,0 +1,26 @@
+<div id="statistics">
+    <div id="statsresults" style="width: 77%; float: right">
+        {% include "statsResults.html" %}
+    </div>
+    <div style="width: 22%; background-color: whitesmoke">
+        <h3 style="padding: 10px 0px 10px 0px;">1. Select field to summarize on:</h3>
+        <select id="summarizeon" name="summarizeon">
+            <option value="">Please select</option>
+            {% for value in statsfields %}
+                <option value="{{ value.0 }}"{% if value.0 == field.value %}selected{% endif %}>{{ value.1|slice:":40" }}</option>
+            {% endfor %}
+        </select>
+        <h3 style="padding: 10px 0px 10px 0px;">2. Select fields to include:</h3>
+        {% for value in statsfields %}
+            <input type="checkbox" name='include-{{ value.0 }}'
+                   value="{{ value.0 }}">{{ value.1|slice:":40" }}
+            <br/>
+        {% endfor %}
+        <h3 style="padding: 10px 0px 10px 0px;">3. Select action</h3>
+        <button type="button" name="summarize" id="summarize" class="prettyBtn">Display Summary</button>
+        <p style="margin: 10px;">(up to 3,000 displayed, use Download button for more.)</p>
+        <br/>
+        <button type="submit" name="downloadstats" id="downloadstats" class="prettyBtn">Download Summary as CSV</button>
+        <p style="margin: 10px;">(limit is 100,000.)</p>
+    </div>
+</div>
