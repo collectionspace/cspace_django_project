@@ -52,7 +52,7 @@ def uploadmedia(mediaElements, config):
         password = config.get('connect', 'password')
         institution = config.get('info', 'institution')
         alwayscreatemedia = config.get('info', 'alwayscreatemedia')
-        alwayscreatemedia == True if alwayscreatemedia.lower() == 'true' else False
+        alwayscreatemedia = True if alwayscreatemedia.lower() == 'true' else False
     except:
         print "could not get at least one of realm, hostname, username, password or institution from config file."
         # print "can't continue, exiting..."
