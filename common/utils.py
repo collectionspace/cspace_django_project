@@ -56,7 +56,7 @@ def getfields(fieldset, pickField, prmz):
     for pick in pickField:
         if not pick in 'name solrfield label'.split(' '):
             pick = 'solrfield'
-        result.append([f[pick] for f in prmz.FIELDS[fieldset]])
+        result.append([f[pick] for f in prmz.FIELDS[fieldset] if f['fieldtype'] != 'constant'])
     if len(pickField) > 1:
         # is this right??
         return zip(result[0], result[1])

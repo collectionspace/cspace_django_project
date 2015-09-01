@@ -146,7 +146,7 @@ def loadConfiguration(configFileName):
         #prmz.FIELDDEFINITIONS = config.get('search', 'FIELDDEFINITIONS')
         prmz.CSVPREFIX = config.get('search', 'CSVPREFIX')
         prmz.CSVEXTENSION = config.get('search', 'CSVEXTENSION')
-        # TITLE = config.get('search', 'TITLE')
+        # prmz.TITLE = config.get('search', 'TITLE')
         prmz.SUGGESTIONS = config.get('search', 'SUGGESTIONS')
         #LAYOUT = config.get('search', 'LAYOUT')
 
@@ -158,7 +158,6 @@ def loadConfiguration(configFileName):
             prmz.VERSION = 'Unknown'
 
     except:
-        raise
         print 'error in configuration file %s' % path.join(settings.BASE_PARENT_DIR, 'config/' + configFileName)
         print 'this webapp will probably not work.'
 

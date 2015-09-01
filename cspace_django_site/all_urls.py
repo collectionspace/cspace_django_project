@@ -36,7 +36,7 @@ urlpatterns = patterns('',
                        url(r'^imageserver/', include('imageserver.urls', namespace='imageserver')),
 
                        # these are user-facing (i.e. present a UI to the caller)
-                       url(r'^asura/', include('asura.urls', namespace='asura')),
+                       #url(r'^asura/', include('asura.urls', namespace='asura')),
                        url(r'^batchuploadimages/', include('batchuploadimages.urls', namespace='batchuploadimages')),
                        url(r'^imagebrowser/?', include('imagebrowser.urls', namespace='imagebrowser')),
                        url(r'^imaginator/?', include('imaginator.urls', namespace='imaginator')),

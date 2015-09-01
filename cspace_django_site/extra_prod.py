@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'suggestsolr',
     'batchuploadimages',
     # 'standard' apps
+    #'asura',
     'imagebrowser',
     'imageserver',
     'imaginator',

@@ -5,7 +5,7 @@
     {% if url %}
         {% if count > 0 %}
             {{ count }} items found.
-            {% if recordlimit %}<span style="color: red; font-weight: bold; font-size: larger">{{ recordlimit }}</span>
+            {% if recordlimit %}<span style="color: red; font-weight: bold;">{{ recordlimit }}</span>
             {% endif %}
             {% if pagesummary %}{{ pagesummary }}{% endif %}
         {% else %}no items found.
