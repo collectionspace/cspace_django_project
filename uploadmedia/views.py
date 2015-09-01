@@ -55,13 +55,16 @@ def prepareFiles(request, validateonly, dropdowns):
             }
             if not validateonly:
                 handle_uploaded_file(afile)
-            if 'imageoption' in request.POST:
-                imageinfo['handling'] = request.POST['imageoption']
-            else:
-                imageinfo['handling'] = ''
+
+            for option in ['handling', 'approvedforweb']:
+                if option in request.POST:
+                    imageinfo[option] = request.POST[option]
+                else:
+                    imageinfo[option] = ''
+
             images.append(imageinfo)
         except:
-            raise
+            # raise
             if not validateonly:
                 # we still upload the file, anyway...
                 handle_uploaded_file(afile)
@@ -74,7 +77,7 @@ def prepareFiles(request, validateonly, dropdowns):
 
         if not validateonly:
             writeCsv(getJobfile(jobnumber) + '.step1.csv', images,
-                     ['name', 'size', 'objectnumber', 'date', 'creator', 'contributor', 'rightsholder', 'imagenumber', 'handling'])
+                     ['name', 'size', 'objectnumber', 'date', 'creator', 'contributor', 'rightsholder', 'imagenumber', 'handling', 'approvedforweb'])
         jobinfo['estimatedtime'] = '%8.1f' % (len(images) * 10 / 60.0)
 
         if 'createmedia' in request.POST:

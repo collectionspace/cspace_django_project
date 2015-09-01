@@ -115,7 +115,9 @@ def getQueue(jobtypes):
 
 def getDropdowns():
     allowintervention = config.get('info', 'allowintervention')
+    allowintervention == True if allowintervention.lower() == 'true' else False
     usebmuoptions = config.get('info', 'usebmuoptions')
+    usebmuoptions == True if usebmuoptions.lower() == 'true' else False
     bmuoptions = config.get('info', 'bmuoptions')
     bmuoptions = json.loads(bmuoptions.replace('\n', ''))
     creators = config.get('info', 'creators')
