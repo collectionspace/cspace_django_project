@@ -20,14 +20,14 @@ prmz = loadConfiguration(common)
 print 'Configuration for %s successfully read' % common
 
 searchConfig = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'imagebrowser')
-prmz.SOLRSERVER = searchConfig.get('imagebrowser', 'SOLRSERVER')
-prmz.SOLRCORE = searchConfig.get('imagebrowser', 'SOLRCORE')
-prmz.MAXRESULTS = int(searchConfig.get('imagebrowser', 'MAXRESULTS'))
-prmz.TITLE = searchConfig.get('imagebrowser', 'TITLE')
 prmz.FIELDDEFINITIONS = searchConfig.get('imagebrowser', 'FIELDDEFINITIONS')
 
 # add in the the field definitions...
 prmz = loadFields(prmz.FIELDDEFINITIONS, prmz)
+
+# override these two values if they were set above
+prmz.MAXRESULTS = int(searchConfig.get('imagebrowser', 'MAXRESULTS'))
+prmz.TITLE = searchConfig.get('imagebrowser', 'TITLE')
 
 # Get an instance of a logger, log some startup info
 logger = logging.getLogger(__name__)
@@ -36,24 +36,32 @@ logger.info('%s :: %s :: %s' % ('imagebrowser startup', '-', '-'))
 
 # @login_required()
 def images(request):
+
+    context = setConstants({}, prmz)
+
     if request.method == 'GET' and request.GET != {}:
-        context = {'searchValues': request.GET}
+        context['searchValues'] = request.GET
+        prmz.MAXFACETS = 0
 
-        context = setConstants(context, prmz)
+        if 'keyword' in request.GET:
+            context['keyword'] = request.GET['keyword']
+        if 'accession' in request.GET:
+            context['accession'] = request.GET['accession']
+            context['maxresults'] = 1
 
-        context['text'] = request.GET['text']
-        #context['pgNum'] = pgNum if 'pgNum' in context else '1'
-        #context['url'] = url
-        context['displayType'] = 'list'
+        context['maxresults'] = prmz.MAXRESULTS
+        # use the grid display fields (we only show two of the required ones)
+        context['displayType'] = 'grid'
+        # it's an image browser, so only return items with images...
         context['pixonly'] = 'true'
-        context['title'] = prmz.TITLE
 
         # do search
-        loginfo(logger, 'start search', context, request)
+        loginfo(logger, 'start imagebrowser search', context, request)
         context = doSearch(context, prmz)
 
         return render(request, 'showImages.html', context)
 
     else:
+
         return render(request, 'showImages.html',
                       {'title': prmz.TITLE, 'pgNum': 10, 'maxresults': 20})
