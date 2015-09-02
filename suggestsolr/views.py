@@ -26,8 +26,6 @@ from common.appconfig import getParms, loadConfiguration
 import solr
 
 searchConfig = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'suggestsolr')
-SOLRSERVER = searchConfig.get('solr', 'SOLRSERVER')
-SOLRCORE = searchConfig.get('solr', 'SOLRCORE')
 FIELDEFINITIONS = searchConfig.get('solr', 'FIELDDEFINITIONS')
 
 # read this app's config file
@@ -35,7 +33,7 @@ prmz = loadConfiguration('common')
 prmz = getParms(path.join(settings.BASE_PARENT_DIR, 'config/' + FIELDEFINITIONS), prmz)
 
 # create a connection to a solr server
-s = solr.SolrConnection(url='%s/%s' % (SOLRSERVER, SOLRCORE))
+s = solr.SolrConnection(url='%s/%s' % (prmz.SOLRSERVER, prmz.SOLRCORE))
 
 import sys, json, re
 import cgi

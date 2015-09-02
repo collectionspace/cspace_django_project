@@ -553,7 +553,6 @@ def doSearch(context, prmz):
     for i, rowDict in enumerate(results):
         item = {}
         item['counter'] = i
-        otherfields = []
 
         if 'summarize' in requestObject or 'downloadstats' in requestObject:
             summarizeon = extractValue(rowDict, prmz.PARMS[context['summarizeon']][3])
@@ -579,21 +578,20 @@ def doSearch(context, prmz):
             if 'sortkey' in prmz.PARMS[p][1]:
                 item['sortkey'] = extractValue(rowDict, prmz.PARMS[p][3])
 
+
+        otherfields = []
         for p in prmz.FIELDS[displayFields]:
             try:
-                multi = True if '_ss' in p['solrfield'] else False
-                # override array handling in display if there is only one value
-                if multi == True and len(rowDict[p['solrfield']]) == 1:
-                    value2use = rowDict[p['solrfield']][0]
-                    multi = False
+                multi = len(rowDict[p['solrfield']]) if '_ss' in p['solrfield'] else 0
+                value2use = rowDict[p['solrfield']]
+                if type(p['fieldtype']) == type({}):
+                    value2use = [p['fieldtype'][v] for v in value2use]
+                    otherfields.append({'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use, 'special': True})
                 else:
-                    value2use = rowDict[p['solrfield']]
-                otherfields.append(
-                    {'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use})
+                    otherfields.append({'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use})
             except:
                 #raise
-                otherfields.append(
-                    {'label': p['label'], 'name': p['name'], 'multi': multi, 'value': ''})
+                otherfields.append({'label': p['label'], 'name': p['name'], 'multi': 0, 'value': ''})
         item['otherfields'] = otherfields
         if 'csid_s' in rowDict.keys():
             item['csid'] = rowDict['csid_s']
