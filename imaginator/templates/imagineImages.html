@@ -17,8 +17,9 @@
         var googleAnalytics = {{ googleAnalytics }};
     </script>
     <script type="text/javascript" src="{% static "cspace_django_site/js/jquery.tablesorter.min.js" %}"></script>
-    <!-- uses jQuery masonry -->
-    <script src="{% static 'js/jquery.masonry.min.js' %}"></script>
+    <!-- uses jQuery masonry http://masonry.desandro.com/-->
+    <script src="{% static 'cspace_django_site/js/masonry.pkgd.min.js' %}"></script>
+    <script src="{% static 'cspace_django_site/js/imagesloaded.pkgd.min.js' %}"></script>
 {% endblock %}
 
 <!-- Overwrite default placement of login button, included below in branding block -->
@@ -41,16 +42,6 @@
 {% endblock %}
 
 {% block content %}
-    <style>
-        .item {
-            width: 105px;
-            margin: 5px;
-            float: left;
-        }
-
-        #container {
-        }
-    </style>
     {% if error %}
         <p style="color: red;">Please submit a search term.</p>
     {% endif %}
@@ -87,33 +78,6 @@
     {% if resultType == 'metadata' %}
         {% include "compact.html" %}
     {% else %}
-        <div id="masonrycontainer">
-            {% for item in items %}
-                <div class="item" style="background-color: #f0f0f0; padding: 3px; min-width: 170px;">
-                    {% if item.blobs %}
-                        {% for t in item.blobs %}
-                            <a target="image"
-                               href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img
-                                    height="{{ sizegrid }}"
-                                    src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativegrid }}/content"/></a>
-                        {% endfor %}
-                        <br/><b><a target="cspace"
-                                   href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a></b>
-                        <br/><b>{{ item.mainentry|safe }}</b>
-                    {% endif %}
-                </div>
-            {% endfor %}
-
-        </div><!-- #masonrycontainer -->
+        {% include "masonrycontainer.html" %}
     {% endif %}
-    <script>
-        var $container = $('#masonrycontainer');
-        $container.imagesLoaded(function () {
-            $container.masonry({
-                itemSelector: '.item',
-                isAnimated: true
-            });
-
-        });
-    </script>
 {% endblock %}

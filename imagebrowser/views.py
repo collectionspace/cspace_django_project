@@ -39,6 +39,15 @@ def images(request):
 
     context = setConstants({}, prmz)
 
+    # http://blog.mobileesp.com/
+    # the middleware must be installed for the following to work...
+    if request.is_phone:
+        context['device'] = 'phone'
+    elif request.is_tablet:
+        context['device'] = 'tablet'
+    else:
+        context['device'] = 'other'
+
     if request.method == 'GET' and request.GET != {}:
         context['searchValues'] = request.GET
         prmz.MAXFACETS = 0
