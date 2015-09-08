@@ -1,51 +1,75 @@
-#	parameter specification spreadsheet for a nightly public portal app														x
-#															x
-date	08/24/15														x
-revision	1.9														x
-title	Collections														x
-#															x
-server	http://localhost:8983/solr														
-core	core-public														
-#															
-#		Fields						row,[column]	row,[column]	row,[column]	row,[column]	row,[column]	row,[column]	row,[column]	x
-#															x
-header		Name	Label	SolrField	SearchTarget	Suggestions	Role	Search	Facet	bMapper	listDisplay	fullDisplay	gridDisplay	inCSV	x
-field	1	id	id	id			id								x
-field	2	csid	Object CSID	csid_s			csid							31	x
-field	3	musno	Museum Number	objmusno_s			objectno,accession	2,1		1	1	1		2	x
-field	4	sortnum	Sortable Museum Number	objsortnum_s			string,sortkey							1	x
-field	5	name	Object Name	objname_s		na	keyword,mainentry	5,1	2	2	2	2		10	x
-field	6	altnum	Alternate Number	objaltnum_ss			keyword	3,1				3		11	x
-field	7	type	Object Type	objtype_s			dropdown	6,2	1			4		4	x
-field	8	count	Object Count	objcount_s			string					5		5	x
-field	9	countnote	Count Note	objcountnote_s			keyword					6		7	x
-field	10	dept	Department	objdept_s			keyword					7		3	x
-field	11	keelingser	Keeling Serial Number	objkeelingser_s			keyword					8		8	x
-field	12	fcp	Collection Place	objfcp_s	objfcptree_s	pl	keyword	1,2	6	3		9	1	28	x
-field	13	fcptree	Collection Place (tree)	objfcptree_s			keyword								x
-field	14	fcpverbatim	Collection Place	objfcpverbatim_s		pl	keyword					10		9	x
-field	15	filecode	Ethnographic File Code	objfilecode_ss		fc	dropdown	7,2	3		4	11		12	x
-field	16	assoccult	Culture	objassoccult_ss	objculturetree_ss	cu	keyword	2,2	5	4	3	12	2	27	x
-field	17	culturetree	Culture (tree)	objculturetree_ss		cu	keyword								x
-field	18	inventory	Inventory	objinventory_s			keyword								x
-field	19	collector	Collector	objcollector_ss		pe	keyword	5,2			5	12		23	x
-field	20	descr	Description	objdescr_txt			keyword	6,1				13		14	x
-field	21	contextuse	Context of Use	objcontextuse_s			keyword					14		15	x
-field	22	dimensions	Dimensions	objdimensions_ss			keyword					15	3	16	x
-field	23	materials	Materials	objmaterials_ss			keyword	3,2	4			16	4	17	x
-field	24	inscrtext	Inscription	objinscrtext_ss			keyword	4,2				17		18	x
-field	25	comment	Comment	objcomment_s			keyword					18		19	x
-field	26	title	Title	objtitle_s			keyword					19		20	x
-field	27	colldate	Collection Date	objcolldate_s			keyword	2,3	7		6	20		21	x
-field	28	colldate_begin	Collection Date (earliest)	objcolldate_begin_dt			date								x
-field	29	colldate_end	Collection Date (latest)	objcolldate_end_dt			date								x
-field	30	proddate	Production Date	objproddate_s			keyword	1,3				21		22	x
-field	31	proddate_begin	Production Date (earliest)	objproddate_begin_dt			date								x
-field	32	proddate_end	Production Date (latest)	objproddate_end_dt			date								x
-field	33	accno	Accession Number	objaccno_ss			keyword	4,1				22		24	x
-field	34	accdate	Accession Date	objaccdate_ss			keyword	4,3				23		25	x
-field	35	acqdate	Acquisition Date	objacqdate_ss			keyword	3,3				24		26	x
-field	36	fcpgeoloc	LatLong	objfcpgeoloc_p			location					25		29	x
-field	37	fcpelevation	Collection Place Elevation	objfcpelevation_s			keyword					26		30	x
-field	38	text	Keyword	text			keyword	1,1							x
-field	39	blobs	Blob	blob_ss			blob								x
+#	parameter specification spreadsheet for nightly internal portal															x
+#																x
+date	09/01/15															x
+revision	1.2															x
+title	Collections															x
+#																x
+server	http://localhost:8983/solr															x
+core	core-internal															x
+#																x
+#	parameter specification spreadsheet for nightly internal portal															x
+#		Fields						row,[column]	row	row	row	row	row	row	row	x
+#																x
+header		Name	Label	SolrField	SearchTarget	Suggestions	Role	Search	Facet	bMapper	listDisplay	fullDisplay	gridDisplay	mapDisplay	inCSV	x
+field	1	csid	csid	csid_s			id,csid			1						x
+field	2	keyword	Keyword	text			keyword	1,3								x
+field	3	accession	Specimen ID	accessionnumber_s			keyword,accession,sortkey	3,3		2	1				1	x
+field	4	determination	Scientific Name	determination_s			keyword	1,1	1	3						x
+field	5	termformatteddisplayname	Scientific Name	termformatteddisplayname_s			mainentry				2				2	x
+field	6	majorgroup	Major Group	majorgroup_s			dropdown	1,2	2			3	1			x
+field	7	family	Family	family_s			dropdown		3			2			3	x
+field	8	collector	Collector(s)	collector_ss			keyword	2,1	4			4			4	x
+field	9	collectorverbatim	Collector(s) (verbatim)	collectorverbatim_s			keyword			4	3	5	2		5	x
+field	10	collectionnumber	Collection Number	collectornumber_s			keyword	2,3		6	5	6			6	x
+field	11	collectiondate	Date Collected	collectiondate_s			keyword	2,2		10	4	7			7	x
+field	12	earlycollectiondate	earlycollectiondate_dt	earlycollectiondate_dt			date			8					8	x
+field	13	latecollectiondate	latecollectiondate	latecollectiondate_dt			date			9					9	x
+field	14	localityverbatim	Locality (verbatim)	locality_s			keyword			13	9	8	3		10	x
+field	15	localitynote	Locality Note	localitynote_s			keyword					9			11	x
+field	16	localitysource	Locality Source	localitysource_s			keyword					10			12	x
+field	17	localitysourcedetail	Locality Source Detail	localitysourcedetail_s			keyword					11			13	x
+field	18	county	County	collcounty_s			dropdown	4,1	5	11	6	12			14	x
+field	19	state	State	collstate_s			dropdown	4,2	6		7	13			15	x
+field	20	country	Country	collcountry_s			dropdown	4,3	7		8	14			16	x
+field	21	elevation	Elevation	elevation_s			keyword			12		15			17	x
+field	22	minelevation	Min elevation	minelevation_f			keyword					16			18	x
+field	23	maxelevation	Max elevation	maxelevation_f			keyword					17			19	x
+field	24	elevationunit	Elevation unit	elevationunit_s			keyword					18			20	x
+field	25	habitat	Habitat	habitat_s			keyword					21			21	x
+field	26	latlong	LatLong	latlong_p			location								22	x
+field	27	L1	L1	location_1_coordinate											23	x
+field	28	L2	L2	location_2_coordinate											24	x
+field	29	trscoordinates	TRS coordinates	trscoordinates_s			dropdown							1	25	x
+field	30	datum	Datum	datum_s			dropdown			14				2	26	x
+field	31	coordinatesource	Coordinate source	coordinatesource_s			dropdown							3	27	x
+field	32	coordinateuncertainty	Coordinate uncertainty	coordinateuncertainty_f			keyword							4	28	x
+field	33	coordinateuncertaintyunit	Coordinate uncertainty unit	coordinateuncertaintyunit_s			keyword							5	29	x
+field	34	updatedat	Last updated at	updatedat_dt			date								30	x
+field	35	previousdeterminations	Previous Determinations	previousdeterminations_ss			keyword					22			31	x
+field	36	localname	Local Name	localname_s			keyword					23			32	x
+field	37	briefdescription	Description	briefdescription_s			keyword					24			33	x
+field	38	associatedtaxa	Associated Taxa	associatedtaxa_ss			keyword	3,2				25			34	x
+field	39	typeassertions	Type Assertions	typeassertions_ss			keyword					26			35	x
+field	40	othernumber	Other Numbers	othernumber_s			keyword					27			36	x
+field	41	ucbgaccessionnumber	UCBG Accession Number	ucbgaccessionnumber_s			keyword					28			37	x
+field	42	loanstatus	Loan Status	loanstatus_s			dropdown					29			38	x
+field	43	loannumber	Loan Number	loannumber_s			keyword					30			39	x
+field	44	labelheader	Label Header	labelheader_s			keyword					1			40	x
+field	45	labelfooter	Label Footer	labelfooter_s			keyword					32			41	x
+field	46	depth	Depth	depth_s			keyword					33			42	x
+field	47	mindepth	Min. Depth	mindepth_s			keyword					34			43	x
+field	48	maxdepth	Max. Depth	maxdepth_s			keyword					35			44	x
+field	49	depthunit	Depth Unit	depthunit_s			keyword					36			45	x
+field	50	cultivated	Cultivated	cultivated_s			dropdown	5,1				37			46	x
+field	51	sex	Sex	sex_s			dropdown					38			47	x
+field	52	phase	Phase	phase_s			dropdown					40			48	x
+field	53	determinationdetails	Determination Details	determinationdetails_s			keyword					41			49	x
+field	54	alllocalities	Localities	alllocalities_ss			keyword	3,1								x
+field	55	hastypeassertions	Type Assertions?	hastypeassertions_s			dropdown	5,2				39			46	x
+field	56	blobs	Images	blob_ss			blob								50	x
+#	57	special “constant” fields which contain no data but are inserted into form for … obvious reasons!														x
+field	58	loanrequest	email a request for this item	mailto:ucjepscomments@lists.berkeley.edu?Subject=Loan of {{ i.accession }}, ({{ i.loannumber }})			constant					31				x
+field	59	comment	email a comment about this record	mailto:ucjepscomments@lists.berkeley.edu?Subject={{ i.accession }}			constant					42				x
+#	60	these two fields are placeholders used to create needed empty columns in the bMapper file														x
+field	61	collnumprefix	Collector Num Prefix	na			constant			5						x
+field	62	collnumsuffix	Collector Num Suffix	na			constant			7						x

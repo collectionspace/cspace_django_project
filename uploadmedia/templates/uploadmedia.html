@@ -41,19 +41,26 @@
                     <input type="file" name="imagefiles" multiple>
                     <input type="checkbox" name="validateonly"> Validate files and filenames only, do not process.
                     <hr/>
-                    {% if dropdowns.usebmuoptions == 'True' %}
+                    {% if dropdowns.usebmuoptions %}
                         <h2>
                             <li>Specify how to handle these images</li>
                         </h2>
                         <table>
                             {% for imageoption in dropdowns.bmuoptions %}
                                 <tr>
-                                    <td><input type="radio" name="imageoption" value="{{ imageoption.1 }}"> {{ imageoption.0 }}</td>
+                                    <td><input type="radio" name="handling" value="{{ imageoption.1 }}"> {{ imageoption.0 }}</td>
                                 </tr>
                             {% endfor %}
                         </table>
                     {% endif %}
-                    {% if dropdowns.allowintervention == 'True' %}
+                    <table>
+                        <tr>
+                            <td><input type="checkbox" name="approvedforweb" checked> Check this box if you want these
+                                images marked "Approved for Web"
+                            </td>
+                        </tr>
+                    </table>
+                    {% if dropdowns.allowintervention %}
                         <h2>
                             <li>Override values in image files, if desired</li>
                         </h2>

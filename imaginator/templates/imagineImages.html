@@ -1,28 +1,54 @@
 {% extends "cspace_django_site/base_site.html" %}
 {% load i18n admin_static %}
+{% load staticfiles %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/theme.blue.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "cspace_django_site/css/smoothness/jquery-ui-1.10.3.custom.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/PublicSearch.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/' %}{{ device }}.css"/>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-1.10.0.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-ui-1.10.3.custom.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "common/js/PublicSearch.js" %}"></script>
+    <script type="text/javascript">
+        var googleAnalytics = {{ googleAnalytics }};
+    </script>
+    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery.tablesorter.min.js" %}"></script>
+    <!-- uses jQuery masonry http://masonry.desandro.com/-->
+    <script src="{% static 'cspace_django_site/js/masonry.pkgd.min.js' %}"></script>
+    <script src="{% static 'cspace_django_site/js/imagesloaded.pkgd.min.js' %}"></script>
+{% endblock %}
+
+<!-- Overwrite default placement of login button, included below in branding block -->
+{% block loginBtn %}{% endblock %}
+
+{% block branding %}
+    <h4 class="bannerLeft"></h4>
+    <h4 class="bannerRight"></h4>
+    <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
+
+    <!-- div class="user-tools" -->
+    <div class="unitnav">
+        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
+    </div>
+    <div class="unitnav">
+        {% for info in additionalInfo %}
+            <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}
 
 {% block content %}
-    <!-- uses jQuery masonry -->
-    <script src="{% static 'js/jquery-1.7.1.min.js' %}"></script>
-    <script src="{% static 'js/jquery.masonry.min.js' %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/' %}{{ device }}.css"/>
-    <style>
-        .item {
-            width: 105px;
-            margin: 5px;
-            float: left;
-        }
-
-        #container {
-        }
-    </style>
     {% if error %}
         <p style="color: red;">Please submit a search term.</p>
     {% endif %}
     <form action="" method="get">
         <div style="text-align: center">
             <label for="text-input">&nbsp;</label>
-            <input aria-labelledby="text-input" type="text" name="text" size="40" id="text" value="{{ text }}"><br/>
+            <input aria-labelledby="text-input" type="text" name="keyword" size="40" id="keyword" value="{{ keyword }}"><br/>
             <!-- input type="hidden" name="maxresults" value="{{ maxresults }}" -->
             <!-- input type="submit" name="submit" value="I'm feeling lucky" style="margin: 20px;" -->
             <input type="submit" name="submit" value="Search the Metadata" style="margin: 20px;">
@@ -32,51 +58,26 @@
             <div style="display:none;">{{ field }}</div>
         {% endfor %}
 
-        <div style="margin: 0px 80px 0px">
+        <div>
             {% if errormsg %}
                 <hr/>
                 <span style="color: red">{{ errormsg }}</span>
             {% endif %}
             {% if count > 0 %}
                 <hr/>
-                About {{ count }} results ({{ imagecount }} images)
+                {{ count }} items found. {{ recordlimit }}
                 {% if time %}
-                    ({{ time }} seconds)
+                    (in {{ time }} seconds.)
                 {% endif %}
                 <hr/>
+            {% elif keyword %}
+                no items found.
             {% endif %}
         </div>
     </form>
     {% if resultType == 'metadata' %}
-        {% include "imagineCompact.html" %}
+        {% include "compact.html" %}
     {% else %}
-        <div id="masonrycontainer">
-            {% for item in items %}
-                <div class="item" style="background-color: #f0f0f0; padding: 3px; min-width: 170px;">
-                    {% if item.blobs %}
-                        {% for t in item.blobs %}
-                            <a target="image"
-                               href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content">
-                                <img src="{{ imageserver }}/blobs/{{ t }}/derivatives/Thumbnail/content">
-                            </a>
-                        {% endfor %}
-                        <br/><b><a target="cspace"
-                                   href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a></b>
-                        <br/><b>{{ item.mainentry }}</b>
-                    {% endif %}
-                </div>
-            {% endfor %}
-
-        </div><!-- #masonrycontainer -->
+        {% include "masonrycontainer.html" %}
     {% endif %}
-    <script>
-        var $container = $('#masonrycontainer');
-        $container.imagesLoaded(function () {
-            $container.masonry({
-                itemSelector: '.item',
-                isAnimated: true
-            });
-
-        });
-    </script>
 {% endblock %}

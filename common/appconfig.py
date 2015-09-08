@@ -7,6 +7,7 @@ from copy import deepcopy
 
 from cspace_django_site import settings
 from common import cspace  # we use the config file reading function
+from json import loads
 
 
 def getParms(parmFile, prmz):
@@ -46,7 +47,7 @@ def parseRows(rows, prmz):
     prmz.SEARCHCOLUMNS = 0
     prmz.SEARCHROWS = 0
 
-    functions = 'Search,Facet,bMapper,listDisplay,fullDisplay,gridDisplay,inCSV'.split(',')
+    functions = 'Search,Facet,bMapper,listDisplay,fullDisplay,gridDisplay,mapDisplay,inCSV'.split(',')
     for function in functions:
         prmz.FIELDS[function] = []
 
@@ -70,6 +71,16 @@ def parseRows(rows, prmz):
             prmz.TITLE = row[1]
 
         elif rowtype == 'field':
+
+            # handle some special cases
+            if 'colors' in row[labels['Role']]:
+                colors = row[labels['Role']].replace('colors=','')
+                try:
+                    #row[labels['Role']] = 'special'
+                    row[labels['Role']] = loads(colors)
+                except:
+                    print 'could not parse JSON for %s: %s' % (row[labels['Name']],colors)
+
             needed = [row[labels[i]] for i in 'Label Role Suggestions SolrField Name Search SearchTarget'.split(' ')]
             if row[labels['Suggestions']] != '':
                 # suggestname = '%s.%s' % (row[labels['Suggestions']], row[labels['Name']])
@@ -146,7 +157,7 @@ def loadConfiguration(configFileName):
         #prmz.FIELDDEFINITIONS = config.get('search', 'FIELDDEFINITIONS')
         prmz.CSVPREFIX = config.get('search', 'CSVPREFIX')
         prmz.CSVEXTENSION = config.get('search', 'CSVEXTENSION')
-        # TITLE = config.get('search', 'TITLE')
+        # prmz.TITLE = config.get('search', 'TITLE')
         prmz.SUGGESTIONS = config.get('search', 'SUGGESTIONS')
         #LAYOUT = config.get('search', 'LAYOUT')
 
@@ -158,7 +169,6 @@ def loadConfiguration(configFileName):
             prmz.VERSION = 'Unknown'
 
     except:
-        raise
         print 'error in configuration file %s' % path.join(settings.BASE_PARENT_DIR, 'config/' + configFileName)
         print 'this webapp will probably not work.'
 

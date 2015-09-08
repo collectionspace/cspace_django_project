@@ -26,7 +26,7 @@ def mediaPayload(mh, institution):
 <copyrightStatement>%s</copyrightStatement>
 </ns2:media_common>
 <ns2:media_INSTITUTION xmlns:ns2="http://collectionspace.org/services/media/local/INSTITUTION" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<approvedForWeb>true</approvedForWeb>
+<approvedForWeb>%s</approvedForWeb>
 <primaryDisplay>false</primaryDisplay>
 IMAGENUMBERELEMENT
 </ns2:media_INSTITUTION>
@@ -38,7 +38,8 @@ IMAGENUMBERELEMENT
         payload = payload.replace('IMAGENUMBERELEMENT', '')
     payload = payload.replace('INSTITUTION', institution)
     payload = payload % (
-        mh['blobCsid'], mh['rightsHolderRefname'], mh['creator'], mh['name'], mh['contributor'], mh['objectNumber'], mh['imageType'], mh['source'], mh['copyrightStatement'])
+        mh['blobCsid'], mh['rightsHolderRefname'], mh['creator'], mh['name'], mh['contributor'], mh['objectNumber'],
+        mh['imageType'], mh['source'], mh['copyrightStatement'], mh['approvedforweb'])
     # print payload
     return payload
 
@@ -51,6 +52,7 @@ def uploadmedia(mediaElements, config):
         password = config.get('connect', 'password')
         institution = config.get('info', 'institution')
         alwayscreatemedia = config.get('info', 'alwayscreatemedia')
+        alwayscreatemedia = True if alwayscreatemedia.lower() == 'true' else False
     except:
         print "could not get at least one of realm, hostname, username, password or institution from config file."
         # print "can't continue, exiting..."
@@ -213,8 +215,9 @@ if __name__ == "__main__":
         elapsedtimetotal = time.time()
         mediaElements = {}
         for v1, v2 in enumerate(
-                'name size objectnumber blobCSID date creator contributor rightsholder imagenumber handling filenamewithpath'.split(' ')):
+                'name size objectnumber blobCSID date creator contributor rightsholder imagenumber handling approvedforweb filenamewithpath'.split(' ')):
             mediaElements[v2] = r[v1]
+        mediaElements['approvedforweb'] == 'true' if mediaElements['approvedforweb'] == 'on' else 'false'
         # print mediaElements
         print 'objectnumber %s' % mediaElements['objectnumber']
         try:

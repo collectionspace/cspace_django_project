@@ -98,12 +98,19 @@ Using setup.sh
 ```bash
 git clone https://github.com/collectionspace/cspace_django_project.git my_test_project
 cd my_test_project/
+# copy the config files (.cfg and .csv) from the 
 cp config.examples/* config
+# move the config file used for authentication to the site directory
+mv config/main.cfg cspace_django_site
+# do the initial Django magic to initialize the project
 ./setup.sh configure pycharm
+# optional: disable any apps you don't want
 ./setup.sh disable imageserver
 ./setup.sh disable imagebrowser
 ./setup.sh disable imaginator
 ./setup.sh disable uploadmedia
+# now you can start the development, in pycharm, or restarting Apache, or here on the command line
+python manage.py runserver
 ```
 to enable a disabled webapp:
 

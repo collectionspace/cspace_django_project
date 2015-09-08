@@ -1,7 +1,7 @@
 {% extends "cspace_django_site/base.html" %}
 {% load i18n %}
 
-{% block title %}{{ apptitle }} | {% trans 'CollectionSpace' %}{% endblock %}
+{% block title %}{% if title %}{{ title }}{% else %}{{ apptitle }}{% endif %} | {% trans 'CollectionSpace' %}{% endblock %}
 
 {% block branding %}
 <h1 id="site-name">{% trans ' ' %}</h1>

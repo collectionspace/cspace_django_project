@@ -38,16 +38,28 @@
 
             {% for i in item.otherfields %}
                 {% if i.value %}
-                    {% if i.multi %}
+                    {% if i.multi == 0 %}
+                        <div><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></div>
+                    {% elif i.multi == 1 %}
+                        {% for t in i.value %}
+                            <div><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></div>
+                        {% endfor %}
+                    {% else %}
                         <div><i>{{ i.label }}:</i>
+                        {% if i.special %}
+                            <table border="1"><tr>
+                                {% for t in i.value %}
+                                    <td><span style ="background-color:{{ t }}; width:20px">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+                                {% endfor %}
+                            </tr></table>
+                        {% else %}
                             <ul style="text-indent: 15px">
                                 {% for t in i.value %}
                                     <li><a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></li>
                                 {% endfor %}
                             </ul>
+                        {% endif %}
                         </div>
-                    {% else %}
-                        <div><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></div>
                     {% endif %}
                 {% endif %}
             {% endfor %}
