@@ -3,7 +3,11 @@ The fixtures used for this project contain the content shown in the various "nav
 Each app has 0 or more items; these can be managed (edited and organized) using the Django admin interface, available if
 you are logged in at, e.g.:
 
-  https://webapps.cspace.berkeley.edu/tenant/admin
+  https://webapps.cspace.berkeley.edu/TENANT/admin
+  
+  e.g.
+  
+  https://webapps.cspace.berkeley.edu/pahma/admin
   
 Note that if changes are made online to the content of an item, steps may need to be taken to preserve those changes
 when the project is updated: normally, the project update scripts (i.e. "deployment scripts") reload the fixture from
@@ -52,7 +56,9 @@ Changes not staged for commit:
 
 	modified:   searchApp.json
 
-# in this case, only the fixtures for one app was changed -- the other scp'd files were unchanged.
+# in this case, only the fixture for one app (search) was changed -- the other scp'd files were the same as 
+# what had been committed.
+#
 # commit and push the changes
 fixtures $ git commit -a -m "PAHMA-1337: capture updates to Help tab for search webapp"
 fixtures $ git push -v
