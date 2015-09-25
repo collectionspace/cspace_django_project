@@ -13,9 +13,9 @@ elif [ "$COMMAND" = "show" ]; then
     echo -e "from cspace_django_site.extra_settings import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | python
     echo
 elif [ "$COMMAND" = "deploy" ]; then
-    cp ~/django_example_config/$2 config
+    cp ../django_example_config/$2/* config
     cp config/main.cfg cspace_django_site
-    rm config/*.json
+    mv config/*.json fixtures
     cd cspace_django_site/static/cspace_django_site/images
     cp header-logo-$2.png header-logo.png
 elif [ "$COMMAND" = "configure" ]; then
