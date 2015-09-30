@@ -11,7 +11,8 @@ from django.core.servers.basehttp import FileWrapper
 from os import path
 import time, datetime
 from getNumber import getNumber
-from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, getBMUoptions, handle_uploaded_file, assignValue,  get_exif, writeCsv, getJobfile, getJoblist, loginfo, getQueue
+from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, SLIDEHANDLING
+from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo, getQueue
 import subprocess
 # from .models import AdditionalInfo
 
@@ -20,6 +21,9 @@ TITLE = 'Bulk Media Upload'
 override_options = [['ifblank', 'Overide only if blank'],
                     ['always', 'Always Overide']]
 
+fields2write = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
+for slide_parameter in SLIDEHANDLING:
+    fields2write.append(slide_parameter)
 
 class im:  # empty class for image metadata
     pass
@@ -60,6 +64,9 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                 else:
                     imageinfo[option] = ''
 
+            for slide_parameter in SLIDEHANDLING:
+                imageinfo[slide_parameter] = SLIDEHANDLING[slide_parameter]
+
             images.append(imageinfo)
         except:
             raise
@@ -74,8 +81,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
         jobinfo['jobnumber'] = jobnumber
 
         if not validateonly:
-            writeCsv(getJobfile(jobnumber) + '.step1.csv', images,
-                     ['name', 'size', 'objectnumber', 'date', 'creator', 'contributor', 'rightsholder', 'imagenumber', 'handling', 'approvedforweb'])
+            writeCsv(getJobfile(jobnumber) + '.step1.csv', images, fields2write)
         jobinfo['estimatedtime'] = '%8.1f' % (len(images) * 10 / 60.0)
 
         if 'createmedia' in request.POST:
@@ -139,7 +145,7 @@ def rest(request, action):
         {'status': status, 'images': images, 'jobinfo': jobinfo, 'elapsedtime': '%8.2f' % elapsedtime}), content_type='text/json')
 
 
-@login_required()
+#@login_required()
 def uploadfiles(request):
     elapsedtime = time.time()
     status = 'up'
