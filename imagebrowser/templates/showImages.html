@@ -43,6 +43,7 @@
 
 
 {% block content %}
+    {% include "toggled.html" %}
     {% if error %}
         <p style="color: red;">Please submit a search term.</p>
     {% endif %}
