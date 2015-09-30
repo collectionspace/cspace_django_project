@@ -21,20 +21,22 @@
         {% include "cspace_django_site/loginBtn.html" with loginBtnNext="showqueue/" %}
     </div>
     <div class="unitnav">
-        <a href="#" id="about">About</a>
-        <a href="#" id="help">Help</a>
+        {% for info in additionalInfo %}
+            <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
+        {% endfor %}
     </div>
 {% endblock %}
 
 {% block content %}
     <div id="content-main">
+        {% include "toggled.html" %}
+            <form enctype="multipart/form-data" action="{% url 'uploadmedia:uploadfiles' %}" method="post">
+                {% csrf_token %}
         <ol>
             <h2>
                 <li>Select Files to Upload</li>
             </h2>
 
-            <form enctype="multipart/form-data" action="{% url 'uploadmedia:uploadfiles' %}" method="post">
-                {% csrf_token %}
                 {% if status == 'down' %}
                     <h2><span style="color:red">System is down, please standby!</span></h2>
                 {% else %}
@@ -53,10 +55,13 @@
                             {% endfor %}
                         </table>
                     {% endif %}
+                        <h2>
+                            <li>Decide whether to publish these media or not</li>
+                        </h2>
                     <table>
                         <tr>
                             <td><input type="checkbox" name="approvedforweb" checked> Check this box if you want these
-                                images marked "Approved for Web"
+                                media marked "Approved for Web"
                             </td>
                         </tr>
                     </table>
@@ -67,69 +72,35 @@
                         <table>
                             <tr>
                                 <th>Field</th>
-                                <th>Value</th>
+                                <th width="380px">Value</th>
                                 <th>Override Conditions</th>
-                                <!-- th>Instructions</th -->
                             </tr>
+                            {% for override in dropdowns.overrides %}
                             <tr>
-                                <td>Creator</td>
+                                <td>{{ override.0 }}</td>
                                 <td>
-                                    <select id="creator" name="creator">
+                                    {% if override.1 == "dropdown" %}
+                                    <select id="{{ override.2 }}" name="{{ override.2 }}">
                                         <option value="">Please select</option>
-                                        {% for displayname,refname in dropdowns.creators.items %}
+                                        {% for displayname,refname in override.4.items %}
                                             <option value="{{ displayname }}">{{ displayname }}</option>
                                         {% endfor %}
                                     </select>
+                                    {% elif override.1 == "text" %}
+                                    <input type="text" style="width:360px" name="{{ override.2 }}" value="{{ override.5 }}">
+                                    {% endif %}
                                 </td>
                                 <td>
-                                    <select id="overridecreator" name="overridecreator">
+                                    <select id="override{{ override.2 }}" name="override{{ override.2 }}">
                                         <option value="">Please select</option>
-                                        {% for option in overrides %}
-                                            <option value="{{ option.0 }}">{{ option.1 }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <!-- td rowspan="4">{% include "instructions.html" %}</td -->
-                            </tr>
-                            <tr>
-                                <td>Contributor</td>
-                                <td><input type="text" name="contributor" value="{{ constants.contributor }}"></td>
-                                <td>
-                                    <select id="overridecontributor" name="overridecontributor">
-                                        <option value="">Please select</option>
-                                        {% for option in overrides %}
+                                        {% for option in override_options %}
                                             <option value="{{ option.0 }}">{{ option.1 }}</option>
                                         {% endfor %}
                                     </select>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Rights Holder</td>
-                                <td>
-                                    <select id="rightsholder" name="rightsholder">
-                                        <option value="">Please select</option>
-                                        {% for displayname,refname in dropdowns.rightsholders.items %}
-                                            <option value="{{ displayname }}">{{ displayname }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td>
-                                    <select id="overriderightsholder" name="overriderightsholder">
-                                        <option value="">Please select</option>
-                                        {% for option in overrides %}
-                                            <option value="{{ option.0 }}">{{ option.1 }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                            </tr>
+                            {% endfor %}
                         </table>
-                    {% else %}
-                        <input type="hidden" id="creator" name="creator" value="">
-                        <input type="hidden" id="overridecreator" name="overridecreator" value="always">
-                        <input type="hidden" id="rightsholder" name="rightsholder" value="">
-                        <input type="hidden" id="overriderightsholder" name="overriderightsholder" value="always">
-                        <input type="hidden" id="contributor" name="contributor" value="">
-                        <input type="hidden" id="overridecontributor" name="overridecontributor" value="always">
                     {% endif %}
                     <h2>
                         <li>Select action to perform</li>
@@ -159,6 +130,7 @@
                         {% endif %}
                     {% endif %}
                 {% endif %}
+        </ol>
             </form>
             <h2>
                 <li>Check on jobs and uploads</li>
@@ -170,7 +142,6 @@
                 {% include "showerrors.html" %}
                 {% include "showqueue.html" %}
             </form>
-        </ol>
         <hr/>
         <!-- form action="{% url 'uploadmedia:checkfilename' %}" method="post">
             <h2>Check filename syntax</h2>
