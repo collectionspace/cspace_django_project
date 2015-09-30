@@ -113,23 +113,27 @@ def getQueue(jobtypes):
     return [x for x in listdir(JOBDIR % '') if '%s.csv' % jobtypes in x]
 
 
-def getDropdowns():
+def getBMUoptions():
     allowintervention = config.get('info', 'allowintervention')
     allowintervention = True if allowintervention.lower() == 'true' else False
     usebmuoptions = config.get('info', 'usebmuoptions')
     usebmuoptions = True if usebmuoptions.lower() == 'true' else False
     bmuoptions = config.get('info', 'bmuoptions')
     bmuoptions = json.loads(bmuoptions.replace('\n', ''))
-    creators = config.get('info', 'creators')
-    creators = json.loads(creators)
-    rightsholders = config.get('info', 'rightsholders')
-    rightsholders = json.loads(rightsholders)
+    overrides = config.get('info', 'overrides')
+    overrides = json.loads(overrides.replace('\n', ''))
+    for override in overrides:
+        if override[1] == 'dropdown':
+            dropdown = config.get('info', override[2]+'s')
+            dropdown = json.loads(dropdown)
+            override.append(dropdown)
+        else:
+            override.append('')
     return {
         'allowintervention': allowintervention,
         'usebmuoptions': usebmuoptions,
         'bmuoptions': bmuoptions,
-        'creators': creators,
-        'rightsholders': rightsholders
+        'overrides': overrides
     }
 
 

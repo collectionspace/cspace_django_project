@@ -1,0 +1,13 @@
+<div class="toggled">
+    {% for info in additionalInfo %}
+        <div id="{{ info.slug }}Target" style="display: none" class="expandedInfo">
+            <div class="info">
+                {% if info.contentType == 'HTML' %}
+                    {{ info.content|safe }}
+                {% elif info.contentType == 'TEXT' %}
+                    <p>{{ info.content }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>

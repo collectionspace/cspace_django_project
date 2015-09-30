@@ -13,7 +13,7 @@
         <tr>
             <td><input type="checkbox" class="sel-item" name="item-{{ item.counter }}" value="{{ item.csid }}" checked></td>
             {% for i in item.otherfields %}
-                {% if i.value == item.accession %}
+                {% if i.name == item.accessionfield %}
                     <td><a class="facet-item" data-facetType="{{ i.name }}" data-sort="{{ item.sortkey }}">{{ i.value }}</a></td>
                 {% else %}
                     {% if i.multi == 1 %}

@@ -96,13 +96,21 @@ Using setup.sh
 ==============
 
 ```bash
+# clone the github repo to wherever you want to deploy the webapps
 git clone https://github.com/collectionspace/cspace_django_project.git my_test_project
 cd my_test_project/
-# copy the config files (.cfg and .csv) from the 
+# deploy the specific tenant's configuration, or the example configuration
+# OPTION 1: deploy the included files, which point at nightly.collectionspace.org:
+# copy the config files (.cfg and .csv)
 cp config.examples/* config
 # move the config file used for authentication to the site directory
 mv config/main.cfg cspace_django_site
-# do the initial Django magic to initialize the project
+# OPTION 2: deploy one of the UCB configurations
+# to deploy a specific tentant, you'll want to clone the repo with all the
+# example config files out side of this repo, i.e. in ../django_example_config
+# e.g. cd .. ; git clone https://github.com/cspace-deployment/django_exmmple_project.git ; cd my_test_project
+./setup deploy ucjeps
+# now do the initial Django magic to initialize the project (configure options are: prod, dev, pycharm)
 ./setup.sh configure pycharm
 # optional: disable any apps you don't want
 ./setup.sh disable imageserver
