@@ -22,6 +22,14 @@ SERVERINFO = {
 }
 INSTITUTION = config.get('info', 'institution')
 
+SLIDEHANDLING = {}
+for slide_parameter in 'imagetype copyright source'.split(' '):
+    try:
+        SLIDEHANDLING[slide_parameter] = config.get('info', slide_parameter)
+    except:
+        pass
+
+
 if isdir(TEMPIMAGEDIR):
     print "Using %s as working directory for images and metadata files" % TEMPIMAGEDIR
 else:
@@ -128,7 +136,8 @@ def getBMUoptions():
             dropdown = json.loads(dropdown)
             override.append(dropdown)
         else:
-            override.append('')
+            # add an empty dropdown element -- has to be a dict
+            override.append({})
     return {
         'allowintervention': allowintervention,
         'usebmuoptions': usebmuoptions,
@@ -198,10 +207,9 @@ def assignValue(defaultValue, override, imageData, exifvalue, refnameList):
         imageValue = imageValue.replace('\r', '')
         imageValue = escape(imageValue)
         return imageValue, refnameList.get(imageValue, imageValue)
-    elif override == 'ifblank':
-        return defaultValue, refnameList.get(defaultValue, defaultValue)
+    # the follow is really the 'ifblank' condition
     else:
-        return '', ''
+        return defaultValue, refnameList.get(defaultValue, defaultValue)
 
 
 # this function not currently in use. Copied from another script, it's not Django-compatible

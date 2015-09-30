@@ -87,7 +87,7 @@
                                         {% endfor %}
                                     </select>
                                     {% elif override.1 == "text" %}
-                                    <input type="text" style="width:360px" name="{{ override.2 }}" value="{{ override.5 }}">
+                                        <input type="text" style="width:360px" name="{{ override.2 }}" value="{{ override.3 }}">
                                     {% endif %}
                                 </td>
                                 <td>
@@ -133,7 +133,7 @@
         </ol>
             </form>
             <h2>
-                <li>Check on jobs and uploads</li>
+                Check on jobs and uploads
             </h2>
             <form action="{% url 'uploadmedia:showqueue' %}" method="post">
                 {% csrf_token %}
