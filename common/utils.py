@@ -114,7 +114,7 @@ def writeCsv(filehandle, fieldset, items, writeheader=False, csvFormat='csv'):
     writer = csv.writer(filehandle, delimiter='\t')
     # write the header
     if writeheader:
-        writer.writerow(fieldset) #
+        writer.writerow(fieldset) 
     for item in items:
         # get the cells from the item dict in the order specified; make empty cells if key is not found.
         row = []
