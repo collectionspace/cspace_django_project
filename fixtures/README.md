@@ -3,7 +3,11 @@ The fixtures used for this project contain the content shown in the various "nav
 Each app has 0 or more items; these can be managed (edited and organized) using the Django admin interface, available if
 you are logged in at, e.g.:
 
-  https://webapps.cspace.berkeley.edu/tenant/admin
+  https://webapps.cspace.berkeley.edu/TENANT/admin
+  
+  e.g.
+  
+  https://webapps.cspace.berkeley.edu/pahma/admin
   
 Note that if changes are made online to the content of an item, steps may need to be taken to preserve those changes
 when the project is updated: normally, the project update scripts (i.e. "deployment scripts") reload the fixture from
@@ -13,7 +17,7 @@ Below is a conversation that shows how to preserve changes to the nav items:
 
 ```
 # login to target server
-jblowe:pahma_project jblowe$ ssh cspace-prod.cspace.berkeley.edu
+$ ssh cspace-prod.cspace.berkeley.edu
 Last login: Wed Jul 15 17:10:04 2015 from ucbvpn-208-65.vpn.berkeley.edu
 # become webapp user
 -sh-4.1$ sudo su - app_webapps
@@ -34,10 +38,11 @@ Last login: Wed Jul 15 17:10:04 2015 from ucbvpn-208-65.vpn.berkeley.edu
 (venv)[app_webapps@cspace-prod-01 pahma]$ cp fixtures/*.json /tmp
 (venv)[app_webapps@cspace-prod-01 pahma]$ 
 
-# Now, on our local machine:
+# Now, on our local machine, we copy it into our local clone/fork of the config repo. Note that each tenant has
+# its own version of these .json files.
 
-$ cd ..../<project>/fixtures
-fixtures $ scp cspace-prod.cspace.berkeley.edu:/tmp/*.json .
+$ cd ..../django_example_config/pahma
+pahma $ scp cspace-prod.cspace.berkeley.edu:/tmp/*.json .
 internalApp.json                                                                  100%  472     0.5KB/s   00:00    
 searchApp.json                                                                    100%   10KB  10.1KB/s   00:01    
 toolboxApp.json                                                                   100%  206     0.2KB/s   00:00    
@@ -51,7 +56,9 @@ Changes not staged for commit:
 
 	modified:   searchApp.json
 
-
+# in this case, only the fixture for one app (search) was changed -- the other scp'd files were the same as 
+# what had been committed.
+#
 # commit and push the changes
 fixtures $ git commit -a -m "PAHMA-1337: capture updates to Help tab for search webapp"
 fixtures $ git push -v

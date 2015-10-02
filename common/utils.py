@@ -114,7 +114,7 @@ def writeCsv(filehandle, fieldset, items, writeheader=False, csvFormat='csv'):
     writer = csv.writer(filehandle, delimiter='\t')
     # write the header
     if writeheader:
-        writer.writerow(fieldset)
+        writer.writerow(fieldset) 
     for item in items:
         # get the cells from the item dict in the order specified; make empty cells if key is not found.
         row = []
@@ -143,11 +143,12 @@ def writeCsv(filehandle, fieldset, items, writeheader=False, csvFormat='csv'):
             for x in item['otherfields']:
                 if x['name'] not in fieldset:
                     continue
+                if type(x['value']) == type([]):
+                    x['value'] = '|'.join(x['value'])
+                    pass
                 cell = checkValue(x['value'])
                 row.append(cell)
-
         writer.writerow(row)
-
     return filehandle
 
 
