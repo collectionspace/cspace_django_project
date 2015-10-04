@@ -13,6 +13,7 @@ from common.appconfig import loadConfiguration, loadFields, getParms
 from common import cspace # we use the config file reading function
 from cspace_django_site import settings
 from os import path
+from .models import AdditionalInfo
 
 config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'imaginator')
 
@@ -79,6 +80,7 @@ def index(request):
         # do search
         loginfo(logger, 'start imaginator search', context, request)
         context = doSearch(context, prmz)
+        context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
 
         return render(request, 'imagineImages.html', context)
 

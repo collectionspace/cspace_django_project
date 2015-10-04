@@ -13,6 +13,7 @@ from operator import itemgetter
 from common import cspace # we use the config file reading function
 from cspace_django_site import settings
 from cspace_django_site.main import cspace_django_site
+from .models import AdditionalInfo
 
 mainConfig = cspace_django_site.getConfig()
 
@@ -137,7 +138,9 @@ def index(request):
         #print fileName
     reportData = zip(reportCsids, reportNames, fileNames)
     reportData = sorted(reportData, key=itemgetter(1))
-    return render(request, 'listReports.html', {'reportData': reportData, 'labels': 'name file'.split(' '), 'apptitle': TITLE})
+    context = {'reportData': reportData, 'labels': 'name file'.split(' '), 'apptitle': TITLE}
+    context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
+    return render(request, 'listReports.html', context)
 
 
 @login_required()

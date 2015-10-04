@@ -16,7 +16,7 @@ from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, wr
 import subprocess
 # from .models import AdditionalInfo
 
-TITLE = 'Bulk Media Upload'
+TITLE = 'Bulk Media Uploader'
 
 override_options = [['ifblank', 'Overide only if blank'],
                     ['always', 'Always Overide']]
@@ -145,7 +145,7 @@ def rest(request, action):
         {'status': status, 'images': images, 'jobinfo': jobinfo, 'elapsedtime': '%8.2f' % elapsedtime}), content_type='text/json')
 
 
-#@login_required()
+@login_required()
 def uploadfiles(request):
     elapsedtime = time.time()
     status = 'up'
