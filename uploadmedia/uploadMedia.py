@@ -40,8 +40,8 @@ IMAGENUMBERELEMENT
     payload = payload % (
         mh['blobCsid'], mh['rightsHolderRefname'], mh['creator'], mh['name'], mh['contributor'], mh['objectNumber'],
         mh['imageType'], mh['source'], mh['copyrightStatement'], mh['approvedforweb'])
-    print "mediaPayload..."
-    print payload
+    # print "mediaPayload..."
+    # print payload
     return payload
 
 
