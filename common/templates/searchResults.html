@@ -14,7 +14,7 @@
                 <li><a href="#results">Results</a></li>
                 <li><a href="#facets">Facets</a></li>
                 <li><a href="#maps">Maps</a></li>
-                {% if count <= 10000 %}
+                {% if count <= 30000 %}
                 <li><a href="#statistics">Statistics</a></li>
                 {% endif %}
                 <!-- li><a href="#configuration">Configuration</a></li -->
@@ -22,7 +22,7 @@
             {% include "results.html" %}
             {% include "facets.html" %}
             {% include "maps.html" %}
-            {% if count <= 10000 %}
+            {% if count <= 30000 %}
             {% include "statistics.html" %}
             {% endif %}
             <!--  include "configuration.html"  -->

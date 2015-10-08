@@ -77,7 +77,7 @@ def uploadmedia(mediaElements, config):
         objectCSID = objectCSID[0]
         mediaElements['objectCSID'] = objectCSID
 
-    if alwayscreatemedia or objectCSID is not None:
+    if alwayscreatemedia or objectCSID is not None or mediaElements['handling'] == 'borndigital':
 
         updateItems = {'objectStatus': 'found',
                        'subjectCsid': '',

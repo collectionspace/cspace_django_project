@@ -12,7 +12,7 @@ from os import path
 import time, datetime
 from getNumber import getNumber
 from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, SLIDEHANDLING
-from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo, getQueue
+from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo
 import subprocess
 # from .models import AdditionalInfo
 
@@ -28,8 +28,14 @@ for slide_parameter in SLIDEHANDLING:
 class im:  # empty class for image metadata
     pass
 
+im.BMUoptions = getBMUoptions()
+
+for o in im.BMUoptions['overrides']:
+    if not o[2] in fields2write:
+        fields2write.append(o[2])
 
 def prepareFiles(request, validateonly, BMUoptions, constants):
+    jobnumber = constants['jobnumber']
     jobinfo = {}
     images = []
     for lineno, afile in enumerate(request.FILES.getlist('imagefiles')):
@@ -38,12 +44,6 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
             print "%s %s: %s %s (%s %s)" % ('id', lineno, 'name', afile.name, 'size', afile.size)
             image = get_exif(afile)
             filename, objectnumber, imagenumber = getNumber(afile.name, INSTITUTION)
-            # objectCSID = getCSID(objectnumber)
-            #im.creator, im.creatorRefname = assignValue(im.creatorDisplayname, im.overrideCreator, image, 'Artist',
-            #                                            dropdowns['creators'])
-            #im.contributor, dummy = assignValue(im.contributor, im.overrideContributor, image, 'ImageDescription', {})
-            #im.rightsholder, im.rightsholderRefname = assignValue(im.rightsholderDisplayname, im.overrideRightsholder,
-            #                                                      image, 'RightsHolder', dropdowns['rightsholders'])
             datetimedigitized, dummy = assignValue('', 'ifblank', image, 'DateTimeDigitized', {})
             imageinfo = {'id': lineno, 'name': afile.name, 'size': afile.size,
                          'objectnumber': objectnumber,
@@ -67,9 +67,15 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
             for slide_parameter in SLIDEHANDLING:
                 imageinfo[slide_parameter] = SLIDEHANDLING[slide_parameter]
 
+            if imageinfo['handling'] == 'borndigital':
+                # for these, we create a media handling number...
+                # e.g. 'DP-2015-10-07-18-29-27-0009'
+                mhnumber = 'DP-' + jobnumber + ("-%0.4d" % (lineno + 1))
+                imageinfo['objectnumber'] = mhnumber
+
             images.append(imageinfo)
         except:
-            raise
+            # raise
             if not validateonly:
                 # we still upload the file, anyway...
                 handle_uploaded_file(afile)
@@ -77,7 +83,6 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                            'error': 'problem extracting image metadata, not processed'})
 
     if len(images) > 0:
-        jobnumber = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         jobinfo['jobnumber'] = jobnumber
 
         if not validateonly:
@@ -107,8 +112,6 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
 
 
 def setConstants(request, im):
-    im.BMUoptions = getBMUoptions()
-
     im.validateonly = 'validateonly' in request.POST
 
     constants = {}
@@ -150,6 +153,7 @@ def uploadfiles(request):
     elapsedtime = time.time()
     status = 'up'
     constants = setConstants(request, im)
+    constants['jobnumber'] = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
 
     if request.POST:
         jobinfo, images = prepareFiles(request, im.validateonly, im.BMUoptions, constants)

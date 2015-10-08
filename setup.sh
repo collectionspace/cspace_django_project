@@ -16,7 +16,7 @@ elif [ "$COMMAND" = "deploy" ]; then
     rm config/*.cfg
     rm config/*.csv
     rm config/*.xml
-    cp ../django_example_config/$2/* config
+    cp ~/django_example_config/$2/* config
     mv config/main.cfg cspace_django_site
     rm fixtures/*.json
     mv config/*.json fixtures
