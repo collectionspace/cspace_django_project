@@ -69,9 +69,14 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
 
             if imageinfo['handling'] == 'borndigital':
                 # for these, we create a media handling number...
-                # e.g. 'DP-2015-10-07-18-29-27-0009'
-                mhnumber = 'DP-' + jobnumber + ("-%0.4d" % (lineno + 1))
-                imageinfo['objectnumber'] = mhnumber
+                # e.g.
+                # DP-2015-10-08-12-16-43-0001 length: 27
+                # DP-201510081216430001 length: 21
+                # DP-2cbe859e990bfb1 length: 18
+                # DP-2CBE859E990BFB1 length: 18
+                mhnumber = jobnumber + ("-%0.4d" % (lineno + 1))
+                mhnumber = hex(int(mhnumber.replace('-','')))[2:]
+                imageinfo['objectnumber'] = 'DP-' + mhnumber
 
             images.append(imageinfo)
         except:
