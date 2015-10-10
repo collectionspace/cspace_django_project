@@ -8,7 +8,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.core.servers.basehttp import FileWrapper
 #from django.conf import settings
 #from django import forms
-from os import path
+from os import path, remove
 import time, datetime
 from getNumber import getNumber
 from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, SLIDEHANDLING
@@ -41,7 +41,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
     for lineno, afile in enumerate(request.FILES.getlist('imagefiles')):
         # print afile
         try:
-            print "%s %s: %s %s (%s %s)" % ('id', lineno, 'name', afile.name, 'size', afile.size)
+            print "%s %s: %s %s (%s %s)" % ('id', lineno + 1, 'name', afile.name, 'size', afile.size)
             image = get_exif(afile)
             filename, objectnumber, imagenumber = getNumber(afile.name, INSTITUTION)
             datetimedigitized, dummy = assignValue('', 'ifblank', image, 'DateTimeDigitized', {})
@@ -53,6 +53,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
             for override in BMUoptions['overrides']:
                 dname,refname = assignValue(constants[override[2]][0], constants[override[2]][1], image, override[3], override[4])
                 imageinfo[override[2]] = refname
+                # add the Displayname just in case...
                 imageinfo['%sDisplayname' % override[2]] = dname
 
             if not validateonly:
@@ -64,21 +65,24 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                 else:
                     imageinfo[option] = ''
 
-            for slide_parameter in SLIDEHANDLING:
-                imageinfo[slide_parameter] = SLIDEHANDLING[slide_parameter]
+            # the slide parameters should only be added if we are indeed handling a slide
+            if imageinfo['handling'] == 'slide':
+                for slide_parameter in SLIDEHANDLING:
+                    imageinfo[slide_parameter] = SLIDEHANDLING[slide_parameter]
 
+            # borndigital media have their mh id numbers unconditionally replaced with a sequence number
             if imageinfo['handling'] == 'borndigital':
                 # for these, we create a media handling number...
-                # e.g.
+                # options considered were:
                 # DP-2015-10-08-12-16-43-0001 length: 27
                 # DP-201510081216430001 length: 21
-                # DP-2cbe859e990bfb1 length: 18
                 # DP-2CBE859E990BFB1 length: 18
+                # DP-2cbe859e990bfb1 length: 18 the winner!
                 mhnumber = jobnumber + ("-%0.4d" % (lineno + 1))
                 mhnumber = hex(int(mhnumber.replace('-','')))[2:]
                 imageinfo['objectnumber'] = 'DP-' + mhnumber
-
             images.append(imageinfo)
+
         except:
             # raise
             if not validateonly:
@@ -207,6 +211,15 @@ def showresults(request, filename):
 
 
 @login_required()
+def deletejob(request, filename):
+    try:
+        remove(getJobfile(filename))
+    except:
+        pass
+    return redirect('../showqueue')
+
+
+@login_required()
 def showqueue(request):
     elapsedtime = time.time()
     jobs, errors, jobcount, errorcount = getJoblist()
@@ -214,10 +227,6 @@ def showqueue(request):
         errors = None
     elif 'showerrors' in request.POST:
         jobs = None
-    else:
-        jobs = None
-        errors = None
-        count = 0
     BMUoptions = getBMUoptions()
     elapsedtime = time.time() - elapsedtime
     status = 'up'

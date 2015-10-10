@@ -1,6 +1,6 @@
 {% if jobs %}
     <hr/>
-    <h1>{{ jobcount }} job{{ count|pluralize }} in the queue.
+    <h1>{{ jobcount }} job{{ jobcount|pluralize }} in the queue.
     {% if jobcount > jobs|length %}
         Only the first {{ jobs|length }} displayed.
     {% endif %}
@@ -13,6 +13,7 @@
             <th>Job Errors</th>
             <th>Job Flag</th>
             <th>Download Job Files</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -38,6 +39,10 @@
                 <td>
                 {% for j in jobinfo %}
                     <a href="showresults/{{ j.0 }}">{{ j.1 }}</a>
+                    {% if j.1 == 'pending' %}
+                        <a class="button" href="deletejob/{{ j.0 }}"><span style="color: orange"> (delete this job)</span></a>
+                        <!-- button type="submit" value="deletejob/{{ j.0 }}">Delete</button -->
+                    {% endif %}
                 {% endfor %}
                 </td>
             </tr>
