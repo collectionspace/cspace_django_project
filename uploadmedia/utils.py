@@ -200,7 +200,12 @@ def assignValue(defaultValue, override, imageData, exifvalue, refnameList):
     if type(refnameList) == type({}):
         refName = refnameList.get(defaultValue, defaultValue)
     else:
-        refName = [z[1] for z in refnameList if z[0] == defaultValue][0]
+        refName = [z[1] for z in refnameList if z[1] == defaultValue]
+        # should never happen that there is more than one match, but the configurer may have made a boo-boo
+        if len(refName) == 1:
+            refName = refName[0]
+        else:
+            refName = defaultValue
     if override == 'always':
         return defaultValue, refName
     elif exifvalue in imageData:

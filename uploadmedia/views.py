@@ -84,7 +84,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
             images.append(imageinfo)
 
         except:
-            # raise
+            raise
             if not validateonly:
                 # we still upload the file, anyway...
                 handle_uploaded_file(afile)
@@ -216,7 +216,8 @@ def deletejob(request, filename):
         remove(getJobfile(filename))
     except:
         pass
-    return redirect('../showqueue')
+    #return redirect('../showqueue')
+    return showqueue(request)
 
 
 @login_required()
@@ -227,6 +228,8 @@ def showqueue(request):
         errors = None
     elif 'showerrors' in request.POST:
         jobs = None
+    else:
+        errors = None
     BMUoptions = getBMUoptions()
     elapsedtime = time.time() - elapsedtime
     status = 'up'
