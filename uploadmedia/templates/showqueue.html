@@ -40,7 +40,7 @@
                 {% for j in jobinfo %}
                     <a href="showresults/{{ j.0 }}">{{ j.1 }}</a>
                     {% if j.1 == 'pending' %}
-                        <a class="button" href="deletejob/{{ j.0 }}"><span style="color: orange"> (delete this job)</span></a>
+                        <a class="button" href="{% url 'uploadmedia:deletejob' %}{{ j.0 }}"><span style="color: orange"> (delete this job)</span></a>
                         <!-- button type="submit" value="deletejob/{{ j.0 }}">Delete</button -->
                     {% endif %}
                 {% endfor %}

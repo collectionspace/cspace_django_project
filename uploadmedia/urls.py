@@ -10,6 +10,6 @@ urlpatterns = patterns('',
                        url(r'^checkfilename', views.checkfilename, name='checkfilename'),
                        url(r'^showqueue', views.showqueue, name='showqueue'),
                        url(r'^showresults/(?P<filename>[\w\-\.]+)$', views.showresults, name='showresults'),
-                       url(r'^deletejob/(?P<filename>[\w\-\.]+)$', views.deletejob, name='deletejob'),
+                       url(r'^deletejob/(?P<filename>[\w\-\.]+)?$', views.deletejob, name='deletejob'),
                        #url(r'createmedia', views.createmedia, name='createmedia'),
                        )

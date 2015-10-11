@@ -9,12 +9,18 @@ from django.core.servers.basehttp import FileWrapper
 #from django.conf import settings
 #from django import forms
 from os import path, remove
+import logging
 import time, datetime
 from getNumber import getNumber
 from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, SLIDEHANDLING
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo
 import subprocess
-# from .models import AdditionalInfo
+from .models import AdditionalInfo
+
+# Get an instance of a logger, log some startup info
+logger = logging.getLogger(__name__)
+logger.info('%s :: %s :: %s' % ('uploadmedia startup', '-', '-'))
+
 
 TITLE = 'Bulk Media Uploader'
 
@@ -172,6 +178,7 @@ def uploadfiles(request):
 
     timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     elapsedtime = time.time() - elapsedtime
+    logger.info('%s :: %s :: %s' % ('uploadmedia job ', constants['jobnumber'], '-'))
 
     return render(request, 'uploadmedia.html',
                   {'apptitle': TITLE, 'serverinfo': SERVERINFO, 'images': images, 'count': len(images),
@@ -214,8 +221,10 @@ def showresults(request, filename):
 def deletejob(request, filename):
     try:
         remove(getJobfile(filename))
+        logger.info('%s :: %s' % ('uploadmedia job deleted', filename))
+
     except:
-        pass
+        logger.info('%s :: %s' % ('uploadmedia tried and failed to delete job', filename))
     #return redirect('../showqueue')
     return showqueue(request)
 
