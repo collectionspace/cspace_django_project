@@ -34,22 +34,25 @@ LOCALITY
 </document>
 """
 
+    payload = payload % (
+        mh['blobCsid'], mh['rightsHolderRefname'], mh['creator'], mh['name'], mh['contributor'], mh['objectNumber'],
+        mh['imageType'], mh['source'], mh['copyrightStatement'], mh['approvedforweb'])
+
     # institution specific hacks! figure out the right way to handle this someday!
     if institution == 'bampfa':
         if 'imageNumber' in mh:
             payload = payload.replace('IMAGENUMBERELEMENT', '<imageNumber>%s</imageNumber>' % mh['imageNumber'])
-        payload = payload.replace('IMAGENUMBERELEMENT', '')
 
     if institution == 'ucjeps':
         payload = payload.replace('approvedForWeb', 'postToPublic')
         if 'locality' in mh:
             payload = payload.replace('LOCALITY', '<locality>%s</locality>' % mh['locality'])
-        payload = payload.replace('LOCALITY', '')
 
+    # clean up anything that might be left
+    payload = payload.replace('IMAGENUMBERELEMENT', '')
+    payload = payload.replace('LOCALITY', '')
     payload = payload.replace('INSTITUTION', institution)
-    payload = payload % (
-        mh['blobCsid'], mh['rightsHolderRefname'], mh['creator'], mh['name'], mh['contributor'], mh['objectNumber'],
-        mh['imageType'], mh['source'], mh['copyrightStatement'], mh['approvedforweb'])
+
     # print "mediaPayload..."
     # print payload
     return payload
@@ -222,12 +225,14 @@ if __name__ == "__main__":
     outputFile = sys.argv[1].replace('.step2.csv', '.step3.csv')
     outputfh = csv.writer(open(outputFile, 'wb'), delimiter="\t")
 
+    columns = records[0]
+    del records[0]
+
     for i, r in enumerate(records):
 
         elapsedtimetotal = time.time()
         mediaElements = {}
-        columns = 'name|size|objectnumber|blobCSID|mediaDate|creator|contributor|rightsholder|imagenumber|handling|approvedforweb|source|copyrightstatement|imagetype'.split('|')
-        # name|size|objectnumber|mediaDate|creator|contributor|rightsholder|imagenumber|handling|approvedforweb|source|copyright|imagetype
+                # name|size|objectnumber|mediaDate|creator|contributor|rightsholder|imagenumber|handling|approvedforweb|source|copyright|imagetype
         # name size objectnumber blobCSID mediaDate creator contributor rightsholder imagenumber handling approvedforweb filenamewithpath'.split(' ')):
         for v1, v2 in enumerate(columns):
             mediaElements[v2] = r[v1]
