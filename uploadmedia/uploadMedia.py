@@ -29,13 +29,23 @@ def mediaPayload(mh, institution):
 <approvedForWeb>%s</approvedForWeb>
 <primaryDisplay>false</primaryDisplay>
 IMAGENUMBERELEMENT
+LOCALITY
 </ns2:media_INSTITUTION>
 </document>
 """
+
+    # institution specific hacks! figure out the right way to handle this someday!
     if institution == 'bampfa':
-        payload = payload.replace('IMAGENUMBERELEMENT', '<imageNumber>%s</imageNumber>' % mh['imageNumber'])
-    else:
+        if 'imageNumber' in mh:
+            payload = payload.replace('IMAGENUMBERELEMENT', '<imageNumber>%s</imageNumber>' % mh['imageNumber'])
         payload = payload.replace('IMAGENUMBERELEMENT', '')
+
+    if institution == 'ucjeps':
+        payload = payload.replace('approvedForWeb', 'postToPublic')
+        if 'locality' in mh:
+            payload = payload.replace('LOCALITY', '<locality>%s</locality>' % mh['locality'])
+        payload = payload.replace('LOCALITY', '')
+
     payload = payload.replace('INSTITUTION', institution)
     payload = payload % (
         mh['blobCsid'], mh['rightsHolderRefname'], mh['creator'], mh['name'], mh['contributor'], mh['objectNumber'],
