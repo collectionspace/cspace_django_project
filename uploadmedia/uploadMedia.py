@@ -1,5 +1,6 @@
 import csv
 import sys
+import re
 import requests
 from requests.auth import HTTPBasicAuth
 import time
@@ -42,7 +43,7 @@ LOCALITY
         payload = payload.replace('{%s}' % m, mh[m])
 
     # get rid of any unsubstituted items in the template
-    payload = payload.replace('{}', mh[m])
+    payload = re.sub(r'\{.*?\}', '', payload)
 
     # institution specific hacks! figure out the right way to handle this someday!
     if institution == 'bampfa':
