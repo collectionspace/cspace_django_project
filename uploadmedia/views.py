@@ -12,7 +12,7 @@ from os import path, remove
 import logging
 import time, datetime
 from getNumber import getNumber
-from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, SLIDEHANDLING, FIELDS2WRITE
+from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, SLIDEHANDLING, FIELDS2WRITE
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo
 import subprocess
 from .models import AdditionalInfo
@@ -108,7 +108,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
             if not validateonly:
                 loginfo('start', getJobfile(jobnumber), request)
                 try:
-                    retcode = subprocess.call([path.join(POSTBLOBPATH, 'postblob.sh'), getJobfile(jobnumber)])
+                    retcode = subprocess.call([path.join(POSTBLOBPATH, 'postblob.sh'), INSTITUTION, getJobfile(jobnumber), BATCHPARAMETERS])
                     if retcode < 0:
                         loginfo('process', jobnumber + " Child was terminated by signal %s" % -retcode, request)
                     else:

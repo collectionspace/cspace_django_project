@@ -15,6 +15,8 @@ from cspace_django_site import settings
 config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'uploadmedia')
 TEMPIMAGEDIR = config.get('files', 'directory')
 POSTBLOBPATH = config.get('info', 'postblobpath')
+BATCHPARAMETERS = config.get('info', 'batchparameters')
+BATCHPARAMETERS = BATCHPARAMETERS.replace('.cfg','')
 JOBDIR = path.join(TEMPIMAGEDIR, '%s')
 SERVERINFO = {
     'serverlabelcolor': config.get('info', 'serverlabelcolor'),
