@@ -55,7 +55,7 @@ def jobsummary(jobstats):
             result[0] = count - 1
             inputimages = imagefilenames
         if 'ingested' in status:
-            result[1] = count
+            result[1] = count - 1
             try:
                 result[2] = result[0] - result[1]
                 result[3] = [image for image in inputimages if image not in imagefilenames and image != 'name']
