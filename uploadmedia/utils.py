@@ -21,6 +21,7 @@ SERVERINFO = {
     'serverlabel': config.get('info', 'serverlabel')
 }
 INSTITUTION = config.get('info', 'institution')
+FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
 
 SLIDEHANDLING = {}
 for slide_parameter in 'imagetype copyright source'.split(' '):

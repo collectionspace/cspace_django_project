@@ -12,7 +12,7 @@ from os import path, remove
 import logging
 import time, datetime
 from getNumber import getNumber
-from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, SLIDEHANDLING
+from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, SLIDEHANDLING, FIELDS2WRITE
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo
 import subprocess
 from .models import AdditionalInfo
@@ -27,9 +27,8 @@ TITLE = 'Bulk Media Uploader'
 override_options = [['ifblank', 'Overide only if blank'],
                     ['always', 'Always Overide']]
 
-fields2write = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
 for slide_parameter in SLIDEHANDLING:
-    fields2write.append(slide_parameter)
+    FIELDS2WRITE.append(slide_parameter)
 
 class im:  # empty class for image metadata
     pass
@@ -37,8 +36,8 @@ class im:  # empty class for image metadata
 im.BMUoptions = getBMUoptions()
 
 for o in im.BMUoptions['overrides']:
-    if not o[2] in fields2write:
-        fields2write.append(o[2])
+    if not o[2] in FIELDS2WRITE:
+        FIELDS2WRITE.append(o[2])
 
 def prepareFiles(request, validateonly, BMUoptions, constants):
     jobnumber = constants['jobnumber']
@@ -85,12 +84,12 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                 # DP-2CBE859E990BFB1 length: 18
                 # DP-2cbe859e990bfb1 length: 18 the winner!
                 mhnumber = jobnumber + ("-%0.4d" % (lineno + 1))
-                mhnumber = hex(int(mhnumber.replace('-','')))[2:]
+                #mhnumber = hex(int(mhnumber.replace('-','')))[2:]
                 imageinfo['objectnumber'] = 'DP-' + mhnumber
             images.append(imageinfo)
 
         except:
-            raise
+            # raise
             if not validateonly:
                 # we still upload the file, anyway...
                 handle_uploaded_file(afile)
@@ -101,7 +100,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
         jobinfo['jobnumber'] = jobnumber
 
         if not validateonly:
-            writeCsv(getJobfile(jobnumber) + '.step1.csv', images, fields2write)
+            writeCsv(getJobfile(jobnumber) + '.step1.csv', images, FIELDS2WRITE)
         jobinfo['estimatedtime'] = '%8.1f' % (len(images) * 10 / 60.0)
 
         if 'createmedia' in request.POST:
