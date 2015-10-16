@@ -3,6 +3,7 @@
     <h2><span style="color:red">Validation only! {{ count }} files examined!</span></h2>
 {% else %}
     <h1>{{ count }} files uploaded</h1>
+    <h2><span style="color:green">NB: The list below does not show all metadata fields that might have been included!</span></h2>
 {% endif %}
 <table cellspace="1" id="resultsListing" class="tablesorter">
     <thead>
@@ -43,7 +44,7 @@
                     </span>
                 {% else %}{{ image.rightsholderDisplayname }}{% endif %}</td>
                 <td>{% if image.approvedforweb == 'on' %}<span style="color:green">yes</span>
-                {% else %}no{% endif %}</td>
+                {% else %}<span style="color:red">no</span>{% endif %}</td>
                 {% if dropdowns.usebmuoptions %}
                     <td>{{ image.handling }}</td>
                 {% endif %}

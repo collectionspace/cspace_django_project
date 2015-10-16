@@ -17,10 +17,10 @@ def getNumber(filename,institution):
         objectnumber = objectnumber.replace('-', '.')
         objectnumber = objectnumberpattern.sub(r'\1-\2', objectnumber)
     elif institution == 'ucjeps':
-        # typically, UC1107670.JPG
+        # typically, UC1107670.JPG, but could be UC1107670_a_nice_pic.JPG
         filenameparts = filename.split('.')
         objectnumber = filenameparts[0]
-        imagenumber = ''
+        objectnumber = objectnumber.split('_')[0]
     elif institution == 'cinefiles':
         # e.g. 56306.p3.300gray.tif
         filenameparts = filename.split('.')
