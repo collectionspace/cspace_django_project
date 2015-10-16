@@ -21,6 +21,7 @@ SERVERINFO = {
     'serverlabel': config.get('info', 'serverlabel')
 }
 INSTITUTION = config.get('info', 'institution')
+FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
 
 SLIDEHANDLING = {}
 for slide_parameter in 'imagetype copyright source'.split(' '):
@@ -196,8 +197,18 @@ def handle_uploaded_file(f):
 
 
 def assignValue(defaultValue, override, imageData, exifvalue, refnameList):
+    # oh boy! these next couple lines are doozies! sorry!
+    if type(refnameList) == type({}):
+        refName = refnameList.get(defaultValue, defaultValue)
+    else:
+        refName = [z[1] for z in refnameList if z[0] == defaultValue]
+        # should never happen that there is more than one match, but the configurer may have made a boo-boo
+        if len(refName) == 1:
+            refName = refName[0]
+        else:
+            refName = defaultValue
     if override == 'always':
-        return defaultValue, refnameList.get(defaultValue, defaultValue)
+        return defaultValue, refName
     elif exifvalue in imageData:
         imageValue = imageData[exifvalue]
         # a bit of cleanup
@@ -206,10 +217,10 @@ def assignValue(defaultValue, override, imageData, exifvalue, refnameList):
         imageValue = imageValue.replace('\n', '')
         imageValue = imageValue.replace('\r', '')
         imageValue = escape(imageValue)
-        return imageValue, refnameList.get(imageValue, imageValue)
+        return imageValue, refName
     # the follow is really the 'ifblank' condition
     else:
-        return defaultValue, refnameList.get(defaultValue, defaultValue)
+        return defaultValue, refName
 
 
 # this function not currently in use. Copied from another script, it's not Django-compatible

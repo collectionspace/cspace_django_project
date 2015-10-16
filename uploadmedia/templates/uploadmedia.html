@@ -82,7 +82,7 @@
                                     {% if override.1 == "dropdown" %}
                                     <select id="{{ override.2 }}" name="{{ override.2 }}">
                                         <option value="">Please select</option>
-                                        {% for displayname,refname in override.4.items %}
+                                        {% for displayname,refname in override.4 %}
                                             <option value="{{ displayname }}">{{ displayname }}</option>
                                         {% endfor %}
                                     </select>
