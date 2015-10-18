@@ -478,6 +478,8 @@ def doSearch(context, prmz):
                             index = index.replace('_s', '_txt')
                             t = '"' + t + '"'
                         elif qualifier == 'keyword':
+                            t = t.replace(']', ' ').replace('[', ' ').replace('-', ' ').replace(':', ' ')
+                            t = t.replace('  ', ' ').strip()
                             t = t.split(' ')
                             t = ' +'.join(t)
                             t = '(+' + t + ')'
@@ -488,6 +490,8 @@ def doSearch(context, prmz):
                         querypattern = '%s: "%sZ"'
                         index = prmz.PARMS[p][3]
                     else:
+                        t = t.replace(']', ' ').replace('[', ' ').replace('-', ' ').replace(':', ' ')
+                        t = t.replace('  ', ' ').strip()
                         t = t.split(' ')
                         t = ' +'.join(t)
                         t = '(+' + t + ')'
@@ -498,6 +502,7 @@ def doSearch(context, prmz):
                 ORs.append(querypattern % (index, t))
             searchTerm = ' OR '.join(ORs)
             if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
+            # print searchTerm
             queryterms.append(searchTerm)
             urlterms.append('%s=%s' % (p, cgi.escape(requestObject[p])))
             if p + '_qualifier' in requestObject:
@@ -529,7 +534,7 @@ def doSearch(context, prmz):
     else:
         locsonly = None
 
-    print 'Solr query: %s' % querystring
+    # print 'Solr query: %s' % querystring
     try:
         startpage = context['maxresults'] * (context['start'] - 1)
     except:
