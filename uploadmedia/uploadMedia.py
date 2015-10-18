@@ -112,7 +112,12 @@ def uploadmedia(mediaElements, config, http_parms):
             <singleCSID></singleCSID>
             </ns2:invocationContext>
             """
-            postxml('POST', 'batch/57c6de27-4f1e-48d3-a661', http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, primary_payload)
+
+            try:
+                postxml('POST', 'batch/57c6de27-4f1e-48d3-a661', http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, primary_payload)
+            except:
+                print "batch job to set primary image failed."
+
         else:
             pass
 
