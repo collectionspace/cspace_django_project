@@ -12,7 +12,7 @@ from os import path, remove
 import logging
 import time, datetime
 from getNumber import getNumber
-from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, SLIDEHANDLING, FIELDS2WRITE
+from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo
 import subprocess
 from .models import AdditionalInfo
@@ -27,17 +27,13 @@ TITLE = 'Bulk Media Uploader'
 override_options = [['ifblank', 'Overide only if blank'],
                     ['always', 'Always Overide']]
 
-for slide_parameter in SLIDEHANDLING:
-    FIELDS2WRITE.append(slide_parameter)
+overrride_default = 'ifblank'
+
 
 class im:  # empty class for image metadata
     pass
 
 im.BMUoptions = getBMUoptions()
-
-for o in im.BMUoptions['overrides']:
-    if not o[2] in FIELDS2WRITE:
-        FIELDS2WRITE.append(o[2])
 
 def prepareFiles(request, validateonly, BMUoptions, constants):
     jobnumber = constants['jobnumber']
@@ -70,26 +66,27 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                 else:
                     imageinfo[option] = ''
 
-            # the slide parameters should only be added if we are indeed handling a slide
-            if imageinfo['handling'] == 'slide':
-                for slide_parameter in SLIDEHANDLING:
-                    imageinfo[slide_parameter] = SLIDEHANDLING[slide_parameter]
+            if 'handling' in request.POST:
+                handling = request.POST['handling']
+                for parms in BMUoptions['bmuconstants'][handling]:
+                    imageinfo[parms] = BMUoptions['bmuconstants'][handling][parms]
 
-            # borndigital media have their mh id numbers unconditionally replaced with a sequence number
-            if imageinfo['handling'] == 'borndigital':
-                # for these, we create a media handling number...
-                # options considered were:
-                # DP-2015-10-08-12-16-43-0001 length: 27
-                # DP-201510081216430001 length: 21
-                # DP-2CBE859E990BFB1 length: 18
-                # DP-2cbe859e990bfb1 length: 18 the winner!
-                mhnumber = jobnumber + ("-%0.4d" % (lineno + 1))
-                #mhnumber = hex(int(mhnumber.replace('-','')))[2:]
-                imageinfo['objectnumber'] = 'DP-' + mhnumber
-            images.append(imageinfo)
+                # special case:
+                # borndigital media have their mh id numbers unconditionally replaced with a sequence number
+                if imageinfo['handling'] == 'borndigital':
+                    # for these, we create a media handling number...
+                    # options considered were:
+                    # DP-2015-10-08-12-16-43-0001 length: 27
+                    # DP-201510081216430001 length: 21
+                    # DP-2CBE859E990BFB1 length: 18
+                    # DP-2cbe859e990bfb1 length: 18 the winner!
+                    mhnumber = jobnumber + ("-%0.4d" % (lineno + 1))
+                    #mhnumber = hex(int(mhnumber.replace('-','')))[2:]
+                    imageinfo['objectnumber'] = 'DP-' + mhnumber
+                images.append(imageinfo)
 
         except:
-            # raise
+            raise
             if not validateonly:
                 # we still upload the file, anyway...
                 handle_uploaded_file(afile)
@@ -196,13 +193,12 @@ def checkfilename(request):
     else:
         objectnumbers = []
         listoffilenames = ''
-    BMUoptions = getBMUoptions()
     elapsedtime = time.time() - elapsedtime
     status = 'up'
     timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
 
     return render(request, 'uploadmedia.html', {'filenames2check': listoffilenames,
-                                                'objectnumbers': objectnumbers, 'dropdowns': BMUoptions,
+                                                'objectnumbers': objectnumbers, 'dropdowns': im.BMUoptions,
                                                 'override_options': override_options, 'timestamp': timestamp,
                                                 'elapsedtime': '%8.2f' % elapsedtime,
                                                 'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO})

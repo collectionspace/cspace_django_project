@@ -16,10 +16,16 @@ def mediaPayload(mh, institution):
 <document name="media">
 <ns2:media_common xmlns:ns2="http://collectionspace.org/services/media" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <blobCsid>{blobCSID}</blobCsid>
+<dateGroupList>
+<dateGroup>
+<dateDisplayDate>{date}</dateDisplayDate>
+</dateGroup>
+</dateGroupList>
 <rightsHolder>{rightsholder}</rightsHolder>
 <creator>{creator}</creator>
 <title>{name}</title>
-<description>{contributor}</description>
+<description>{description}</description>
+<contributor>{contributor}</contributor>
 <languageList>
 <language>urn:cspace:INSTITUTION.cspace.berkeley.edu:vocabularies:name(languages):item:name(eng)'English'</language>
 </languageList>

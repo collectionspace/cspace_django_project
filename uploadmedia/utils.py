@@ -16,22 +16,15 @@ config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'upload
 TEMPIMAGEDIR = config.get('files', 'directory')
 POSTBLOBPATH = config.get('info', 'postblobpath')
 BATCHPARAMETERS = config.get('info', 'batchparameters')
-BATCHPARAMETERS = BATCHPARAMETERS.replace('.cfg','')
+BATCHPARAMETERS = BATCHPARAMETERS.replace('.cfg', '')
 JOBDIR = path.join(TEMPIMAGEDIR, '%s')
 SERVERINFO = {
     'serverlabelcolor': config.get('info', 'serverlabelcolor'),
     'serverlabel': config.get('info', 'serverlabel')
 }
 INSTITUTION = config.get('info', 'institution')
-FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
-
-SLIDEHANDLING = {}
-for slide_parameter in 'imagetype copyright source'.split(' '):
-    try:
-        SLIDEHANDLING[slide_parameter] = config.get('info', slide_parameter)
-    except:
-        pass
-
+FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(
+    ' ')
 
 if isdir(TEMPIMAGEDIR):
     print "Using %s as working directory for images and metadata files" % TEMPIMAGEDIR
@@ -93,7 +86,8 @@ def getJoblist():
         jobkey = parts[0]
         if not jobkey in jobdict: jobdict[jobkey] = []
         jobdict[jobkey].append([f, status, linecount, imagefilenames])
-    joblist = [[jobkey, True, jobdict[jobkey], jobsummary(jobdict[jobkey])] for jobkey in sorted(jobdict.keys(), reverse=True)]
+    joblist = [[jobkey, True, jobdict[jobkey], jobsummary(jobdict[jobkey])] for jobkey in
+               sorted(jobdict.keys(), reverse=True)]
     for ajob in joblist:
         for image in ajob[3][3]:
             errors.append([ajob[0], image])
@@ -127,15 +121,44 @@ def getQueue(jobtypes):
 def getBMUoptions():
     allowintervention = config.get('info', 'allowintervention')
     allowintervention = True if allowintervention.lower() == 'true' else False
-    usebmuoptions = config.get('info', 'usebmuoptions')
-    usebmuoptions = True if usebmuoptions.lower() == 'true' else False
-    bmuoptions = config.get('info', 'bmuoptions')
-    bmuoptions = json.loads(bmuoptions.replace('\n', ''))
+
+    try:
+        usebmuoptions = config.get('info', 'usebmuoptions')
+        usebmuoptions = True if usebmuoptions.lower() == 'true' else False
+    except:
+        usebmuoptions = False
+
+    if usebmuoptions:
+
+        try:
+            bmuoptions = config.get('info', 'bmuoptions')
+            bmuoptions = json.loads(bmuoptions.replace('\n', ''))
+        except:
+            bmuoptions = []
+        # a dict of dicts...
+        try:
+            bmuconstants = config.get('info', 'bmuconstants')
+            bmuconstants = json.loads(bmuconstants.replace('\n', ''))
+        except:
+            print "no constants parsed!"
+            bmuconstants = {}
+
+        # add the columns for these constants to the list of output values
+        for imagetypes in bmuconstants.keys():
+            for constants in bmuconstants[imagetypes].keys():
+                if not constants in FIELDS2WRITE:
+                    FIELDS2WRITE.append(constants)
+
     overrides = config.get('info', 'overrides')
     overrides = json.loads(overrides.replace('\n', ''))
+
+    for override in overrides:
+        if not override[2] in FIELDS2WRITE:
+            FIELDS2WRITE.append(override[2])
+
     for override in overrides:
         if override[1] == 'dropdown':
-            dropdown = config.get('info', override[2]+'s')
+            dropdown = config.get('info', override[2] + 's')
             dropdown = json.loads(dropdown)
             override.append(dropdown)
         else:
@@ -145,6 +168,7 @@ def getBMUoptions():
         'allowintervention': allowintervention,
         'usebmuoptions': usebmuoptions,
         'bmuoptions': bmuoptions,
+        'bmuconstants': bmuconstants,
         'overrides': overrides
     }
 

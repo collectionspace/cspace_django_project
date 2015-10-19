@@ -92,9 +92,11 @@
                                 </td>
                                 <td>
                                     <select id="override{{ override.2 }}" name="override{{ override.2 }}">
-                                        <option value="">Please select</option>
+                                        <option value="">No Action</option>
                                         {% for option in override_options %}
-                                            <option value="{{ option.0 }}">{{ option.1 }}</option>
+                                            <option value="{{ option.0 }}" {% if option.0 == 'ifblank' %} selected{% endif %}>
+                                                {{ option.1 }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </td>

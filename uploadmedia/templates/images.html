@@ -13,7 +13,6 @@
         <th>File Size</th>
         <th>Date Created</th>
         <th>Creator</th>
-        <th>Contributor</th>
         <th>Rights Holder</th>
         <th>Approved for Web</th>
         {% if dropdowns.usebmuoptions %}
@@ -39,9 +38,7 @@
                 <td>{{ image.date }}</td>
                 <td>{% if image.creator != '' %}<span style="color:green">{{ image.creatorDisplayname }}</span>
                 {% else %}{{ image.creatorDisplayname }}{% endif %}</td>
-                <td>{{ image.contributor }}</td>
-                <td>{% if image.rightsholder != '' %}<span style="color:green">{{ image.rightsholderDisplayname }}
-                    </span>
+                <td>{% if image.rightsholder != '' %}<span style="color:green">{{ image.rightsholderDisplayname }}</span>
                 {% else %}{{ image.rightsholderDisplayname }}{% endif %}</td>
                 <td>{% if image.approvedforweb == 'on' %}<span style="color:green">yes</span>
                 {% else %}<span style="color:red">no</span>{% endif %}</td>
