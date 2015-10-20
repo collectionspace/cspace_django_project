@@ -20,6 +20,9 @@ elif [ "$COMMAND" = "deploy" ]; then
     mv config/main.cfg cspace_django_site
     rm fixtures/*.json
     mv config/*.json fixtures
+    # just to be sure, we start over with this...
+    rm db.sqlite3
+    python manage.py syncdb --noinput
     python manage.py loaddata fixtures/*.json
     cd cspace_django_site/static/cspace_django_site/images
     cp header-logo-$2.png header-logo.png

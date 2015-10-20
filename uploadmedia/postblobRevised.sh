@@ -5,7 +5,6 @@
 
 TENANT=$1
 RUNDIR="/var/www/${TENANT}/uploadmedia"
-RUNDIR="."
 MEDIACONFIG="$RUNDIR/$3"
 UPLOADSCRIPT="$RUNDIR/uploadMedia.py"
 

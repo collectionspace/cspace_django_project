@@ -1,5 +1,6 @@
 import csv
 import sys
+import re
 import requests
 from requests.auth import HTTPBasicAuth
 import time
@@ -15,10 +16,16 @@ def mediaPayload(mh, institution):
 <document name="media">
 <ns2:media_common xmlns:ns2="http://collectionspace.org/services/media" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <blobCsid>{blobCSID}</blobCsid>
+<dateGroupList>
+<dateGroup>
+<dateDisplayDate>{date}</dateDisplayDate>
+</dateGroup>
+</dateGroupList>
 <rightsHolder>{rightsholder}</rightsHolder>
 <creator>{creator}</creator>
 <title>{name}</title>
-<description>{contributor}</description>
+<description>{description}</description>
+<contributor>{contributor}</contributor>
 <languageList>
 <language>urn:cspace:INSTITUTION.cspace.berkeley.edu:vocabularies:name(languages):item:name(eng)'English'</language>
 </languageList>
@@ -32,8 +39,8 @@ def mediaPayload(mh, institution):
 <ns2:media_INSTITUTION xmlns:ns2="http://collectionspace.org/services/media/local/INSTITUTION" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <approvedForWeb>{approvedforweb}</approvedForWeb>
 <primaryDisplay>false</primaryDisplay>
-IMAGENUMBERELEMENT
-LOCALITY
+#IMAGENUMBERELEMENT#
+#LOCALITY#
 </ns2:media_INSTITUTION>
 </document>
 """
@@ -42,22 +49,22 @@ LOCALITY
         payload = payload.replace('{%s}' % m, mh[m])
 
     # get rid of any unsubstituted items in the template
-    payload = payload.replace('{}', mh[m])
+    payload = re.sub(r'\{.*?\}', '', payload)
 
     # institution specific hacks! figure out the right way to handle this someday!
     if institution == 'bampfa':
         if 'imageNumber' in mh:
-            payload = payload.replace('IMAGENUMBERELEMENT', '<imageNumber>%s</imageNumber>' % mh['imageNumber'])
+            payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imageNumber'])
 
     if institution == 'ucjeps':
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
         payload = payload.replace('<approvedForWeb>false</approvedForWeb>','<postToPublic>no</postToPublic>')
         if 'locality' in mh:
-            payload = payload.replace('LOCALITY', '<locality>%s</locality>' % mh['locality'])
+            payload = payload.replace('#LOCALITY#', '<locality>%s</locality>' % mh['locality'])
 
     # clean up anything that might be left
-    payload = payload.replace('IMAGENUMBERELEMENT', '')
-    payload = payload.replace('LOCALITY', '')
+    payload = payload.replace('#IMAGENUMBERELEMENT#', '')
+    payload = payload.replace('#LOCALITY#', '')
     payload = payload.replace('INSTITUTION', institution)
 
     # print "mediaPayload..."
@@ -111,7 +118,12 @@ def uploadmedia(mediaElements, config, http_parms):
             <singleCSID></singleCSID>
             </ns2:invocationContext>
             """
-            postxml('POST', 'batch/57c6de27-4f1e-48d3-a661', http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, primary_payload)
+
+            try:
+                postxml('POST', 'batch/57c6de27-4f1e-48d3-a661', http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, primary_payload)
+            except:
+                print "batch job to set primary image failed."
+
         else:
             pass
 
