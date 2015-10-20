@@ -39,8 +39,8 @@ def mediaPayload(mh, institution):
 <ns2:media_INSTITUTION xmlns:ns2="http://collectionspace.org/services/media/local/INSTITUTION" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <approvedForWeb>{approvedforweb}</approvedForWeb>
 <primaryDisplay>false</primaryDisplay>
-IMAGENUMBERELEMENT
-LOCALITY
+#IMAGENUMBERELEMENT#
+#LOCALITY#
 </ns2:media_INSTITUTION>
 </document>
 """
@@ -54,17 +54,17 @@ LOCALITY
     # institution specific hacks! figure out the right way to handle this someday!
     if institution == 'bampfa':
         if 'imageNumber' in mh:
-            payload = payload.replace('IMAGENUMBERELEMENT', '<imageNumber>%s</imageNumber>' % mh['imageNumber'])
+            payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imageNumber'])
 
     if institution == 'ucjeps':
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
         payload = payload.replace('<approvedForWeb>false</approvedForWeb>','<postToPublic>no</postToPublic>')
         if 'locality' in mh:
-            payload = payload.replace('LOCALITY', '<locality>%s</locality>' % mh['locality'])
+            payload = payload.replace('#LOCALITY#', '<locality>%s</locality>' % mh['locality'])
 
     # clean up anything that might be left
-    payload = payload.replace('IMAGENUMBERELEMENT', '')
-    payload = payload.replace('LOCALITY', '')
+    payload = payload.replace('#IMAGENUMBERELEMENT#', '')
+    payload = payload.replace('#LOCALITY#', '')
     payload = payload.replace('INSTITUTION', institution)
 
     # print "mediaPayload..."
