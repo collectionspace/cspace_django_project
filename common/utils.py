@@ -459,6 +459,8 @@ def doSearch(context, prmz):
                 else:
                     if p in prmz.DROPDOWNS:
                         # if it's a value in a dropdown, it must always be an "exact search"
+                        # only our own double quotes are unescaped
+                        t = t.replace('"','\\"')
                         t = '"' + t + '"'
                         index = prmz.PARMS[p][3].replace('_txt', '_s')
                     elif p + '_qualifier' in requestObject:
@@ -472,12 +474,22 @@ def doSearch(context, prmz):
                             # for exact searches, reset the index to the original in case the switcharoo changed it
                             index = prmz.PARMS[p][3]
                             index = index.replace('_txt', '_s')
+                            # only our own double quotes are unescaped
+                            t = t.replace('"','\\"')
                             t = '"' + t + '"'
                         elif qualifier == 'phrase':
                             index = index.replace('_ss', '_txt')
                             index = index.replace('_s', '_txt')
+                            # only our own double quotes are unescaped
+                            t = t.replace('"', '\\"')
                             t = '"' + t + '"'
                         elif qualifier == 'keyword':
+                            # eliminate some characters that might confuse solr's query parser
+                            t = re.sub(r'[\[\]\:\(\)\" ]', ' ', t).strip()
+                            # hyphen is allowed, but only as a negation operator
+                            t = re.sub(r'[^ ]-', ' ', ' ' + t).strip()
+                            # get rid of muliple spaces in a row
+                            t = re.sub(r' +', ' ', t)
                             t = t.split(' ')
                             t = ' +'.join(t)
                             t = '(+' + t + ')'
@@ -488,6 +500,13 @@ def doSearch(context, prmz):
                         querypattern = '%s: "%sZ"'
                         index = prmz.PARMS[p][3]
                     else:
+                        # ... use the keyword approach, copied from above
+                        # eliminate some characters that might confuse solr's query parser
+                        t = re.sub(r'[\[\]\:\(\)\" ]', ' ', t).strip()
+                        # hyphen is allowed, but only as a negation operator
+                        t = re.sub(r'[^ ]-', ' ', ' ' + t).strip()
+                        # get rid of muliple spaces in a row
+                        t = re.sub(r' +', ' ', t)
                         t = t.split(' ')
                         t = ' +'.join(t)
                         t = '(+' + t + ')'
@@ -498,6 +517,7 @@ def doSearch(context, prmz):
                 ORs.append(querypattern % (index, t))
             searchTerm = ' OR '.join(ORs)
             if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
+            # print searchTerm
             queryterms.append(searchTerm)
             urlterms.append('%s=%s' % (p, cgi.escape(requestObject[p])))
             if p + '_qualifier' in requestObject:
@@ -529,7 +549,7 @@ def doSearch(context, prmz):
     else:
         locsonly = None
 
-    print 'Solr query: %s' % querystring
+    # print 'Solr query: %s' % querystring
     try:
         startpage = context['maxresults'] * (context['start'] - 1)
     except:
