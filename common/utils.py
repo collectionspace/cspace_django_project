@@ -478,8 +478,7 @@ def doSearch(context, prmz):
                             t = t.replace('"','\\"')
                             t = '"' + t + '"'
                         elif qualifier == 'phrase':
-                            index = index.replace('_ss', '_txt')
-                            index = index.replace('_s', '_txt')
+                            index = index.replace('_ss', '_txt').replace('_s', '_txt')
                             # only our own double quotes are unescaped
                             t = t.replace('"', '\\"')
                             t = '"' + t + '"'
@@ -487,31 +486,25 @@ def doSearch(context, prmz):
                             # eliminate some characters that might confuse solr's query parser
                             t = re.sub(r'[\[\]\:\(\)\" ]', ' ', t).strip()
                             # hyphen is allowed, but only as a negation operator
-                            t = re.sub(r'[^ ]-', ' ', ' ' + t).strip()
+                            t = re.sub(r'([^ ])-', '\1 ', ' ' + t).strip()
                             # get rid of muliple spaces in a row
                             t = re.sub(r' +', ' ', t)
                             t = t.split(' ')
                             t = ' +'.join(t)
                             t = '(+' + t + ')'
                             t = t.replace('+-', '-')  # remove the plus if user entered a minus
-                            index = index.replace('_ss', '_txt')
-                            index = index.replace('_s', '_txt')
+                            index = index.replace('_ss', '_txt').replace('_s', '_txt')
                     elif '_dt' in prmz.PARMS[p][3]:
                         querypattern = '%s: "%sZ"'
                         index = prmz.PARMS[p][3]
                     else:
-                        # ... use the keyword approach, copied from above
+                        # if no search qualifier is specified use the 'phrase' approach, copied from above
                         # eliminate some characters that might confuse solr's query parser
-                        t = re.sub(r'[\[\]\:\(\)\" ]', ' ', t).strip()
-                        # hyphen is allowed, but only as a negation operator
-                        t = re.sub(r'[^ ]-', ' ', ' ' + t).strip()
-                        # get rid of muliple spaces in a row
-                        t = re.sub(r' +', ' ', t)
-                        t = t.split(' ')
-                        t = ' +'.join(t)
-                        t = '(+' + t + ')'
-                        t = t.replace('+-', '-')  # remove the plus if user entered a minus
                         index = prmz.PARMS[p][3]
+                        #index = index.replace('_ss', '_txt').replace('_s', '_txt')
+                        # escape funny characters
+                        t = re.sub(r'([\[\]\:\(\)\")\-\. ])', r'\\\g<1>', t)
+                        #t = '"' + t + '"'
                 if t == 'OR': t = '"OR"'
                 if t == 'AND': t = '"AND"'
                 ORs.append(querypattern % (index, t))

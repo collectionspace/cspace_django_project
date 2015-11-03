@@ -101,7 +101,7 @@ def postxml(requestType, uri, realm, hostname, username, password, payload):
         if True:
             #print 'Error in POSTing!'
             sys.stderr.write("Error in POSTing!\n")
-            sys.stderr.write(url)
+            sys.stderr.write("%s\n" % url)
             sys.stderr.write(payload)
             raise
 

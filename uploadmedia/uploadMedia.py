@@ -60,7 +60,11 @@ def mediaPayload(mh, institution):
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
         payload = payload.replace('<approvedForWeb>false</approvedForWeb>','<postToPublic>no</postToPublic>')
         if 'locality' in mh:
-            payload = payload.replace('#LOCALITY#', '<locality>%s</locality>' % mh['locality'])
+            payload = payload.replace('#LOCALITY#',
+                                      '''<localityGroupList><localityGroup>
+                                      <fieldLocVerbatim>locality verbatim</fieldLocVerbatim>
+                                      </localityGroup></localityGroupList>''' % mh['locality'])
+            # payload = payload.replace('#LOCALITY#', '<locality>%s</locality>' % mh['locality'])
 
     # clean up anything that might be left
     payload = payload.replace('#IMAGENUMBERELEMENT#', '')

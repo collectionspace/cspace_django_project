@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # this better be here!
-#source ~/venv/bin/activate
+source ~/venv/bin/activate
 
 TENANT=$1
 RUNDIR="/var/www/${TENANT}/uploadmedia"
