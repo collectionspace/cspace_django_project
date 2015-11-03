@@ -83,10 +83,10 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                     mhnumber = jobnumber + ("-%0.4d" % (lineno + 1))
                     #mhnumber = hex(int(mhnumber.replace('-','')))[2:]
                     imageinfo['objectnumber'] = 'DP-' + mhnumber
-                images.append(imageinfo)
+            images.append(imageinfo)
 
         except:
-            raise
+            # raise
             if not validateonly:
                 # we still upload the file, anyway...
                 handle_uploaded_file(afile)

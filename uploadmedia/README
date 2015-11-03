@@ -16,7 +16,7 @@ WEBAPP COMPONENT:
 
 * Clone this repo and install and configure the Django
   webapp(s), including this one, "as usual".  In particular, create the temporary cache,
-  with appropriate permissions, and record the full pathin the deployed
+  with appropriate permissions, and record the full path in the deployed
   config file, uploadmedia.cfg
 
   e.g.
@@ -32,29 +32,27 @@ BATCH COMPONENT:
   about where things are located and what they are named.
   Sorry it is so complicated, someday we'll make it more robust.
 
-* Copy the batchmediauploadDev.cfg file to a new config file in the same directory
+* Copy or create the appropriate .cfg file (from e.g. django_example_config) to a new config file in this directory
   (i.e. uploadmedia/) and edit the configuration for use by the the batch script postblob.sh,
   below.
 
   e.g.
 
-  cp batchmediauploadDev.cfg pahma_Uploadmedia_Dev.cfg
+  cp ~/django_example_config/pahma/pahma_Uploadmedia_Dev.cfg pahma_Uploadmedia_Dev.cfg
   vi pahma_Uploadmedia_Dev.cfg
 
-* Copy one of postblobviaFile.sh or postblobviaHttp.sh to postblob.sh
-  in this directory.
+* Copy postblobRevised.sh to postblob.sh in this directory. (NB postblobviaHttp.sh and postblobviaFile.sh are
+  legacy version of this script, but they might be useful as they illustrate other ways to upload Blobs)
 
-  cp postblobviaHttp.sh postblob.sh
+  cp postblobRevised.sh postblob.sh
 
-* (NB: use the former of these if this webapp is running on the same server
+* (NB: use postblobviaFile.sh if this webapp is running on the same server
   as the CSpace deployment it address -- and therefore can use the
   somewhat more efficient "direct file move" CSpace blob upload
-  facility). Use the latter if the blob must be POSTed over HTTP to a
+  facility). Use postblobviaHttp.sh if the blob must be POSTed over HTTP to a
   remote CSpace server.
 
-* Edit the parameters in the beginning of this script so that the
-  script will run correctly (i.e. passwords, servers, etc. etc.). Specify
-  the .cfg file you edited above in MEDIACONFIG.
+* This batch script does not require editing any more: all parameters are passed on the command line.
 
 * Ensure that the temporary cache for images and intermediate files is
   present and properly configured with appropriate permissions. For the
@@ -72,17 +70,20 @@ BATCH COMPONENT:
   script that reports on the status of uploads that runs via cron as
   well.
 
-  Here is the current crontab for app_webapps on webapps-dev.csacpe and webapps.cspace, where this
-  webapp runs nightly:
+  Here is the current crontab for app_webapps on cspace-prod.cspace, where the batch process run periodically:
 
-[jblowe@pahma-dev ~]$ sudo crontab -u apache -l
+```
+(venv)[app_webapps@cspace-prod-01 ~]$ crontab  -l
 
-10  5  * * * perl /var/www/pahma/uploadmedia/checkRuns.pl jobs | expand -12 | mail -s "recent BMU jobs" pahma-cspace@berkeley.edu > /dev/null 2>&1
-59 21  * * * shopt -s nullglob; for f in /tmp/upload_cache/*.step1.csv; do f=$(echo $f | sed -e 's/\.step1.csv//'); echo  Starting `date` $f >> /tmp/upload_cache/batches.log ; time /var/www/pahma/uploadmedia/postblob.sh $f >> /tmp/upload_cache/batches.log ; echo  Ending `date` $f >> /tmp/upload_cache/batches.log ; done > /dev/null 2>&1
+10   5 * * * perl /usr/local/share/django/ucjeps_project/uploadmedia/checkRuns.pl jobs /tmp/image_upload_cache_ucjeps | expand -12 | mail -s "recent UCJEPS BMU jobs" jblowe@berkeley.edu > /dev/null 2>&1
+
+# run UCJEPS BMU (one minute after the hour, noon and 8pm)
+1 12,20 * * * shopt -s nullglob; for f in /tmp/image_upload_cache_ucjeps/*.step1.csv; do f=$(echo $f | sed -e 's/\.step1.csv//') ; time /var/www/ucjeps/uploadmedia/postblob.sh ucjeps $f ucjeps_Uploadmedia_Prod >> /tmp/image_upload_cache_ucjeps/batches.log; done
+```
 
 A few more details on the batch process:
 
-The "batch process", which runs nightly as a cron job as shown above,
+The "batch process", which runs nightly (or more frequently) as a cron job as shown above,
 is really just a small bash script wrapper around a python script
 (uploadMedia.py) that does the heavy lifting. The heavy lifting is as
 follows:
@@ -93,34 +94,28 @@ follows:
   webapps, and for PAHMA it currently points to
   dev.space:/tmp/image_upload)
 
-* Every night, cron globs all the *.step1.csv files together, POSTs
-  the images to the Blobs service via cURL, and then passes the blob
-  info and metadata to uploadMedia.py, which POSTs to the Media and
-  Relations services to create Media records and connect them to the
-  corresponding Collectionobjects.
+* Every night, cron globs all the *.step1.csv files together, passes
+  the list of files to uploadMedia.py, which POSTs to the Blob, Media and
+  Relations services to create Blobs and Media records and connect them to the
+  corresponding Collectionobjects (if needed).
 
 * In more detail:
 
-- the shell script postblobs.sh reads a .step1.csv file containing the
-  media file name and metadata from the image and the user and POSTs
-  to the Blobs service.
-
-- for each of the Blob POSTs which succeeds (i.e. a Blob is created),
-  a record is created in a file called *.step2.csv which contains the
-  BlobCSID and MediaCSID, etc.
-
-- the python script uploadMedia.py reads .step2.csv and POSTs to the
-  Media service, outputing a file *.step3.csv for every successful
-  Media and bidirectional Relation created.
+- the shell script postblobs.sh process a file (*.step1.csv) which is a
+  list of image filenames and metadata. It calls the python script uploadMedia.py
+  which POSTs to the Blob service to create blobs, then POSTs to the
+  Media service, outputting a file *.step3.csv for every successful
+  Media (and making bidirectional Relation if collectionobjects are involved.)
 
 - Finally the bash script renames the *.step*.csv file to
   *.original.csv and *.processed.csv. This creates a trace for
   verification and prevents the images from being reprocessed the next
   time the cron job runs.
 
-As an aside, note that this tmp/ directory is cleaned up by the OS,
-which deletes files older than 10 days -- i.e. there is a 10 day cache
-of images load, in case something needs to be recovered or rerun.
+As an aside, note that this tmp/ directory is cleaned up by a script cleanBMUtempdir.sh,
+which deletes files older than 48 hours -- i.e. there is a 2 day cache
+of images load, in case something needs to be recovered or rerun. The various
+"control files" (.csv and .log) are kept around forever.
 
 Finally, there are a few other (very speculative!) scripts that are
 used for reporting and maintenance:

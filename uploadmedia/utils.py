@@ -122,6 +122,9 @@ def getBMUoptions():
     allowintervention = config.get('info', 'allowintervention')
     allowintervention = True if allowintervention.lower() == 'true' else False
 
+    bmuoptions = []
+    bmuconstants = {}
+
     try:
         usebmuoptions = config.get('info', 'usebmuoptions')
         usebmuoptions = True if usebmuoptions.lower() == 'true' else False
@@ -148,9 +151,11 @@ def getBMUoptions():
             for constants in bmuconstants[imagetypes].keys():
                 if not constants in FIELDS2WRITE:
                     FIELDS2WRITE.append(constants)
-
-    overrides = config.get('info', 'overrides')
-    overrides = json.loads(overrides.replace('\n', ''))
+    try:
+        overrides = config.get('info', 'overrides')
+        overrides = json.loads(overrides.replace('\n', ''))
+    except:
+        overrides = []
 
     for override in overrides:
         if not override[2] in FIELDS2WRITE:
