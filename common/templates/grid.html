@@ -8,7 +8,7 @@
         {% if item.blobs %}
             <div>
                 {% for t in item.blobs %}
-                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img height="{{ sizegrid }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativegrid }}/content"/></a>
+                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-height:{{ sizegrid }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativegrid }}/content"/></a>
                 {% endfor %}
             </div>
         {% else %}
