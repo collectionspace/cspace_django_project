@@ -95,7 +95,7 @@ pre, code, kbd, samp {font-family: monospace, sans-serif;}
 
 /* hand cursor on clickable elements */
 .clickable,
-label, 
+/* label, */
 input[type=button], 
 input[type=submit], 
 input[type=file], 

@@ -13,7 +13,7 @@
                     {% for field in FIELDS.Search %}
                         {% if field.row == rowid and field.column == colid %}
                             {% if 'dropdown' in field.fieldtype %}
-                                <td {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                <td {% if field.style %} class="{{ field.style }}"{% endif %}>
                                     <label>{{ field.label }}</label>
                                 </td>
                                 <td colspan="2">
@@ -26,7 +26,7 @@
                                     </select>
                                 </td>
                             {% elif 'keyword' in field.fieldtype %}
-                                <td {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                <td {% if field.style %} class="{{ field.style }}"{% endif %}>
                                     <label>{{ field.label }}</label>
                                 </td>
                                 <td style="width:15px">
@@ -47,7 +47,7 @@
                                            source="{{ suggestsource }}" value="{{ field.value }}"/>
                                 </td>
                             {% elif 'string' in field.fieldtype or 'date' in field.fieldtype %}
-                                <td colspan="2" {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                <td colspan="2" {% if field.style %} class="{{ field.style }}"{% endif %}>
                                     <label>{{ field.label }}</label>
                                 </td>
                                 <td>
@@ -60,7 +60,7 @@
                                     <input type="checkbox" id="{{ field }}_include_child" name="{{ field }}_include_child">
                                 </td>
                             {% else %}
-                                <td colspan="2" {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                <td colspan="2" {% if field.style %} class="{{ field.style }}"{% endif %}>
                                     <label>{{ field.label }}</label>
                                 </td>
                                 <td>
