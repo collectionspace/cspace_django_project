@@ -62,7 +62,7 @@ def mediaPayload(mh, institution):
         if 'locality' in mh:
             payload = payload.replace('#LOCALITY#',
                                       '''<localityGroupList><localityGroup>
-                                      <fieldLocVerbatim>locality verbatim</fieldLocVerbatim>
+                                      <fieldLocVerbatim>%s</fieldLocVerbatim>
                                       </localityGroup></localityGroupList>''' % mh['locality'])
             # payload = payload.replace('#LOCALITY#', '<locality>%s</locality>' % mh['locality'])
 
