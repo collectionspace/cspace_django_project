@@ -23,9 +23,12 @@ elif [ "$COMMAND" = "deploy" ]; then
     # just to be sure, we start over with this...
     rm db.sqlite3
     python manage.py syncdb --noinput
+    python manage.py migrate
     python manage.py loaddata fixtures/*.json
     cd cspace_django_site/static/cspace_django_site/images
     cp header-logo-$2.png header-logo.png
+    python manage.py collectstatic --noinput
+    echo "Don't forget to configure cspace_django_site/main.cfg and the rest of the configuration files in config/"
 elif [ "$COMMAND" = "configure" ]; then
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     cp cspace_django_site/all_urls.py cspace_django_site/urls.py
@@ -34,4 +37,3 @@ elif [ "$COMMAND" = "configure" ]; then
     python manage.py migrate
     python manage.py collectstatic --noinput
 fi
-echo "Don't forget to configure cspace_django_site/main.cfg and the rest of the configuration files in config/"

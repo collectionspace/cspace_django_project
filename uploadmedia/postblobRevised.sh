@@ -1,7 +1,14 @@
 #!/bin/bash
 
 # this better be here!
-source ~/venv/bin/activate
+source ~/www/venv/bin/activate
+
+# three arguments required:
+#
+# postblob.sh tenant jobnumber configfilewithoutcfgextension
+#
+# e.g.
+# time /var/www/ucjeps/uploadmedia/postblob.sh ucjeps 2015-11-10-09-09-09 ucjeps_Uploadmedia_Dev
 
 TENANT=$1
 RUNDIR="/var/www/${TENANT}/uploadmedia"

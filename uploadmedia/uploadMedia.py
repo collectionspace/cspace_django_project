@@ -62,7 +62,7 @@ def mediaPayload(mh, institution):
         if 'locality' in mh:
             payload = payload.replace('#LOCALITY#',
                                       '''<localityGroupList><localityGroup>
-                                      <fieldLocVerbatim>locality verbatim</fieldLocVerbatim>
+                                      <fieldLocVerbatim>%s</fieldLocVerbatim>
                                       </localityGroup></localityGroupList>''' % mh['locality'])
             # payload = payload.replace('#LOCALITY#', '<locality>%s</locality>' % mh['locality'])
 
@@ -141,7 +141,6 @@ def uploadmedia(mediaElements, config, http_parms):
                 print "could not get (i.e. find) objectnumber's csid: %s." % mediaElements['objectnumber']
                 mediaElements['objectCSID'] = ''
                 # raise Exception("<span style='color:red'>Object Number not found: %s!</span>" % mediaElements['objectnumber'])
-                raise
             else:
                 objectCSID = objectCSID[0]
                 mediaElements['objectCSID'] = objectCSID
@@ -281,8 +280,6 @@ if __name__ == "__main__":
             r.append(mediaElements['objectCSID'])
             outputfh.writerow(r)
         except:
-            raise
             print "MEDIA: create failed for objectnumber %s, %8.2f" % (
                 mediaElements['objectnumber'], (time.time() - elapsedtimetotal))
-            raise
 
