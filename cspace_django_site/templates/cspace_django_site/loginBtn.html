@@ -7,7 +7,7 @@
             <img style="vertical-align: middle; height: 21px;  padding-left: 15px;"
                  src="{% static "cspace_django_site/images/usericon.jpg" %}"
                  title="{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}"/>
-            <div style="display: inline-block;"><a href={% url 'logout' %}?next={% url 'landing:index' %} id="logout" class="prettyBtn">{% trans 'Sign out' %}</a></div>
+            <div style="display: inline-block;"><a href={% url 'logout' %}?next={% url 'landing:index' %} id="logout" class="prettyBtn" style="background-color: #F3F3F3;">{% trans 'Sign out' %}</a></div>
           </div>
           <div class="line">
             <div style="display: block;"><a href="{% url 'landing:index' %}" style="margin: 8px 0 0 0; float:right;">All available webapps</a></div>
@@ -15,7 +15,7 @@
         </div>
     {% endblock %}
 {% else %}
-    <a href="{% url 'login' %}?next={% url request.resolver_match.view_name %}" id="login" class="prettyBtn">{% trans 'Sign in' %}</a>
+    <a href="{% url 'login' %}?next={% url request.resolver_match.view_name %}" id="login" class="prettyBtn" style="background-color: #F3F3F3;">{% trans 'Sign in' %}</a>
     {% if request.resolver_match.namespace != 'landing' and request.resolver_match.namespace != '' %}
     <div class="line">
         <div style="display: block;"><a href="{% url 'landing:index' %}" style="margin: 8px 0 0 0; float:right;">All available webapps</a></div>

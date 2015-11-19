@@ -107,7 +107,7 @@ def parseRows(rows, prmz):
                             prmz.SEARCHROWS = max(prmz.SEARCHROWS, int('0' + searchlayout[0]))
                         else:
                             fieldhash[fieldkeys[n]] = v
-                    fieldhash['style'] = 'width:200px'  # temporary hack!
+                    fieldhash['style'] = ''  # temporary hack!
                     fieldhash['type'] = 'text'  # temporary hack!
                     prmz.FIELDS[function].append(fieldhash)
 
