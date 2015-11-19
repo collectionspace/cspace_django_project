@@ -141,7 +141,6 @@ def uploadmedia(mediaElements, config, http_parms):
                 print "could not get (i.e. find) objectnumber's csid: %s." % mediaElements['objectnumber']
                 mediaElements['objectCSID'] = ''
                 # raise Exception("<span style='color:red'>Object Number not found: %s!</span>" % mediaElements['objectnumber'])
-                raise
             else:
                 objectCSID = objectCSID[0]
                 mediaElements['objectCSID'] = objectCSID
@@ -281,8 +280,6 @@ if __name__ == "__main__":
             r.append(mediaElements['objectCSID'])
             outputfh.writerow(r)
         except:
-            raise
             print "MEDIA: create failed for objectnumber %s, %8.2f" % (
                 mediaElements['objectnumber'], (time.time() - elapsedtimetotal))
-            raise
 
