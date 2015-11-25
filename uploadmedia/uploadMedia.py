@@ -124,7 +124,7 @@ def uploadmedia(mediaElements, config, http_parms):
             """
 
             try:
-                postxml('POST', 'batch/57c6de27-4f1e-48d3-a661', http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, primary_payload)
+                postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, primary_payload)
             except:
                 print "batch job to set primary image failed."
 
