@@ -25,8 +25,7 @@ elif [ "$COMMAND" = "deploy" ]; then
     python manage.py syncdb --noinput
     python manage.py migrate
     python manage.py loaddata fixtures/*.json
-    cd cspace_django_site/static/cspace_django_site/images
-    cp header-logo-$2.png header-logo.png
+    cp cspace_django_site/static/cspace_django_site/images/header-logo-$2.png cspace_django_site/static/cspace_django_site/images/header-logo.png
     python manage.py collectstatic --noinput
     echo "Don't forget to configure cspace_django_site/main.cfg and the rest of the configuration files in config/"
 elif [ "$COMMAND" = "configure" ]; then
