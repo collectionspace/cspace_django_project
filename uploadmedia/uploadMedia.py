@@ -53,8 +53,12 @@ def mediaPayload(mh, institution):
 
     # institution specific hacks! figure out the right way to handle this someday!
     if institution == 'bampfa':
-        if 'imageNumber' in mh:
-            payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imageNumber'])
+        if 'imagenumber' in mh:
+            payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imagenumber'])
+
+    if institution == 'cinefiles':
+        if 'imagenumber' in mh:
+            payload = payload.replace('#IMAGENUMBERELEMENT#', '<page>%s</page>' % mh['imagenumber'])
 
     if institution == 'ucjeps':
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
