@@ -73,6 +73,8 @@ whatever directory you do your PyCharm development in. For me, I put them all in
 You'll need to install a number of Python modules (see requirements.txt).  PyCharm can help you with this, or you can
 do something like the following:
 
+Note: Before running `pip install -r requirements.txt`, make sure that you have PostgreSQL, as well as the Python setuptools package installed, otherwise there will be errors. 
+
 ```bash
 cd my_cspace_django_project
 pip install -r requirements.txt
