@@ -1,11 +1,4 @@
 <div id="results">
-    <div style="height: 30px; padding-top: 15px;">
-    <input type="checkbox" name="select-item" id="select-items" checked/> select all
-    <button type="submit" name="csv" id="search-csv" class="prettyBtn">download selected as csv</button>
-    <input type="hidden" name="displayType" id="displayType" value="list"/>
-    <input type="hidden" name="querystring" id="querystring" value="{{ querystring }}"/>
-    <input type="hidden" name="url" id="url" value="{{ url }}"/>
-    </div>
     {% if displayType == 'list' %}
         {% include "short.html" %}
     {% elif displayType == 'full' %}

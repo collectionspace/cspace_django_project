@@ -251,7 +251,7 @@ def loadFields(fieldFile, prmz):
 
     # figure out which solr fields are the required ones...
     prmz.REQUIRED = []
-    requiredfields = 'csid mainentry location accession objectno sortkey blob'.split(' ')
+    requiredfields = 'csid mainentry location accession objectno sortkey blob card primaryimage'.split(' ')
     for p in prmz.PARMS:
         for r in requiredfields:
             if r in prmz.PARMS[p][1]:
