@@ -8,13 +8,9 @@ import cgi
 from os import path
 from copy import deepcopy
 
-
-from reportlab.pdfgen import canvas
-
 from io import BytesIO
 from common.table import makeReport
 from django.http import HttpResponse, HttpResponseRedirect
-# from cspace_django_site.main import cspace_django_site
 
 
 SolrIsUp = True  # an initial guess! this is verified below...
@@ -242,7 +238,7 @@ def setupBMapper(requestObject, context, prmz):
     return context
     # return HttpResponseRedirect(context['bmapperurl'])
 
-def setup4Print(request, context, prmz):
+def setup4PDF(request, context, prmz):
 
     csvformat, fieldset, csvitems = setupCSV(request, context, prmz)
     table = []
@@ -273,6 +269,10 @@ def setup4Print(request, context, prmz):
 
     response.write(pdf)
     return response
+
+
+def setup4Print(request, context, prmz):
+    return
 
 
 def computeStats(requestObject, context, prmz):
