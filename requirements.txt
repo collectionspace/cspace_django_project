@@ -10,7 +10,7 @@ django-tables2
 django-tables2-reports
 djangorestframework
 itsdangerous
-numpy
+#numpy
 requests
 six
 solrpy
