@@ -1,12 +1,10 @@
-cspace-django-project
-=====================
+## cspace-django-project
 
 This Django project supports easy access to various CollectionSpace services.
 
 The following components are provided:
 
-Core apps (that you might actually use)
-=======================================
+#### Core apps (user-facing apps that you might actually use)
 
 * imagebrowser - tiles images based on a keyword query to Solr backend
 * imageserver - proxy server to serve images from CSpace server
@@ -15,10 +13,8 @@ Core apps (that you might actually use)
 * search - public (non-authenticating) search appliance
 * ireports - interface to installed reports that take inputs other than CSIDs
 * uploadmedia - "bulk media uploader" (BMU)
-* batchuploadimages -- RESTful interface to upload images in bulk
 
-Helper Apps (needed by other apps, e.g. search)
-===============================================
+#### Helper Apps (needed by other apps, e.g. search)
 
 * suggest - provides term suggestions (GET request, returns JSON)
 * suggestpostgres - provides term suggestions from via Postgres queries
@@ -27,14 +23,13 @@ Helper Apps (needed by other apps, e.g. search)
 * mobileesp - mobile device support; only slightly used so far
 
 
-"Demo" Apps (only to show how this 'framework' works, and to show how to access cspace)
-=======================================================================================
+#### "Demo" Apps (only to show how this 'framework' works, and to show how to access cspace)
+
 * hello - simple app to help you figure out if your Django deployment is working
 * service - proxies calls to services; mostly for test purposes
 * simplesearch - make query (kw=) to collectionobjects service
 
-Not apps but directories you'll need to understand and or put stuff in
-======================================================================
+#### Not apps but directories you'll need to understand and or put stuff in
 
 * config - put your config files here. This directory is git-ignored.
 * cspace_django_site - "core" site code -- urls.py, settings.py, etc.
@@ -42,6 +37,11 @@ Not apps but directories you'll need to understand and or put stuff in
 * authn - need by authentication backend. Basically: do not touch.
 * common - code used across apps.
 
+#### More obsure apps
+
+* batchuploadimages -- RESTful interface to upload images in bulk
+
+#### Caveats
 
 Some things to note when deploying this project:
 
@@ -55,31 +55,41 @@ with the file name expected by the webapp (usually "webapp.cfg" where "webapp" i
 directory name of the webapp) and then edited to specific deployment-specific parameters.
 
 * Every Django app needs some initialization: the models, etc. need to get created. To ease this process, there is a 
-script setup.sh that does most of what is needed. It is described below. There is a more elablorare set of installation
-and update scripts which deploy these "cspace_django_project"-type projects in UCB's RHEL
-environments. These may be found in the Tools/deployandrelease repo. In particular, this repo contains scripts to
-create and populate a Solr4 muticore datastore, which is needed for the search apps to work.
+script setup.sh that does most of what is needed. It is described below. 
 
-How to get going...
-===================
+#### How to get going...
+
+The following assumes you are deploying in a development environment, on a Mac or Ubuntu system. And that you will use
+PyCharm as your IDE. If you are deploying in a UCB managed server environment (i.e. Red Hat), see further below.
 
 First, make a clone or a fork of collectionspace/cspace_django_project in the directory in which you intend to run
-the project. On RHEL this is probably going to be in /var/www. Depending on details, you will want to configure WSGI
-under Apache. You may wish to make a virtual host.
+the project. 
 
-On a development system (i.e. using PyCharm), you'll want to checkout out your development fork / clone of the repo in
+On a development system (i.e. using PyCharm), you'll want to clone your development fork of the repo in
 whatever directory you do your PyCharm development in. For me, I put them all in ~/PyCharmProjects.
 
 You'll need to install a number of Python modules (see requirements.txt).  PyCharm can help you with this, or you can
 do something like the following:
 
 ```bash
-cd my_cspace_django_project
+cd ~/PycharmProjects
+git clone https://github.com/<mygithubid>/cspace_django_project
+cd cspace_django_project
 pip install -r requirements.txt
 ```
 
-(At the moment, there are few version requirements for this project: Python 2.6.8+ and Django 1.5+; requirements.txt
-specifies Django 1.7, but you can downgrade it if you like. This project has not been tried with Python 3.)
+NB: if you intend to use your "native python" you will need to resolve the requirements at the root level, e.g.
+
+```bash
+sudo pip install -r requirements.txt
+```
+
+Otherwise, you'll need to do this within PyCharm, which supports virtual environments and multiple Python interpreters.
+
+Your call!
+
+(At the moment, there are few version constraints for this project: Python 2.6.8+ and Django 1.5+; requirements.txt
+specifies Django 1.5 or higher. This project has not been tried with Python 3.)
 
 You'll need to tell Django which type of deployment to make (prod, dev, or pycharm are currently supported).
 This configuration will setup up caching (if needed), run the Django management tasks to get thing started.
@@ -92,12 +102,11 @@ you will not be interested in any of the webapps named image*. It is a simple ma
 and you will need to configure them even if they won't really do anything.
 
 
-Using setup.sh
-==============
+#### Using setup.sh
 
 ```bash
-# clone the github repo to wherever you want to deploy the webapps
-git clone https://github.com/collectionspace/cspace_django_project.git my_test_project
+# clone your fork of the github repo to wherever you want to deploy the webapps
+git clone https://github.com/<mygithubid>/cspace_django_project.git my_test_project
 cd my_test_project/
 # deploy the specific tenant's configuration, or the example configuration
 # OPTION 1: deploy the included files, which point at nightly.collectionspace.org:
@@ -120,7 +129,7 @@ mv config/main.cfg cspace_django_site
 # now you can start the development, in pycharm, or restarting Apache, or here on the command line
 python manage.py runserver
 ```
-to enable a disabled webapp:
+to enable a disabled webapp do the following and restart the webserver you are using:
 
 ```bash
 ./setup.sh enable uploadmedia
@@ -147,8 +156,7 @@ There is a set of config files for some of the webapps that points to demo.colle
 limited functionality: simplesearch works, as does the single brain-damaged iReport. the service webapp works, but has
 no config file: it accesses the server defined in the project's configuration for authentication in main.cfg.
 
-OK!
-===
+#### OK!
 
 You have deployed the code from GitHub to the directory it will be executed in (or, you've cloned or forked this repo
 on your local machine).
@@ -169,3 +177,7 @@ You will be rewarded with a landing page. Or more likely, you will have failed t
 * The needed config files better exist and have all the parms specified that are needed for the app.
 * The additional module requirements (e.g. psycopg2 for Postgres) need to be met.
 
+#### Deploying in UCB managed server environments
+
+On RHEL this is probably going to be in /var/www. Depending on details, you will want to configure WSGI
+under Apache. You may wish to make a virtual host.
