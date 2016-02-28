@@ -54,10 +54,15 @@
                                     <input type="{{ field.type }}" id="{{ field.name }}" name="{{ field.name }}"
                                            source="{{ suggestsource }}" value="{{ field.value }}"/>
                                 </td>
-                            {% elif fieldValues.include_child == True %}
-                                <td>
-                                    <label name="{{ field }}_include_child">Include child terms?</label>
-                                    <input type="checkbox" id="{{ field }}_include_child" name="{{ field }}_include_child">
+                            {% elif 'radio' in field.fieldtype %}
+                                <td {% if field.style %} class="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td colspan="2">
+                                    {% for k,v in field.fieldtype.1.items %}
+                                        <input type="radio" name="{{ field.name }}" value="{{ v }}" {% if v == field.value %} selected{% endif %}>{{ k }}
+                                    {% endfor %}
+                                    <div class="expandInfo"><input type="radio" name="{{ field.name }}" value="">Reset</div>
                                 </td>
                             {% else %}
                                 <td colspan="2" {% if field.style %} class="{{ field.style }}"{% endif %}>

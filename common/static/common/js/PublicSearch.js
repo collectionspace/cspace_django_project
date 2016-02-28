@@ -4,13 +4,21 @@ function getFormData(formId) {
     var formData = {};
     $.each(searchForm, function (formData) {
         return function (index, inputItem) {
-            if ($(inputItem).attr('type') == 'checkbox') {
-                if ($(inputItem).is(':checked')) {
+            switch ($(inputItem).attr('type')) {
+                case 'checkbox':
+                    if ($(inputItem).is(':checked')) {
+                        formData[$(inputItem).attr('name')] = $(inputItem).val();
+                    }
+                    break;
+
+                case 'radio':
+                    if ($(inputItem).is(':checked')) {
+                        formData[$(inputItem).attr('name')] = $(inputItem).val();
+                    }
+                    break;
+
+                default:
                     formData[$(inputItem).attr('name')] = $(inputItem).val();
-                }
-            }
-            else {
-                formData[$(inputItem).attr('name')] = $(inputItem).val();
             }
         }
     }(formData));

@@ -9,6 +9,17 @@ from cspace_django_site import settings
 from common import cspace  # we use the config file reading function
 from json import loads
 
+def get_special(label,labels, row):
+    # handle some special cases
+    value = row[labels['Role']]
+    if label in value:
+        parsed_valued = value.replace('%s=' % label,'')
+        try:
+            values = loads(parsed_valued)
+            row[labels['Role']] = [label, values]
+        except:
+            print 'could not parse JSON for %s: %s' % (value,parsed_valued)
+
 
 def getParms(parmFile, prmz):
     try:
@@ -72,14 +83,9 @@ def parseRows(rows, prmz):
 
         elif rowtype == 'field':
 
-            # handle some special cases
-            if 'colors' in row[labels['Role']]:
-                colors = row[labels['Role']].replace('colors=','')
-                try:
-                    #row[labels['Role']] = 'special'
-                    row[labels['Role']] = loads(colors)
-                except:
-                    print 'could not parse JSON for %s: %s' % (row[labels['Name']],colors)
+            # nb: this function may modify the value of the 2nd parameter!
+            get_special('colors', labels, row)
+            get_special('radio', labels, row)
 
             needed = [row[labels[i]] for i in 'Label Role Suggestions SolrField Name Search SearchTarget'.split(' ')]
             if row[labels['Suggestions']] != '':
@@ -245,7 +251,7 @@ def loadFields(fieldFile, prmz):
 
     # figure out which solr fields are the required ones...
     prmz.REQUIRED = []
-    requiredfields = 'csid mainentry location accession objectno sortkey blob'.split(' ')
+    requiredfields = 'csid mainentry location accession objectno sortkey blob card primaryimage'.split(' ')
     for p in prmz.PARMS:
         for r in requiredfields:
             if r in prmz.PARMS[p][1]:

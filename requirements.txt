@@ -1,5 +1,5 @@
 Django>=1.5
-Pillow
+Pillow<3.0
 PyGreSQL
 psycopg2
 Pygments
@@ -10,7 +10,7 @@ django-tables2
 django-tables2-reports
 djangorestframework
 itsdangerous
-numpy
+#numpy
 requests
 six
 solrpy

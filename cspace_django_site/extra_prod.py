@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'suggest',
     'suggestpostgres',
     'suggestsolr',
-    'batchuploadimages',
+    #'batchuploadimages',
     # 'standard' apps
     #'asura',
     'imagebrowser',
@@ -51,7 +51,7 @@ INSTALLED_APPS = (
     'landing',
     'search',
     #'toolbox',
-    'simplesearch',
+    #'simplesearch',
     'uploadmedia',
     #'uploadtricoder',
 )

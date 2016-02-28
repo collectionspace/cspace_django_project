@@ -1,30 +1,22 @@
 {% load staticfiles %}
 
 {% for item in items %}
-    <div style="min-height: 280px;">
-        <div style="float:right;">
-            {% if item.blobs %}
-                {% for t in item.blobs %}
-                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: {{ sizecompact }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativecompact }}/content"/></a>
-                {% endfor %}
-            {% endif %}
-        </div>
-        <div class="result-title">
-                <input type="checkbox" name="item-{{ item.counter }}" value="{{ item.csid }}" checked>
+    <div style="overflow: auto;">
+        <div style="float: left; ; width: 50%;">
+            <div class="result-title">
+                <input type="checkbox" name="item-{{ item.counter }}" value="{{ item.csid }}" checked/>
                 <b><a href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a></b>
-            {% if user.is_active and user.is_staff %}
-                <a target="cspace"
-                   href="{{ cspaceserver }}/collectionspace/ui/{{ institution }}/html/cataloging.html?csid={{ item.csid }}"><img
-                        src="{% static "common/images/open_cspace.png" %}" class="cspaceLink">Open in CSpace</a>
-            {% endif %}
-        </div>
-        <div>
-            <p><h3>{{ item.mainentry|safe }}</h3></p>
+                {% if user.is_active and user.is_staff %}
+                    <a target="cspace" href="{{ cspaceserver }}/collectionspace/ui/{{ institution }}/html/cataloging.html?csid={{ item.csid }}"><img src="{% static "common/images/open_cspace.png" %}" class="cspaceLink">Open in CSpace</a>
+                {% endif %}
+                <h3 style="padding: 9px 0px;">{{ item.mainentry|safe }}</h3>
+            </div>
             {% if item.location %}
                 <div>LatLong: {{ item.location }}
                     {% if item.marker %}
                         <a class="map-item">[click for map]</a>
-                        <div data-marker="{{ item.marker }}" class="small-map" style="display:none; margin-bottom:10px;">
+                        <div data-marker="{{ item.marker }}" class="small-map"
+                             style="display:none; margin-bottom:10px;">
                             <div class="map-replace"></div>
                             {% for i in item.mapfields %}
                                 {% if i.value %}
@@ -39,32 +31,53 @@
             {% for i in item.otherfields %}
                 {% if i.value %}
                     {% if i.multi == 0 %}
-                        <div><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></div>
+                        <p><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></p>
                     {% elif i.multi == 1 %}
                         {% for t in i.value %}
-                            <div><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></div>
+                            <p><i>{{ i.label }}:</i> <a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></p>
                         {% endfor %}
                     {% else %}
-                        <div><i>{{ i.label }}:</i>
-                        {% if i.special %}
-                            <table border="1"><tr>
-                                {% for t in i.value %}
-                                    <td><span style ="background-color:{{ t }}; width:20px">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
-                                {% endfor %}
-                            </tr></table>
-                        {% else %}
-                            <ul style="text-indent: 15px">
-                                {% for t in i.value %}
-                                    <li><a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                        </div>
+                        <p><i>{{ i.label }}:</i>
+                            {% if i.special %}
+                                <table border="1">
+                                    <tr>
+                                        {% for t in i.value %}
+                                            <td><span style="background-color:{{ t }}; width:20px">&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
+                                        {% endfor %}
+                                    </tr>
+                                </table>
+                            {% else %}
+                                <ul style="text-indent: 15px">
+                                    {% for t in i.value %}
+                                        <li><a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </p>
                     {% endif %}
                 {% endif %}
             {% endfor %}
+        </div>
 
+        <div style="float: right; width: 50%;">
+        {% if item.blobs %}
+            <div style="text-align: right;">
+                {% for t in item.blobs %}
+                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: {{ sizecompact }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativecompact }}/content"/></a>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if item.cards and item.blobs%}
+            <hr/>
+        {% endif %}
+        {% if item.cards %}
+            <div style="text-align: right;">
+                {% for t in item.cards %}
+                    <a target="image" href="{{ imageserver }}/blobs/{{ t }}/derivatives/OriginalJpeg/content"><img style="max-width: 600px; height: {{ sizecompact }}" src="{{ imageserver }}/blobs/{{ t }}/derivatives/{{ derivativecompact }}/content"/></a>
+                {% endfor %}
+            </div>
+        {% endif %}
         </div>
     </div>
-    <hr/>
+        <hr/>
 {% endfor %}

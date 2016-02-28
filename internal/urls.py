@@ -10,6 +10,7 @@ urlpatterns = patterns('',
                        url(r'^results/$', views.retrieveResults, name='retrieveResults'),
                        url(r'^bmapper/$', views.bmapper, name='bmapper'),
                        url(r'^statistics/$', views.statistics, name='statistics'),
-                       url(r'^csv/$', views.csv, name='csv'),
+                       url(r'^dispatch/$', views.dispatch, name='dispatch'),
+                       #url(r'^csv/$', views.csv, name='csv'),
                        url(r'^gmapper/$', views.gmapper, name='gmapper'),
                        )

@@ -21,4 +21,5 @@ a { color: #5b80b2; text-decoration: none; }
 
 .expandInfo {
     margin-left: 20px;
+    display: inline;
 }

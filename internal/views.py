@@ -11,7 +11,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django import forms
 from cspace_django_site.main import cspace_django_site
-from common.utils import writeCsv, doSearch, setupGoogleMap, setupBMapper, computeStats, setupCSV, setDisplayType, setConstants, loginfo
+from common.utils import writeCsv, doSearch, setupGoogleMap, setupBMapper, computeStats, setupCSV, setup4Print, setDisplayType, setConstants, loginfo
 # from common.utils import CSVPREFIX, CSVEXTENSION
 from common.appconfig import loadFields, loadConfiguration
 from common import cspace  # we use the config file reading function
@@ -94,7 +94,11 @@ def gmapper(request):
 
 
 @login_required()
-def csv(request):
+def dispatch(request):
+
+    if True:
+        pass
+
     if request.method == 'POST' and request.POST != {}:
         requestObject = dict(request.POST.iteritems())
         form = forms.Form(requestObject)
@@ -110,6 +114,21 @@ def csv(request):
                 response['Content-Disposition'] = 'attachment; filename="%s-%s.%s"' % (
                     prmz.CSVPREFIX, datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S"), prmz.CSVEXTENSION)
                 return writeCsv(response, fieldset, csvitems, writeheader=True, csvFormat=csvformat)
+            except:
+                messages.error(request, 'Problem creating .csv file. Sorry!')
+                context['messages'] = messages
+                return search(request)
+
+    if request.method == 'POST' and request.POST != {}:
+        requestObject = dict(request.POST.iteritems())
+        form = forms.Form(requestObject)
+
+        if form.is_valid():
+            try:
+                context = {'searchValues': requestObject}
+                loginfo(logger, 'pdf', context, request)
+                return setup4Print(request, context, prmz)
+
             except:
                 messages.error(request, 'Problem creating .csv file. Sorry!')
                 context['messages'] = messages

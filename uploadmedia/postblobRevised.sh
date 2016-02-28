@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # this better be here!
-source ~/www/venv/bin/activate
+source /var/www/venv/bin/activate
 
 # three arguments required:
 #

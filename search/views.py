@@ -11,7 +11,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django import forms
 from cspace_django_site.main import cspace_django_site
-from common.utils import writeCsv, doSearch, setupGoogleMap, setupBMapper, computeStats, setupCSV, setDisplayType, setConstants, loginfo
+from common.utils import writeCsv, doSearch, setupGoogleMap, setupBMapper, computeStats, setupCSV, setup4Print, setup4PDF
+from common.utils import setDisplayType, setConstants, loginfo
+
 # from common.utils import CSVPREFIX, CSVEXTENSION
 from common.appconfig import loadFields, loadConfiguration
 from common import cspace  # we use the config file reading function
@@ -89,10 +91,13 @@ def gmapper(request):
             return render(request, 'maps.html', context)
 
 
-def csv(request):
+def dispatch(request):
+
     if request.method == 'POST' and request.POST != {}:
         requestObject = dict(request.POST.iteritems())
         form = forms.Form(requestObject)
+
+    if 'csv' in request.POST:
 
         if form.is_valid():
             try:
@@ -106,10 +111,28 @@ def csv(request):
                     prmz.CSVPREFIX, datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S"), prmz.CSVEXTENSION)
                 return writeCsv(response, fieldset, csvitems, writeheader=True, csvFormat=csvformat)
             except:
-                raise
                 messages.error(request, 'Problem creating .csv file. Sorry!')
                 context['messages'] = messages
                 return search(request)
+
+    elif 'pdf' in request.POST:
+
+        if form.is_valid():
+            try:
+                context = {'searchValues': requestObject}
+                loginfo(logger, 'pdf', context, request)
+                return setup4PDF(request, context, prmz)
+
+            except:
+                messages.error(request, 'Problem creating .pdf file. Sorry!')
+                context['messages'] = messages
+                return search(request)
+
+
+    elif 'preview' in request.POST:
+        messages.error(request, 'Problem creating print version. Sorry!')
+        context = {'messages': messages}
+        return search(request)
 
 
 def statistics(request):

@@ -5,6 +5,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 import time
 from os import path
+from xml.sax.saxutils import escape
 
 from cswaExtras import postxml, relationsPayload, getConfig, getCSID
 
@@ -45,6 +46,10 @@ def mediaPayload(mh, institution):
 </document>
 """
 
+    # xml-escape everything...
+    for m in mh:
+        mh[m] = escape(mh[m])
+
     for m in mh:
         payload = payload.replace('{%s}' % m, mh[m])
 
@@ -82,8 +87,8 @@ def mediaPayload(mh, institution):
 def uploadblob(mediaElements, config, http_parms):
     server = http_parms.protocol + "://" + http_parms.hostname
     url = "%s/cspace-services/%s" % (server, 'blobs')
-    fullpath = path.join(http_parms.cache_path, mediaElements['name'])
     filename = mediaElements['name']
+    fullpath = path.join(http_parms.cache_path, filename)
     payload = {'submit': 'OK'}
     #files = {'file': (filename, open(fullpath, 'rb'), 'image/jpeg')}
     files = {'file': (filename, open(fullpath, 'rb'))}
@@ -108,7 +113,6 @@ def uploadmedia(mediaElements, config, http_parms):
 
         messages = []
         messages.append("posting to media REST API...")
-        # print updateItems
         payload = mediaPayload(mediaElements, http_parms.institution)
         messages.append(payload)
         (url, data, mediaCSID, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, payload)
