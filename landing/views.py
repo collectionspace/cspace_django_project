@@ -1,7 +1,8 @@
 __author__ = 'jblowe'
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
+import json
 from django.conf import settings
 from os import path
 
@@ -19,13 +20,25 @@ landingConfig = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 
 hiddenApps = landingConfig.get('landing', 'hiddenApps').split(',')
 loginRequiredApps = landingConfig.get('landing', 'loginRequiredApps').split(',')
 
-#@login_required()
-def index(request):
-    config = cspace_django_site.getConfig()
+
+def getapplist(request):
     appList = [app for app in settings.INSTALLED_APPS if not "django" in app and not app in hiddenApps]
-    
-    if not request.user.is_authenticated():
-        appList = [app for app in appList if not app in loginRequiredApps]
-    
+
     appList.sort()
-    return render(request, 'listApps.html', {'appList': appList, 'labels': 'name file'.split(' '), 'apptitle': TITLE, 'hostname': hostname, 'base': settings.WSGI_BASE})
+    appList = [path.join(settings.WSGI_BASE, app) for app in appList]
+    return appList
+
+
+def index(request):
+    appList = getapplist(request)
+    if not request.user.is_authenticated():
+            appList = [app for app in appList if not app in loginRequiredApps]
+    return render(request, 'listApps.html',
+                  {'appList': appList, 'labels': 'name file'.split(' '), 'apptitle': TITLE, 'hostname': hostname})
+
+
+def applist(request):
+    appList = getapplist(request)
+    if 'publiconly' in request.GET:
+            appList = [app for app in appList if not app in loginRequiredApps]
+    return HttpResponse(json.dumps(appList))
