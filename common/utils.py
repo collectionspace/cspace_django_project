@@ -8,9 +8,9 @@ import cgi
 from os import path
 from copy import deepcopy
 
+from io import BytesIO
+from common.table import makeReport
 from django.http import HttpResponse, HttpResponseRedirect
-# from cspace_django_site.main import cspace_django_site
-
 
 
 SolrIsUp = True  # an initial guess! this is verified below...
@@ -238,6 +238,42 @@ def setupBMapper(requestObject, context, prmz):
     return context
     # return HttpResponseRedirect(context['bmapperurl'])
 
+def setup4PDF(request, context, prmz):
+
+    csvformat, fieldset, csvitems = setupCSV(request, context, prmz)
+    table = []
+    table.append(context['fields'])
+    for r in context['items']:
+        row = []
+        for f in r['otherfields']:
+            if type(f['value']) == type([]):
+                row.append(', '.join(f['value']))
+            else:
+                row.append(f['value'])
+        table.append(row)
+
+    # create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="%s-%s.%s"' % (
+        prmz.CSVPREFIX, datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S"), 'pdf')
+
+
+    # Create the HttpResponse object with the appropriate PDF headers.
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="My Users.pdf"'
+
+    buffer = BytesIO()
+
+    report = makeReport(buffer, 'Letter', 'header', 'footer')
+    pdf = report.fillReport(table)
+
+    response.write(pdf)
+    return response
+
+
+def setup4Print(request, context, prmz):
+    return
+
 
 def computeStats(requestObject, context, prmz):
     context['summarizeonlabel'] = prmz.PARMS[requestObject['summarizeon']][0]
@@ -430,7 +466,7 @@ def doSearch(context, prmz):
     else:
         solrfl = getfields(displayFields, 'solrfield', prmz)
     solrfl += prmz.REQUIRED  # always get these
-    if 'map-google' in requestObject or 'csv' in requestObject or 'map-bmapper' in requestObject or 'summarize' in requestObject or 'downloadstats' in requestObject:
+    if 'map-google' in requestObject or 'csv' in requestObject or 'pdf' in requestObject or 'map-bmapper' in requestObject or 'summarize' in requestObject or 'downloadstats' in requestObject:
         querystring = requestObject['querystring']
         url = requestObject['url']
         # Did the user request the full set?
@@ -441,7 +477,7 @@ def doSearch(context, prmz):
         for p in requestObject:
             if p in ['csrfmiddlewaretoken', 'displayType', 'resultsOnly', 'maxresults', 'url', 'querystring', 'pane',
                      'pixonly', 'locsonly', 'acceptterms', 'submit', 'start', 'sortkey', 'count', 'summarizeon',
-                     'summarize', 'summaryfields']: continue
+                     'summarize', 'summaryfields', 'lastpage']: continue
             if '_qualifier' in p: continue
             if 'select-' in p: continue  # skip select control for map markers
             if 'include-' in p: continue  # skip form values used in statistics
@@ -601,9 +637,9 @@ def doSearch(context, prmz):
             try:
                 multi = len(rowDict[p['solrfield']]) if '_ss' in p['solrfield'] else 0
                 value2use = rowDict[p['solrfield']]
-                if type(p['fieldtype']) == type({}):
-                    value2use = [p['fieldtype'][v] for v in value2use]
-                    otherfields.append({'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use, 'special': True})
+                if type(p['fieldtype']) == type([]):
+                    value2use = [p['fieldtype'][1][v] for v in value2use]
+                    otherfields.append({'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use, 'special': p['fieldtype'][0]})
                 else:
                     otherfields.append({'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use})
             except:
@@ -616,6 +652,8 @@ def doSearch(context, prmz):
         if 'blob_ss' in rowDict.keys():
             item['blobs'] = rowDict['blob_ss']
             imageCount += len(item['blobs'])
+        if 'card_ss' in rowDict.keys():
+            item['cards'] = rowDict['card_ss']
         if prmz.LOCATION in rowDict.keys():
             item['marker'] = makeMarker(rowDict[prmz.LOCATION])
             item['location'] = rowDict[prmz.LOCATION]

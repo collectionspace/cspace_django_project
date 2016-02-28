@@ -3,13 +3,16 @@
    <span style="color: red">{{ errormsg }}</span>
 {% endif %}
 {% if count > 0 %}
-<form method="post" class="searchForm" id="selectedItems" action="../csv/">
+<form method="post" class="searchForm" id="selectedItems" action="../dispatch/">
     {% csrf_token %}
     <input type="hidden" name="count" value="{{ count }}"/>
-    <input type="hidden" id="lastpage" name="lastpage" value="{{ lastpage }}"/>
+    <input type="hidden" name="lastpage" id="lastpage" value="{{ lastpage }}"/>
     <input type="hidden" name="start" value="{{ start }}"/>
     <input type="hidden" name="maxresults" value="{{ maxresults }}"/>
-        <div id="tabs" style="float: left; width: 100%;">
+    <input type="hidden" name="displayType" value="list"/>
+    <input type="hidden" name="querystring" value="{{ querystring }}"/>
+    <input type="hidden" name="url" value="{{ url }}"/>
+        <div id="tabs">
             <ul>
                 <li><a href="#results">Results</a></li>
                 <li><a href="#facets">Facets</a></li>
@@ -19,6 +22,12 @@
                 {% endif %}
                 <!-- li><a href="#configuration">Configuration</a></li -->
             </ul>
+            <div style="height: 30px; padding-top: 15px;">
+            <input type="checkbox" id="select-items" checked/> select all
+            <button type="submit" name="csv" id="search-csv" class="prettyBtn">download selected as csv</button>
+            <!-- button type="submit" name="pdf" id="search-pdf" class="prettyBtn">Print PDF</button -->
+            <!-- button type="submit" name="preview" id="search-preview" class="prettyBtn">printable version</button -->
+            </div>
             {% include "results.html" %}
             {% include "facets.html" %}
             {% include "maps.html" %}

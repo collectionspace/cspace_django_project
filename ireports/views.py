@@ -126,16 +126,19 @@ def index(request):
     fileNames = []
     #print reportCsids
     for csid in reportCsids:
-        (url, data, statusCode) = connection.make_get_request('cspace-services/reports/%s' % csid)
-        reportXML = fromstring(data)
-        fileName = reportXML.find('.//filename')
-        fileName = fileName.text
-        fileName = fileName.replace('.jasper','.jrxml')
-        parms,displayReport,fileFound = getReportparameters(fileName)
-        fileName = fileName if displayReport else 'CSpace only'
-        fileName = fileName if fileFound else 'Found in CSpace, not configured for this webapp'
-        fileNames.append(fileName)
-        #print fileName
+        try:
+            (url, data, statusCode) = connection.make_get_request('cspace-services/reports/%s' % csid)
+            reportXML = fromstring(data)
+            fileName = reportXML.find('.//filename')
+            fileName = fileName.text
+            fileName = fileName.replace('.jasper','.jrxml')
+            parms,displayReport,fileFound = getReportparameters(fileName)
+            fileName = fileName if displayReport else 'CSpace only'
+            fileName = fileName if fileFound else 'Found in CSpace, not configured for this webapp'
+            fileNames.append(fileName)
+            #print fileName
+        except:
+            fileNames.append('Error getting report payload from CSpace: %s' % csid)
     reportData = zip(reportCsids, reportNames, fileNames)
     reportData = sorted(reportData, key=itemgetter(1))
     context = {'reportData': reportData, 'labels': 'name file'.split(' '), 'apptitle': TITLE}
