@@ -25,14 +25,14 @@ def getapplist(request):
     appList = [app for app in settings.INSTALLED_APPS if not "django" in app and not app in hiddenApps]
 
     appList.sort()
-    appList = [path.join(settings.WSGI_BASE, app) for app in appList]
+    appList = [ (app,path.join(settings.WSGI_BASE, app)) for app in appList]
     return appList
 
 
 def index(request):
     appList = getapplist(request)
     if not request.user.is_authenticated():
-            appList = [app for app in appList if not app in loginRequiredApps]
+        appList = [app for app in appList if not app[0] in loginRequiredApps]
     return render(request, 'listApps.html',
                   {'appList': appList, 'labels': 'name file'.split(' '), 'apptitle': TITLE, 'hostname': hostname})
 
