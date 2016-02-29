@@ -6,14 +6,17 @@ import json
 #from common.cspace import logged_in_or_basicauth
 from django.shortcuts import render, HttpResponse, redirect
 from django.core.servers.basehttp import FileWrapper
-#from django.conf import settings
-#from django import forms
 from os import path, remove
 import logging
 import time, datetime
 from getNumber import getNumber
 from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo
+
+# read common config file, just for the version info
+from common.appconfig import loadConfiguration
+prmz = loadConfiguration('common')
+
 import subprocess
 from .models import AdditionalInfo
 
@@ -178,7 +181,7 @@ def uploadfiles(request):
 
     return render(request, 'uploadmedia.html',
                   {'apptitle': TITLE, 'serverinfo': SERVERINFO, 'images': images, 'count': len(images),
-                   'constants': constants, 'jobinfo': jobinfo, 'validateonly': im.validateonly,
+                   'constants': constants, 'jobinfo': jobinfo, 'validateonly': im.validateonly, 'version': prmz.VERSION,
                    'dropdowns': im.BMUoptions, 'override_options': override_options, 'status': status, 'timestamp': timestamp,
                    'elapsedtime': '%8.2f' % elapsedtime})
 
@@ -197,7 +200,7 @@ def checkfilename(request):
     status = 'up'
     timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
 
-    return render(request, 'uploadmedia.html', {'filenames2check': listoffilenames,
+    return render(request, 'uploadmedia.html', {'filenames2check': listoffilenames, 'version': prmz.VERSION,
                                                 'objectnumbers': objectnumbers, 'dropdowns': im.BMUoptions,
                                                 'override_options': override_options, 'timestamp': timestamp,
                                                 'elapsedtime': '%8.2f' % elapsedtime,
@@ -241,6 +244,6 @@ def showqueue(request):
 
     return render(request, 'uploadmedia.html',
                   {'dropdowns': BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
-                   'elapsedtime': '%8.2f' % elapsedtime,
+                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION,
                    'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO, 'jobs': jobs, 'jobcount': jobcount,
                    'errors': errors, 'errorcount': errorcount})
