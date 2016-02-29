@@ -9,7 +9,8 @@ from os import path
 from copy import deepcopy
 
 from io import BytesIO
-from common.table import makeReport
+# disable reportlab code for now
+# from common.table import makeReport
 from django.http import HttpResponse, HttpResponseRedirect
 
 
@@ -260,14 +261,14 @@ def setup4PDF(request, context, prmz):
 
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="My Users.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="test.pdf"'
 
     buffer = BytesIO()
 
-    report = makeReport(buffer, 'Letter', 'header', 'footer')
-    pdf = report.fillReport(table)
+    #report = makeReport(buffer, 'Letter', 'header', 'footer')
+    #pdf = report.fillReport(table)
 
-    response.write(pdf)
+    #response.write(pdf)
     return response
 
 
