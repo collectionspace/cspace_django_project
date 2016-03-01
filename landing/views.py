@@ -25,7 +25,7 @@ def getapplist(request):
     appList = [app for app in settings.INSTALLED_APPS if not "django" in app and not app in hiddenApps]
 
     appList.sort()
-    appList = [ (app,path.join(settings.WSGI_BASE, app)) for app in appList]
+    appList = [(app,path.join(settings.WSGI_BASE, app)) for app in appList]
     return appList
 
 
@@ -40,5 +40,5 @@ def index(request):
 def applist(request):
     appList = getapplist(request)
     if 'publiconly' in request.GET:
-            appList = [app for app in appList if not app in loginRequiredApps]
+            appList = [app for app in appList if not app[0] in loginRequiredApps]
     return HttpResponse(json.dumps(appList))
