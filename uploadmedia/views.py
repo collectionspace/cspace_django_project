@@ -237,13 +237,12 @@ def showqueue(request):
         jobs = None
     else:
         errors = None
-    BMUoptions = getBMUoptions()
     elapsedtime = time.time() - elapsedtime
     status = 'up'
     timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
 
     return render(request, 'uploadmedia.html',
-                  {'dropdowns': BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
+                  {'dropdowns': im.BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
                    'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION,
                    'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO, 'jobs': jobs, 'jobcount': jobcount,
                    'errors': errors, 'errorcount': errorcount})
