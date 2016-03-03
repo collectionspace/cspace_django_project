@@ -369,6 +369,7 @@ def setConstants(context, prmz):
     context['timestamp'] = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     context['qualifiers'] = [{'val': s, 'dis': s} for s in prmz.SEARCH_QUALIFIERS]
     context['resultoptions'] = [100, 500, 1000, 2000, 10000]
+    context['csrecordtype'] = prmz.CSRECORDTYPE
 
     context['searchrows'] = range(prmz.SEARCHROWS + 1)[1:]
     context['searchcolumns'] = range(prmz.SEARCHCOLUMNS + 1)[1:]
