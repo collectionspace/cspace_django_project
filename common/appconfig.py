@@ -57,6 +57,7 @@ def parseRows(rows, prmz):
 
     prmz.SEARCHCOLUMNS = 0
     prmz.SEARCHROWS = 0
+    prmz.CSRECORDTYPE = 'cataloging' # default
 
     functions = 'Search,Facet,bMapper,listDisplay,fullDisplay,gridDisplay,mapDisplay,inCSV'.split(',')
     for function in functions:
@@ -74,6 +75,9 @@ def parseRows(rows, prmz):
 
         elif rowtype == 'server':
             prmz.SOLRSERVER = row[1]
+
+        elif rowtype == 'csrecordtype':
+            prmz.CSRECORDTYPE = row[1]
 
         elif rowtype == 'core':
             prmz.SOLRCORE = row[1]
