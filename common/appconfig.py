@@ -117,9 +117,12 @@ def parseRows(rows, prmz):
                             prmz.SEARCHROWS = max(prmz.SEARCHROWS, int('0' + searchlayout[0]))
                         else:
                             fieldhash[fieldkeys[n]] = v
+                    fieldhash['order'] = int(row[labels[function]].split(',')[0])
                     fieldhash['style'] = ''  # temporary hack!
                     fieldhash['type'] = 'text'  # temporary hack!
                     prmz.FIELDS[function].append(fieldhash)
+
+                prmz.FIELDS[function] = sorted(prmz.FIELDS[function], key=lambda x: x['order'])
 
     if prmz.SEARCHROWS == 0: prmz.SEARCHROWS = 1
     if prmz.SEARCHCOLUMNS == 0: prmz.SEARCHCOLUMNS = 1
