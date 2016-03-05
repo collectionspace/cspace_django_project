@@ -7,12 +7,12 @@
         <select id="summarizeon" name="summarizeon">
             <option value="">Please select</option>
             {% for value in statsfields %}
-                <option value="{{ value.0 }}"{% if value.0 == field.value %}selected{% endif %}>{{ value.1|slice:":40" }}</option>
+                <option value="{{ value.0 }}" {% if value.0 == field.value %}selected{% endif %}>{{ value.1|slice:":40" }}</option>
             {% endfor %}
         </select>
         <h3 style="padding: 10px 0px 10px 0px;">2. Select fields to include:</h3>
         {% for value in statsfields %}
-            <input type="checkbox" name='include-{{ value.0 }}'
+            <input type="checkbox" name="include-{{ value.0 }}"
                    value="{{ value.0 }}">{{ value.1|slice:":40" }}
             <br/>
         {% endfor %}
