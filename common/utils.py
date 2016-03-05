@@ -158,7 +158,7 @@ def writeCsv(filehandle, fieldset, items, writeheader=False, csvFormat='csv'):
 
 def getMapPoints(context, requestObject):
     mappableitems = []
-    if 'select-item' in requestObject:
+    if 'select-items' in requestObject:
         mapitems = context['items']
         numSelected = len(mapitems)
     else:
@@ -295,7 +295,7 @@ def setupCSV(requestObject, context, prmz):
         context = doSearch(context, prmz)
         selected = []
         # check to see if 'select all' is clicked...if so, skip checking individual items
-        if 'select-item' in requestObject:
+        if 'select-items' in requestObject:
             csvitems = context['items']
         else:
             for p in requestObject:
@@ -472,8 +472,8 @@ def doSearch(context, prmz):
         querystring = requestObject['querystring']
         url = requestObject['url']
         # Did the user request the full set?
-        if 'select-item' in requestObject:
-            context['maxresults'] = min(requestObject['count'], prmz.MAXRESULTS)
+        if 'select-items' in requestObject:
+            context['maxresults'] = prmz.MAXRESULTS
             context['start'] = 1
     else:
         for p in requestObject:
