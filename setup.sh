@@ -1,27 +1,54 @@
+
+
+if [ $# -ne 2 -a "$1" != 'show' ]; then
+    echo "Usage: $0 <enable|disable|deploy|redeploy|configure|show> <TENANT|CONFIGURATION|WEBAPP>"
+    echo
+    echo "where: TENANT = 'default' or the name of a deployable tenant"
+    echo "       CONFIGURATION = <pycharm|dev|prod>"
+    echo "       WEBAPP = one of the available webapps, e.g. 'search' or 'ireports'"
+    echo
+    echo "e.g. $0 disable ireports"
+    echo "     $0 configure pycharm"
+    echo "     $0 deploy botgarden"
+    echo
+    exit
+fi
+
 COMMAND=$1
 WEBAPP=$2
-if [ "$COMMAND" = "disable" ]; then
+CURRDIR=`pwd`
+CONFIGDIR="~/django_example_config"
+
+if [ "${COMMAND}" = "disable" ]; then
     perl -i -pe "s/('$WEBAPP')/#\1/" cspace_django_site/extra_settings.py
     perl -i -pe "s/(url)/#\1/ if /$WEBAPP/" cspace_django_site/urls.py
-elif [ "$COMMAND" = "enable" ]; then
+elif [ "${COMMAND}" = "enable" ]; then
     perl -i -pe "s/#*('$WEBAPP')/\1/" cspace_django_site/extra_settings.py
     perl -i -pe "s/#*(url)/\1/ if /$WEBAPP/" cspace_django_site/urls.py
-elif [ "$COMMAND" = "show" ]; then
+elif [ "${COMMAND}" = "show" ]; then
     echo
     echo "Installed apps:"
     echo
     echo -e "from cspace_django_site.extra_settings import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | python
     echo
-elif [ "$COMMAND" = "deploy" ]; then
-    rm config/*.cfg
-    rm config/*.csv
-    rm config/*.xml
+elif [ "${COMMAND}" = "deploy" ]; then
     if [ "$2" = "default" ]; then
         cp config.examples/* config
         cp cspace_django_site/static/cspace_django_site/images/CollectionToolzSmall.png cspace_django_site/static/cspace_django_site/images/header-logo.png
     else
-        cp ~/django_example_config/$2/* config
-        cp cspace_django_site/static/cspace_django_site/images/header-logo-$2.png cspace_django_site/static/cspace_django_site/images/header-logo.png
+        if [ ! -d ${CONFIGDIR}/$2 ]; then
+            echo "can't deploy tenant $2: ${CONFIGDIR}/$2 does not exist"
+            echo
+            exit
+        fi
+        cd ${CONFIGDIR}
+        git pull -v
+        cd ${CURRDIR}
+        rm config/*.cfg
+        rm config/*.csv
+        rm config/*.xml
+            cp ${CONFIGDIR}/$2/* config
+            cp cspace_django_site/static/cspace_django_site/images/header-logo-$2.png cspace_django_site/static/cspace_django_site/images/header-logo.png
     fi
     mv config/main.cfg cspace_django_site
     rm fixtures/*.json
@@ -38,7 +65,7 @@ elif [ "$COMMAND" = "deploy" ]; then
     echo "configuration files in config/ (these are .cfg and .csv files)"
     echo "*************************************************************************************************"
     echo
-elif [ "$COMMAND" = "configure" ]; then
+elif [ "${COMMAND}" = "configure" ]; then
     cp cspace_django_site/extra_$2.py cspace_django_site/extra_settings.py
     cp cspace_django_site/all_urls.py cspace_django_site/urls.py
     echo
@@ -48,4 +75,23 @@ elif [ "$COMMAND" = "configure" ]; then
     echo "an existing tenant in the django_example_config repo"
     echo "*************************************************************************************************"
     echo
+elif [ "${COMMAND}" = "redeploy" ]; then
+    cd ${CONFIGDIR}
+    git pull -v
+    cd ${CURRDIR}
+    git checkout master
+    git pull -v
+    TAG=`git tag | sort -k2 -t"-" -rn | head -1`
+    echo "*************************************************************************************************"
+    echo ">>>> deploying $TAG"
+    echo "*************************************************************************************************"
+    git checkout ${TAG}
+    python manage.py collectstatic --noinput
+    echo
+    echo "*************************************************************************************************"
+    echo "restart apache to pick up changes"
+    echo "*************************************************************************************************"
+    echo
+else
+    echo "${COMMAND} is not a recognized command."
 fi

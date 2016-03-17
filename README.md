@@ -6,11 +6,12 @@ The following components are provided:
 
 #### Core apps (user-facing apps that you might actually use)
 
-* imagebrowser - tiles images based on a keyword query to Solr backend
-* imageserver - proxy server to serve images from CSpace server
+* imagebrowser - a "lightbox-like" app that tiles images based on a keyword query to Solr backend
+* imageserver - cacheing proxy server to serve images from CSpace server
 * imaginator - "google-lookalike" search app -- provides "N blue links" for a keyword search
 * internal - internal (authenticating) search appliance
 * search - public (non-authenticating) search appliance
+* searchmedia - public (non-authenticating) search appliance for media record
 * ireports - interface to installed reports that take inputs other than CSIDs
 * uploadmedia - "bulk media uploader" (BMU)
 
@@ -29,17 +30,16 @@ The following components are provided:
 
 #### Not apps but directories you'll need to understand and or put stuff in
 
-* config - put your config files here. This directory is git-ignored.
+* config - put your config files here. This directory is git-ignored
 * cspace_django_site - "core" site code -- urls.py, settings.py, etc.
 * fixtures - fixtures are used by several apps to provision nav bar and other items
-* authn - need by authentication backend. Basically: do not touch.
-* common - code used across apps.
+* authn - need by authentication backend. Basically: do not touch
+* common - code used across apps
 
 #### More obsure apps (disabled by default, but available)
 
 * simplesearch - make query (kw=) to collectionobjects service
 * batchuploadimages -- RESTful interface to upload images in bulk
-
 
 ### Quick Start Guide
 
@@ -53,7 +53,7 @@ cd cspace_django_project
 # you'll need to have the PostgreSQL client code as well as the Python setuptools installed...
 # on a Mac *most* of this is in XCode Tools... consider 'sudo pip' if you know what you are doing
 # other code managers such as homebrew can help with this too.
-pip install -r requirements.txt
+pip install -r pycharm__requirements.txt
 # configure Django for your environment. 'pycharm' is the least demanding.
 ./setup.sh configure pycharm
 # deploy a tenant. 'default' points to 'nightly.collectionspace.org'. otherwise, roll your own.
@@ -71,18 +71,23 @@ http://localhost:8000
 
 * As illustrated in the Quick Start Guide, the process to deploy this Django project is pretty conventional: get code, resolve system dependencies, configure, and start 'er up. At the moment, the project does not use any of the popular deployment systems out there, e.g. Kubernetes or Docker. Instead, you have to do it by hand, but there are helpers!
 
-* To start with, you'll need to `configure` your code for a particular target environment: `prod`, `dev`, or `pycharm`.  The first two option are of course intended to support running the webapps in either of two server environments; currently, they are suitable for OSX, RedHat, and Ubuntu deployments.  As a developer, you'll probably want to use the `pycharm` target, which is only a little different from the other two: it doesn't deploy the image cacheing option, and it turns off Universal Analytics.
+* To start with, need to set up Django and install some Python modules (see the various `*_requirements.txt` files)
 
-* You need to have a CollectionSpace server to play with. Even before you start playing with your own, you should consider deploying the *Sample Deployment*, which points to the development server at `nightly.collectionspace.org`.  This setup is quite easy to get working -- few dependencies, and all the assumptions about configuration are made for you.
+* The project does run in a variety of different environments, 
 
-* So -- `configuration` is used here to talk about the setup required for different environments, and `deployment` is used to refer setting up the project for the CollectSpace tenant (server) you will be using. Got it?
+
+* Next you'll need to `configure` your project for a particular target environment: `prod`, `dev`, or `pycharm`.  The first two option are of course intended to support running the webapps in either of two server environments; currently, they are suitable for OSX, RedHat, and Ubuntu deployments.  As a developer, you'll probably want to use the `pycharm` target, which is only a little different from the other two: it doesn't deploy the image cacheing option, and it turns off Universal Analytics.
+
+* You need to have a CollectionSpace server to point to. Even before you start playing with your own, you should consider deploying the *Sample Deployment*, which points to the development server at `nightly.collectionspace.org`.  This setup is quite easy to get working -- few dependencies, and all the assumptions about configuration are made for you.
+
+* So -- `configuration` is used here to talk about the setup required for different environments, and `deployment` is used to refer setting up the project for the particular CollectSpace tenant (server) you will be using. Got it?
 
 * A helper script called `setup.sh` is provided to help with all this. It is described in some detail below. You should use it, though it is not required. `setup.sh` remembers to perform all the little Django details required when setting up and maintaining the project, but note there may be times when you'll need to go around it, at least in development.
 
 * This project comes with **sample** configuration files that point to the development server at `nightly.collectionspace.org`. These are
 located in `config.examples/` and you will need to copy them to the working directory `config/` in order to make the apps work. The files in `config/` are 'git-ignored'. When you start working with a real deployment, you'll need to modify these files to point to your real CollectSpace server, and you'll need to take care of the files yourself. 
 
-* So. To summarize. Almost all webapps require a config file, some require two. An example configuration file for each webapp is included, but you *will* eventually need to make your own. If the webapp is called `webapp`, the corresponding configuration file should be called `webapp.cfg` unless there is a good reason not to.
+* So. To summarize. Almost all webapps require a config file, some require two. Therefore, the `config` will be quite full of config files for the varioius apps. An example configuration file for each webapp is included, but you *will* eventually need to make your own. If the webapp is called `webapp`, the corresponding configuration file should be called `webapp.cfg` unless there is a good reason not to.
 
 ##### Recipe for Development deployments
 
@@ -90,27 +95,26 @@ The following recipe assumes you are deploying in a development environment, on 
 
 First, fork the `cspace-deployment/cspace_django_project` in your own account on GitHub.
 
-Then on your development system, you'll want to clone your development fork of the repo in
-whatever directory you do your PyCharm development in. For me, I put them all in `~/PyCharmProjects`.
+Then on your development system, you'll want to clone your development fork of the repo in whatever directory you do your PyCharm development in. For me, I put them all in `~/PyCharmProjects`.
 
-You'll need to install a number of Python modules (see `requirements.txt`).  PyCharm can help you with this, or you can
+You'll need to install a number of Python modules (see `*__*requirements.txt`).  PyCharm can help you with this, or you can
 do something like the following:
 
-Note: Before running `pip install -r requirements.txt`, make sure that you have PostgreSQL, as well as the Python setuptools package installed, otherwise there will be errors. 
+Note: Before running `pip install -r pycharm_requirements.txt`, make sure that you have PostgreSQL, as well as the Python setuptools package installed, otherwise there will be errors. 
 
 ```bash
 # clone your fork of the github repo to wherever you want to deploy the webapps
 cd ~/PycharmProjects
 git clone https://github.com/<mygithubid>/cspace_django_project.git my_test_project
 cd my_test_project/
-# resolve the Python requirements (
-pip install -r requirements.txt
+# resolve the Python requirements
+pip install -r pycharm_requirements.txt
 ```
 
 NB: if you intend to use your "native python" you may need to resolve the requirements at the root level, e.g.
 
 ```bash
-sudo pip install -r requirements.txt
+sudo pip install -r pycharm_requirements.txt
 ```
 
 NB: Yes, you can, and indeed may have to, run your apps in a virtual environment if you are unable or unwilling to use the system defaults. This is covered below.  Also note that PyCharm can help you resolve module dependencies -- `venv` comes pretty much builtin
