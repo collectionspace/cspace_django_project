@@ -57,7 +57,7 @@ pip install -r pycharm_requirements.txt
 # configure Django for your environment. 'pycharm' is the least demanding.
 ./setup.sh configure pycharm
 # deploy a tenant. 'default' points to 'nightly.collectionspace.org'. otherwise, roll your own.
-./setup deploy default
+./setup.sh deploy default
 # if it all works...
 python manage.py runserver
 # if the server comes up OK, you should see a landing page in your browser at
