@@ -12,5 +12,6 @@ urlpatterns = patterns('',
                        url(r'^statistics/$', views.statistics, name='statistics'),
                        url(r'^dispatch/$', views.dispatch, name='dispatch'),
                        #url(r'^csv/$', views.csv, name='csv'),
+                       #url(r'^pdf/$', views.pdf, name='pdf'),
                        url(r'^gmapper/$', views.gmapper, name='gmapper'),
                        )
