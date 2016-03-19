@@ -97,7 +97,7 @@ def dispatch(request):
         requestObject = dict(request.POST.iteritems())
         form = forms.Form(requestObject)
 
-    if 'csv' in request.POST:
+    if 'csv' in request.POST or 'downloadstats' in request.POST:
 
         if form.is_valid():
             try:

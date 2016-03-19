@@ -366,6 +366,7 @@ def setConstants(context, prmz):
     context['derivativegrid'] = prmz.DERIVATIVEGRID
     context['sizecompact'] = prmz.SIZECOMPACT
     context['sizegrid'] = prmz.SIZEGRID
+    context['resultlimit'] = prmz.MAXRESULTS
     context['timestamp'] = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     context['qualifiers'] = [{'val': s, 'dis': s} for s in prmz.SEARCH_QUALIFIERS]
     context['resultoptions'] = [100, 500, 1000, 2000, 10000]
@@ -410,7 +411,7 @@ def setConstants(context, prmz):
         if 'querystring' in requestObject: context['querystring'] = requestObject['querystring']
         if 'core' in requestObject: context['core'] = requestObject['core']
         if 'pixonly' in requestObject: context['pixonly'] = requestObject['pixonly']
-        if 'maxresults' in requestObject: context['maxresults'] = int(requestObject['maxresults'])
+        context['maxresults'] = int(requestObject['maxresults']) if 'maxresults' in requestObject else context['resultoptions'][0]
         context['start'] = int(requestObject['start']) if 'start' in requestObject else 1
         context['maxfacets'] = int(requestObject['maxfacets']) if 'maxfacets' in requestObject else prmz.MAXFACETS
         context['sortkey'] = requestObject['sortkey'] if 'sortkey' in requestObject else prmz.DEFAULTSORTKEY
@@ -420,7 +421,7 @@ def setConstants(context, prmz):
         context['url'] = ''
         context['querystring'] = ''
         context['core'] = prmz.SOLRCORE
-        context['maxresults'] = 0
+        context['maxresults'] = context['resultoptions'][0]
         context['start'] = 1
         context['sortkey'] = prmz.DEFAULTSORTKEY
 
