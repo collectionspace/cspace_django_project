@@ -32,7 +32,7 @@ prmz = loadFields(fielddefinitions, prmz)
 
 # Get an instance of a logger, log some startup info
 logger = logging.getLogger(__name__)
-logger.info('%s :: %s :: %s' % ('public portal startup', '-', '%s | %s | %s' % (prmz.SOLRSERVER, prmz.IMAGESERVER, prmz.BMAPPERSERVER)))
+logger.info('%s :: %s :: %s' % ('internal portal startup', '-', '%s | %s | %s' % (prmz.SOLRSERVER, prmz.IMAGESERVER, prmz.BMAPPERSERVER)))
 
 
 def direct(request):
