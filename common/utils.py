@@ -525,7 +525,7 @@ def doSearch(context, prmz):
                             # eliminate some characters that might confuse solr's query parser
                             t = re.sub(r'[\[\]\:\(\)\" ]', ' ', t).strip()
                             # hyphen is allowed, but only as a negation operator
-                            t = re.sub(r'([^ ])-', '\1 ', ' ' + t).strip()
+                            t = re.sub(r'([^ ])-', r'\1 ', ' ' + t).strip()
                             # get rid of muliple spaces in a row
                             t = re.sub(r' +', ' ', t)
                             t = t.split(' ')
