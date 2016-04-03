@@ -17,14 +17,16 @@ fi
 COMMAND=$1
 WEBAPP=$2
 CURRDIR=`pwd`
-CONFIGDIR="~/django_example_config"
+CONFIGDIR=~/django_example_config
 
 if [ "${COMMAND}" = "disable" ]; then
     perl -i -pe "s/('$WEBAPP')/#\1/" cspace_django_site/extra_settings.py
     perl -i -pe "s/(url)/#\1/ if /$WEBAPP/" cspace_django_site/urls.py
+    echo "disabled $WEBAPP"
 elif [ "${COMMAND}" = "enable" ]; then
-    perl -i -pe "s/#*('$WEBAPP')/\1/" cspace_django_site/extra_settings.py
-    perl -i -pe "s/#*(url)/\1/ if /$WEBAPP/" cspace_django_site/urls.py
+    perl -i -pe "s/#* *('$WEBAPP')/\1/" cspace_django_site/extra_settings.py
+    perl -i -pe "s/#* *(url)/\1/ if /$WEBAPP/" cspace_django_site/urls.py
+    echo "enabled $WEBAPP"
 elif [ "${COMMAND}" = "show" ]; then
     echo
     echo "Installed apps:"
@@ -32,11 +34,18 @@ elif [ "${COMMAND}" = "show" ]; then
     echo -e "from cspace_django_site.extra_settings import INSTALLED_APPS\nfor i in INSTALLED_APPS: print i" | python
     echo
 elif [ "${COMMAND}" = "deploy" ]; then
+    if [ ! -d "${CONFIGDIR}" ]; then
+        echo "the repo containing the configuration files (${CONFIGDIR}) does not exist"
+        echo "please either create it (e.g. by cloning it from github)"
+        echo "or edit this script to set the correct path"
+        echo
+        exit
+    fi
     if [ "$2" = "default" ]; then
         cp config.examples/* config
         cp cspace_django_site/static/cspace_django_site/images/CollectionToolzSmall.png cspace_django_site/static/cspace_django_site/images/header-logo.png
     else
-        if [ ! -d ${CONFIGDIR}/$2 ]; then
+        if [ ! -d "${CONFIGDIR}/$2" ]; then
             echo "can't deploy tenant $2: ${CONFIGDIR}/$2 does not exist"
             echo
             exit
