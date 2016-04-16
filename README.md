@@ -53,11 +53,11 @@ cd cspace_django_project
 # you'll need to have the PostgreSQL client code as well as the Python setuptools installed...
 # on a Mac *most* of this is in XCode Tools... consider 'sudo pip' if you know what you are doing
 # other code managers such as homebrew can help with this too.
-pip install -r pycharm__requirements.txt
+pip install -r pycharm_requirements.txt
 # configure Django for your environment. 'pycharm' is the least demanding.
 ./setup.sh configure pycharm
 # deploy a tenant. 'default' points to 'nightly.collectionspace.org'. otherwise, roll your own.
-./setup deploy default
+./setup.sh deploy default
 # if it all works...
 python manage.py runserver
 # if the server comes up OK, you should see a landing page in your browser at
@@ -97,7 +97,7 @@ First, fork the `cspace-deployment/cspace_django_project` in your own account on
 
 Then on your development system, you'll want to clone your development fork of the repo in whatever directory you do your PyCharm development in. For me, I put them all in `~/PyCharmProjects`.
 
-You'll need to install a number of Python modules (see `*__*requirements.txt`).  PyCharm can help you with this, or you can
+You'll need to install a number of Python modules (see `*_*requirements.txt`).  PyCharm can help you with this, or you can
 do something like the following:
 
 Note: Before running `pip install -r pycharm_requirements.txt`, make sure that you have PostgreSQL, as well as the Python setuptools package installed, otherwise there will be errors. 
