@@ -29,6 +29,7 @@ urlpatterns = patterns('',
 
                        # these are "internal webapps", used by other webapps -- not user-facing
                        #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+                       url(r'^hello$', 'hello.views.home', name='home'),
                        url(r'^service/', include('service.urls')),
                        url(r'^suggestpostgres/', include('suggestpostgres.urls', namespace='suggestpostgres')),
                        url(r'^suggestsolr/', include('suggestsolr.urls', namespace='suggestsolr')),
