@@ -61,11 +61,16 @@ def mediaPayload(mh, institution):
         if 'imagenumber' in mh:
             payload = payload.replace('#IMAGENUMBERELEMENT#', '<imageNumber>%s</imageNumber>' % mh['imagenumber'])
 
-    if institution == 'cinefiles':
+    elif institution == 'botgarden':
+        payload = payload.replace('<primaryDisplay>false</primaryDisplay>', '')
+        payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
+        payload = payload.replace('<approvedForWeb>false</approvedForWeb>','<postToPublic>no</postToPublic>')
+
+    elif institution == 'cinefiles':
         if 'imagenumber' in mh:
             payload = payload.replace('#IMAGENUMBERELEMENT#', '<page>%s</page>' % mh['imagenumber'])
 
-    if institution == 'ucjeps':
+    elif institution == 'ucjeps':
         payload = payload.replace('<approvedForWeb>true</approvedForWeb>','<postToPublic>yes</postToPublic>')
         payload = payload.replace('<approvedForWeb>false</approvedForWeb>','<postToPublic>no</postToPublic>')
         if 'locality' in mh:
