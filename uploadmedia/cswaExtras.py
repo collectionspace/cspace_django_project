@@ -24,14 +24,12 @@ def getCSID(argType, arg, config):
     if argType == 'objectnumber':
         query = """SELECT h.name from collectionobjects_common cc
 JOIN hierarchy h on h.id=cc.id
+JOIN misc on (cc.id = misc.id and misc.lifecyclestate <> 'deleted')
 WHERE objectnumber = '%s'""" % arg
-    elif argType == 'crateName':
-        query = """SELECT h.name FROM collectionobjects_anthropology ca
-JOIN hierarchy h on h.id=ca.id
-WHERE computedcrate ILIKE '%%''%s''%%'""" % arg
     elif argType == 'placeName':
         query = """SELECT h.name from places_common pc
 JOIN hierarchy h on h.id=pc.id
+JOIN misc on (pc.id = misc.id and misc.lifecyclestate <> 'deleted')
 WHERE pc.refname ILIKE '%""" + arg + "%%'"
 
     objects.execute(query)
