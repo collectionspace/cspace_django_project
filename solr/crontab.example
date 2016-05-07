@@ -1,0 +1,19 @@
+##################################################################################
+#
+# CRON TABLE (crontab) for CSpace Solr ETL
+#
+##################################################################################
+#
+# run solr ETL
+#
+# currently runs under pseudo user app_solr on cspace-prod and cspace-dev
+#
+# 1. run the solr4 refresh (set env vars first, of course)
+# 2. monitor solr datastore contents (email contents)
+#
+##################################################################################
+01 0 * * * source set-tenant-default.sh mytenant ; /fullpath/solrETL.sh >> /fullpath/solr_extract.log  2>&1
+##################################################################################
+# monitor solr datastores
+##################################################################################
+0  7 * * * /fullpath/checkstatus.sh | mail -s "solr nightly status" --  someone@someplace.edu
