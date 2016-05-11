@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -x
+#!/usr/bin/env bash
 # mostly untested!
 set -e
 if [ $# -lt 4 ];

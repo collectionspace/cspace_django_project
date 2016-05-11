@@ -33,7 +33,7 @@ do
   time perl mergeObjectsAndMedia.pl 4solr.$TENANT.media.csv 4solr.$TENANT.base.${CORE}.csv > d6.csv
   # recover the solr header and put it back at the top of the file
   grep csid d6.csv > header4Solr.csv
-  perl -i -pe 's/$/blob_ss/;' header4Solr.csv
+  #perl -i -pe 's/$/blob_ss/;' header4Solr.csv
   # generate solr schema <copyField> elements, just in case.
   # also generate parameters for POST to solr (to split _ss fields properly)
   ./genschema.sh ${CORE}
@@ -54,6 +54,8 @@ do
   ss_string=`cat uploadparms.${CORE}.txt`
   time curl -S -s "http://localhost:8983/solr/${TENANT}-${CORE}/update/csv?commit=true&header=true&separator=%09&${ss_string}f.blob_ss.split=true&f.blob_ss.separator=,&encapsulator=\\" --data-binary @4solr.$TENANT.${CORE}.csv -H 'Content-type:text/plain; charset=utf-8'
   time bash evaluate.sh 4solr.$TENANT.${CORE}.csv > 4solr.fields.$TENANT.${CORE}.csv
+  # make a provisional field definitions file
+  cut -f2 4solr.fields.$TENANT.${CORE}.csv | perl createfielddefs.pl $TENANT ${CORE} > $TENANT${CORE}parms.csv
   # zip up .csvs, save a bit of space on disk
   gzip -f 4solr.${TENANT}.${CORE}.csv
 done
