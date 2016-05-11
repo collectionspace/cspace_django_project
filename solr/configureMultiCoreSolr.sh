@@ -24,11 +24,11 @@ then
   echo 1>&2 ""
   exit 2
 fi
-TOOLS=`pwd`
-SOLR4=$1
-SOLRVERSION=$2
-SOLRTOPNODE=$3
-TENANTS=$4
+export TOOLS=`pwd`
+export SOLR4=$1
+export SOLRVERSION=$2
+export SOLRTOPNODE=$3
+export TENANTS=$4
 if [ -d $SOLR4 ];
 then
    echo "$SOLR4 directory exists, please remove (e.g. rm -rf $SOLR4/), then try again."
@@ -59,10 +59,13 @@ for tenant in ${TENANTS}
     
     for core in public internal
     do
+      export core="${core}"
       cp -r ../example-schemaless/solr/collection1 ${tenant}/${core}
       perl -i -pe 's/collection1/${tenant}-${core}/' ${tenant}/${core}/core.properties
       cp ${TOOLS}/template.core.solrconfig.xml ${tenant}/${core}/conf/solrconfig.xml
-      sed -e '/<\!-- COPYFIELDSGOHERE -->/r./${TOOLS}/schemaFragment.${core}.xml' ${TOOLS}/template.core.schema.xml > ${tenant}/${core}/conf/schema.xml
+      # the next line is ugly. could not make it work with sed...
+      perl -e '$d=`cat $ENV{TOOLS}/schemaFragment.$ENV{core}.xml`; while(<>) {s@<\!-- COPYFIELDSGOHERE -->@$d@m; print}' ${TOOLS}/template.core.schema.xml > ${tenant}/${core}/conf/schema.xml
+      # sed -e '/<\!-- COPYFIELDSGOHERE -->/r./'$TOOLS'/schemaFragment.'$core'.xml' ${TOOLS}/template.core.schema.xml > ${tenant}/${core}/conf/schema.xml
       # cp ${TOOLS}/template.core.schema.xml ${tenant}/${core}/conf/schema.xml
     done    
 
@@ -86,7 +89,6 @@ echo "*** Multicore solr4 installed for ${SOLRTOPNODE} deployments! ****"
 echo "You can now start solr4. A good way to do this for development purposes is to use"
 echo "the script made for the purpose, in the ${TOOLS} directory:"
 echo "./solrserver.sh start"
-echo "./solrserver.sh stop"
 echo
 echo "Let me try it for you..."
 echo
