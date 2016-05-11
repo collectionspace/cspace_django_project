@@ -62,7 +62,8 @@ for tenant in ${TENANTS}
       cp -r ../example-schemaless/solr/collection1 ${tenant}/${core}
       perl -i -pe 's/collection1/${tenant}-${core}/' ${tenant}/${core}/core.properties
       cp ${TOOLS}/template.core.solrconfig.xml ${tenant}/${core}/conf/solrconfig.xml
-      cp ${TOOLS}/template.core.schema.xml ${tenant}/${core}/conf/schema.xml
+      sed -e '/<\!-- COPYFIELDSGOHERE -->/r./${TOOLS}/schemaFragment.${core}.xml' ${TOOLS}/template.core.schema.xml > ${tenant}/${core}/conf/schema.xml
+      # cp ${TOOLS}/template.core.schema.xml ${tenant}/${core}/conf/schema.xml
     done    
 
     # the media cores are special: they use the solr "managed-schema"
