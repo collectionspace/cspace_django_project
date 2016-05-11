@@ -85,12 +85,11 @@ echo
 echo "*** Multicore solr4 installed for ${SOLRTOPNODE} deployments! ****"
 echo "You can now start solr4. A good way to do this for development purposes is to use"
 echo "the script made for the purpose, in the ${TOOLS} directory:"
-echo "cp ${TOOLS}/startSolr.sh ${SOLR4}/${SOLRTOPNODE}"
-echo "cd ${SOLR4}/${SOLRTOPNODE}"
-echo "./startSolr.sh"
+echo "./solrserver.sh start"
+echo "./solrserver.sh stop"
 echo
 echo "Let me try it for you..."
 echo
-cp ${TOOLS}/startSolr.sh ${SOLR4}/${SOLRTOPNODE}
-cd ${SOLR4}/${SOLRTOPNODE}
-./startSolr.sh
+cd ${TOOLS}
+./solrserver.sh start
+echo "check Solr admin console at http://localhost:8983/solr"
