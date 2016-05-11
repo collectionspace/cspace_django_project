@@ -1,6 +1,6 @@
-my $tenant = @ARGV[1];
-my $portal = @ARGV[2];
-print  "#\tParameters for $portal\n";
+my $tenant = @ARGV[0];
+my $portal = @ARGV[1];
+print  "#\tParameters for $tenant-$portal Solr core\n";
 print "#\n";
 print "date\t\t09/01/15\n";
 print "revision\t\t0.1\n";
