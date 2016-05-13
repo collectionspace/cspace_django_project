@@ -48,6 +48,7 @@ urlpatterns = patterns('',
                        #url(r'^simplesearch/', include('simplesearch.urls', namespace='simplesearch')),
                        #url(r'^taxonomyeditor/', include('taxonomyeditor.urls', namespace='taxonomyeditor')),
                        #url(r'^toolbox/', include('toolbox.urls', namespace='toolbox')),
+                       #url(r'^cswa/', include('cswa.urls', namespace='cswa')),
                        url(r'^uploadmedia/', include('uploadmedia.urls', namespace='uploadmedia')),
                        #url(r'^uploadtricoder/', include('uploadtricoder.urls', namespace='uploadtricoder')),
 )

@@ -1,6 +1,6 @@
 SELECT 
 h2.name id,
-mc.blob_ss,
+mc.blobcsid as blob_ss,
 cc.objectnumber,
 h1.name mediacsid,
 mc.description,
