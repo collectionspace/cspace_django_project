@@ -3,7 +3,7 @@
 if [ $# -lt 1 ];
 then
   echo 1>&2 ""
-  echo 1>&2 "source this filed with tenant name as argument!"
+  echo 1>&2 "source this file with tenant name as argument!"
   echo 1>&2 ""
 else
   export TENANT=$1
