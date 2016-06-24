@@ -91,6 +91,10 @@ def mediaPayload(mh, institution):
 
 def uploadblob(mediaElements, config, http_parms):
     server = http_parms.protocol + "://" + http_parms.hostname
+    try:
+        server = server + ':' + http_parms.port
+    except:
+        pass
     url = "%s/cspace-services/%s" % (server, 'blobs')
     filename = mediaElements['name']
     fullpath = path.join(http_parms.cache_path, filename)
@@ -120,7 +124,12 @@ def uploadmedia(mediaElements, config, http_parms):
         messages.append("posting to media REST API...")
         payload = mediaPayload(mediaElements, http_parms.institution)
         messages.append(payload)
-        (url, data, mediaCSID, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, payload)
+        hostname = http_parms.hostname
+        try:
+            hostname = hostname + ':' + http_parms.port
+        except:
+            pass
+        (url, data, mediaCSID, elapsedtime) = postxml('POST', uri, http_parms.realm, hostname, http_parms.username, http_parms.password, payload)
         # elapsedtimetotal += elapsedtime
         messages.append('got mediacsid %s elapsedtime %s ' % (mediaCSID, elapsedtime))
         mediaElements['mediaCSID'] = mediaCSID
