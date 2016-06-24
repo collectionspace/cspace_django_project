@@ -15,7 +15,7 @@
 DBGLOG=/tmp/initddbg.log
 DBGFLAG=1
 
-SOLRDIR="/Users/jblowe/solrexp/topnode"
+SOLRDIR="/home/solr4/omca"
 KEY="-DSTOP.KEY=\"Requiescat\""
 MEM="-Xmx512m"
 JARFILE="-Dsolr.solr.home=multicore -jar start.jar"
