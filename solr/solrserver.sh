@@ -15,7 +15,12 @@
 DBGLOG=/tmp/initddbg.log
 DBGFLAG=1
 
-SOLRDIR="/Users/jblowe/solrexp/topnode"
+if [ ! -e "${SOLRDIR}" ];
+then
+   echo "${SOLRDIR} does not exist. Please set environment variable SOLRDIR and try again"
+   exit 1
+fi
+SOLRDIR="/usr/local/share/solr4/xxx"
 KEY="-DSTOP.KEY=\"Requiescat\""
 MEM="-Xmx512m"
 JARFILE="-Dsolr.solr.home=multicore -jar start.jar"

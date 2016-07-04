@@ -10,7 +10,7 @@ then
   echo 1>&2 "$0 fullpathtosolr4dir solrversion topnodename"
   echo 1>&2 ""
   echo 1>&2 "e.g. to install in the current directory"
-  echo 1>&2 "$0  ~/solr4 4.10.4 topnode tenants"
+  echo 1>&2 "$0  /usr/local/share/solr4 4.10.4 topnode tenants"
   echo 1>&2 ""
   echo 1>&2 ""
   echo 1>&2 "- directory to create with all Solr goodies in it"
@@ -65,7 +65,6 @@ for tenant in ${TENANTS}
       cp ${TOOLS}/template.core.solrconfig.xml ${tenant}/${core}/conf/solrconfig.xml
       # the next line is ugly. could not make it work with sed...
       perl -e '$d=`cat $ENV{TOOLS}/schemaFragment.$ENV{core}.xml`; while(<>) {s@<\!-- COPYFIELDSGOHERE -->@$d@m; print}' ${TOOLS}/template.core.schema.xml > ${tenant}/${core}/conf/schema.xml
-      # sed -e '/<\!-- COPYFIELDSGOHERE -->/r./'$TOOLS'/schemaFragment.'$core'.xml' ${TOOLS}/template.core.schema.xml > ${tenant}/${core}/conf/schema.xml
       # cp ${TOOLS}/template.core.schema.xml ${tenant}/${core}/conf/schema.xml
     done    
 
@@ -88,10 +87,18 @@ echo
 echo "*** Multicore solr4 installed for ${SOLRTOPNODE} deployments! ****"
 echo "You can now start solr4. A good way to do this for development purposes is to use"
 echo "the script made for the purpose, in the ${TOOLS} directory:"
+echo
+echo "You'll want to ensure that the SOLRDIR environment variable is set, e.g.:"
+echo
+echo "export SOLRDIR=\"${SOLR4}/${SOLRTOPNODE}\""
+echo "cd ${TOOLS}"
 echo "./solrserver.sh start"
+echo
+echo "Consider installing Solr as a service if using it in production."
 echo
 echo "Let me try it for you..."
 echo
 cd ${TOOLS}
+export SOLRDIR="${SOLR4}/${SOLRTOPNODE}"
 ./solrserver.sh start
 echo "check Solr admin console at http://localhost:8983/solr"

@@ -75,7 +75,6 @@ http://localhost:8000
 
 * The project does run in a variety of different environments, 
 
-
 * Next you'll need to `configure` your project for a particular target environment: `prod`, `dev`, or `pycharm`.  The first two option are of course intended to support running the webapps in either of two server environments; currently, they are suitable for OSX, RedHat, and Ubuntu deployments.  As a developer, you'll probably want to use the `pycharm` target, which is only a little different from the other two: it doesn't deploy the image cacheing option, and it turns off Universal Analytics.
 
 * You need to have a CollectionSpace server to point to. Even before you start playing with your own, you should consider deploying the *Sample Deployment*, which points to the development server at `nightly.collectionspace.org`.  This setup is quite easy to get working -- few dependencies, and all the assumptions about configuration are made for you.
@@ -149,9 +148,9 @@ to run them.
 
 ```bash
 # OPTION 2: deploy one of the UCB configurations
-# to deploy a specific tentant, you'll want to clone the repo with all the
+# to deploy a specific tetant, you'll want to clone the repo with all the
 # example config files out side of this repo, i.e. in ~/django_example_config
-cd .. ; git clone https://github.com/cspace-deployment/django_exmmple_project.git 
+cd .. ; git clone https://github.com/cspace-deployment/django_example_project.git
 cd ~/PycharmProjects/my_test_project
 ./setup.sh deploy ucjeps
 # this will blow away whatever tenant was deployed previously and setup the UCJEPS tenant.
@@ -305,4 +304,46 @@ You will be rewarded with a landing page. Or more likely, you will have failed t
 
 ### Development and Production Deployments in Linux Environments
 
-This is covered in another README.
+The following steps _should_ work to set up a "default" configuration in Ubuntu and Red Hat environments,
+(but be careful with SELinux...)
+
+Assumptions:
+
+* You can install as the superuser `root`
+* Apache will run everything, so user and group is apache:apache (it might be www-data:www-data or something else...)
+* Everything goes in /user/local/share/django/myproject
+
+
+```bash
+sudo su -
+cd /usr/local/share/
+mkdir django
+git clone https://github.com/cspace-deployment/cspace_django_project.git myproject
+cd myproject
+# you'll need to have wsgi enabled, and the appropriate Django project directories set up.
+# there is a sample file showing a typical configuration for a project named "xxxxx"
+diff config/000-default.conf /etc/apache2/sites-enabled/000-default.conf
+# configure Python/Django for your environment. 'pycharm' is the least demanding.
+# ('pycharm' does not setup Google Analytics, and does not setup an image cache
+# (you may wish to use a virtual environment...in which case, install and start it now, before continuing)
+pip install -r pycharm_requirements.txt
+./setup.sh configure pycharm
+# deploy a tenant. 'default' points to 'nightly.collectionspace.org'. otherwise, roll your own.
+./setup.sh deploy default
+# you will probably need to change ownship and/or permissions for some files and directories:
+chown apache:apache logs/*
+chmod a+w ..
+chmod a+w .
+chmod a+w logs/*
+chmod a+wx db.sqlite3
+# you may need to edit the WSGI file. NB: there is also an alternative wsgi.py for Django > 1.7
+sudo vi cspace_django_site/wsgi.py
+# if the server comes up OK, you should see a landing page in your browser at
+http://localhost:8000
+# troubleshooting: if you see error, look in the Apache log:
+less /var/log/apache2/error.log
+# or in the Django logs
+less logs/logfile.txt
+# restart apache whenever you need to pick up a change.
+service apache2ctl restart
+```
