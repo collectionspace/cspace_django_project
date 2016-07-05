@@ -10,7 +10,7 @@ Currently there are 5 tools, some mature, but mostly unripe, raw, and needy:
 
 * configureMultiCoreSolr.sh -- installs and configures the "standard" multicore configuration
 * solrETL-template.sh -- an example script for extracting metadata and media data from CSpace and loading it into CSpace.
-* startSolr.sh -- starts Solr4 from the command line and puts it in the background. Useful only for development.
+* solrserver.sh -- manage Solr4 service.
 * countSolr4.sh-- if your Solr4 server is running, this script will count the records in the cores
 * cleanup.sh -- gets rid of all created files
 * evaluate.sh -- checks extracted files for content: count types and tokens by column
@@ -21,7 +21,7 @@ Currently there are 5 tools, some mature, but mostly unripe, raw, and needy:
 
 e.g. on your Macbook or Ubuntu labtop, for development. Sorry, no help for Windows here!
 
-The essence of the process. The scripts _can_ do everything, but you can do it yourself too.
+The essence of the process. NB: the scripts _can_ do everything, but you can do it yourself too.
 
 * Download Solr4 tarball
 * Install Solr4
@@ -35,8 +35,8 @@ The essence of the process. The scripts _can_ do everything, but you can do it y
 # NB: if solr is *already* running, you'll need to 
 #     kill it in order to start it again so it will see the new cores.
 #
-# ps aux | grep solr 
-# kill <thatsolrprocess>
+ps aux | grep solr
+kill <thatsolrprocess>
 #
 # 1. Obtain the code need (mainly bash scripts) from GitHub
 #
@@ -101,4 +101,30 @@ ls -ltr /usr/local/share/solr4/topnode/logs/
 # e.g.
 less  /usr/local/share/solr4/topnode/logs/solr.log 
 less  /usr/local/share/solr4/topnode/logs/2015_03_21-085800651.start.log 
+```
+
+#### Installing solr4 under Red Hat or Ubuntu
+
+Both these operating system welcome user-installed sofware in /usr/local/share
+
+The following instructions assume you'll put the solr service itself in /usr/local/share/solr4
+and that you'll put the ETL code (to build and refresh the solr database) in /usr/local/share/solr-etl
+and that you'll set up a cron job to run the ETL as often as needed (usually onces a night).
+and that you'll do all this as root.
+
+For example, to set up a multi-core solr service named "cspace" with a single solr core called "core"
+pointing to the default CollectionSpace core tenant:
+
+```bash
+sudo su -
+git clone https://github.com/cspace-deployment/cspace_django_project.git
+cp -r cspace_django_project/solr solr-etl
+cd solr-etl
+./configureMultiCoreSolr.sh /usr/local/share/solr4 4.10.4 cspace core
+./countSolr4.sh core
+vi set-tenant-default.sh # only edit if your postgres service is not local and/or non-standard
+source set-tenant-default.sh core ; nohup ./solrETL-template.sh
+# now you'd want to add the line above to crontab
+crontab -e
+
 ```

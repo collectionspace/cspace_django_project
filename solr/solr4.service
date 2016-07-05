@@ -15,7 +15,7 @@
 DBGLOG=/tmp/initddbg.log
 DBGFLAG=1
 
-SOLRDIR="/usr/local/share/solr4/ucb"
+SOLRDIR="/usr/local/share/solr4/xxx"
 KEY="-DSTOP.KEY=\"Requiescat\""
 MEM="-Xmx512m"
 OWNER="jblowe"
