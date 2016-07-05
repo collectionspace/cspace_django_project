@@ -38,7 +38,7 @@ if [ ! -e /tmp/solr-$SOLRVERSION.tgz ];
 then
    echo "solr-$SOLRVERSION.tgz does not exist, attempting to download"
    # install solr
-   curl -o /tmp/solr-$SOLRVERSION.tgz http://mirror.symnds.com/software/Apache/lucene/solr/$SOLRVERSION/solr-$SOLRVERSION.tgz
+   curl -o /tmp/solr-$SOLRVERSION.tgz https://archive.apache.org/dist/lucene/solr/$SOLRVERSION/solr-$SOLRVERSION.tgz
 fi
 tar xzf /tmp/solr-$SOLRVERSION.tgz
 mv solr-$SOLRVERSION $SOLR4
