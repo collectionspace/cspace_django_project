@@ -15,12 +15,14 @@
 DBGLOG=/tmp/initddbg.log
 DBGFLAG=1
 
+# the following directory may to be customized for your deployment
+# you can either edit the value here, or add it to the environment variables
+# SOLRDIR="/usr/local/share/solr4/xxx"
 if [ ! -e "${SOLRDIR}" ];
 then
    echo "${SOLRDIR} does not exist. Please set environment variable SOLRDIR and try again"
    exit 1
 fi
-SOLRDIR="/usr/local/share/solr4/xxx"
 KEY="-DSTOP.KEY=\"Requiescat\""
 MEM="-Xmx512m"
 JARFILE="-Dsolr.solr.home=multicore -jar start.jar"
