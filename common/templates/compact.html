@@ -16,7 +16,7 @@
                 <div>LatLong: {{ item.location }}
                     {% if item.marker %}
                         <a class="map-item">[click for map]</a>
-                        <div data-marker="{{ item.marker }}" class="small-map"
+                        <div data-marker="{{ item.location }}" class="small-map"
                              style="display:none; margin-bottom:10px;">
                             <div class="map-replace"></div>
                             {% for i in item.mapfields %}
