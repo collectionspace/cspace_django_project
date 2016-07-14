@@ -478,6 +478,7 @@ def doSearch(context, prmz):
             context['start'] = 1
     else:
         for p in requestObject:
+            # skip form values that are not strictly input values
             if p in ['csrfmiddlewaretoken', 'displayType', 'resultsOnly', 'maxresults', 'url', 'querystring', 'pane',
                      'pixonly', 'locsonly', 'acceptterms', 'submit', 'start', 'sortkey', 'count', 'summarizeon',
                      'summarize', 'summaryfields', 'lastpage']: continue
@@ -625,21 +626,24 @@ def doSearch(context, prmz):
 
         # pull out the fields that have special functions in the UI
         for p in prmz.PARMS:
+            # note please: there is no if-elif construction here...it is possible, for example
+            # for the mainentry and the sortkey to be the same field!
+            if 'sortkey' in prmz.PARMS[p][1]:
+                item['sortkey'] = extractValue(rowDict, prmz.PARMS[p][3])
             if 'mainentry' in prmz.PARMS[p][1]:
                 item['mainentry'] = extractValue(rowDict, prmz.PARMS[p][3])
-            elif 'accession' in prmz.PARMS[p][1]:
-                x = prmz.PARMS[p]
+            if 'objectno' in prmz.PARMS[p][1]:
+                item['objectno'] = extractValue(rowDict, prmz.PARMS[p][3])
+            if 'accession' in prmz.PARMS[p][1]:
                 item['accession'] = extractValue(rowDict, prmz.PARMS[p][3])
                 item['accessionfield'] = prmz.PARMS[p][4]
-            elif 'sortkey' in prmz.PARMS[p][1]:
-                item['sortkey'] = extractValue(rowDict, prmz.PARMS[p][3])
-            elif 'csid' in prmz.PARMS[p][1]:
+            if 'csid' in prmz.PARMS[p][1]:
                 item['csid'] = extractValue(rowDict, prmz.PARMS[p][3])
             # uh oh ... need to fix the blob v. blobs naming someday...
-            elif 'blob' in prmz.PARMS[p][1]:
-                item['blobs'] = extractValue(rowDict, prmz.PARMS[p][3])
+            if 'blob' in prmz.PARMS[p][1]:
+                item['blobs'] = rowDict[prmz.PARMS[p][3]]
                 imageCount += len(item['blobs'])
-            elif 'card' in prmz.PARMS[p][1]:
+            if 'card' in prmz.PARMS[p][1]:
                 item['card'] = extractValue(rowDict, prmz.PARMS[p][3])
 
         if prmz.LOCATION in rowDict.keys():
