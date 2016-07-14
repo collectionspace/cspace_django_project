@@ -631,8 +631,19 @@ def doSearch(context, prmz):
                 x = prmz.PARMS[p]
                 item['accession'] = extractValue(rowDict, prmz.PARMS[p][3])
                 item['accessionfield'] = prmz.PARMS[p][4]
-            if 'sortkey' in prmz.PARMS[p][1]:
+            elif 'sortkey' in prmz.PARMS[p][1]:
                 item['sortkey'] = extractValue(rowDict, prmz.PARMS[p][3])
+            elif 'csid' in prmz.PARMS[p][1]:
+                item['csid'] = extractValue(rowDict, prmz.PARMS[p][3])
+            elif 'blobs' in prmz.PARMS[p][1]:
+                item['blobs'] = extractValue(rowDict, prmz.PARMS[p][3])
+                imageCount += len(item['blobs'])
+            elif 'card' in prmz.PARMS[p][1]:
+                item['card'] = extractValue(rowDict, prmz.PARMS[p][3])
+
+        if prmz.LOCATION in rowDict.keys():
+            item['marker'] = makeMarker(rowDict[prmz.LOCATION])
+            item['location'] = rowDict[prmz.LOCATION]
 
 
         otherfields = []
@@ -649,17 +660,6 @@ def doSearch(context, prmz):
                 #raise
                 otherfields.append({'label': p['label'], 'name': p['name'], 'multi': 0, 'value': ''})
         item['otherfields'] = otherfields
-        if 'csid_s' in rowDict.keys():
-            item['csid'] = rowDict['csid_s']
-        # the list of blob csids need to remain an array, so restore it from psql result
-        if 'blob_ss' in rowDict.keys():
-            item['blobs'] = rowDict['blob_ss']
-            imageCount += len(item['blobs'])
-        if 'card_ss' in rowDict.keys():
-            item['cards'] = rowDict['card_ss']
-        if prmz.LOCATION in rowDict.keys():
-            item['marker'] = makeMarker(rowDict[prmz.LOCATION])
-            item['location'] = rowDict[prmz.LOCATION]
         context['items'].append(item)
 
     # if context['displayType'] in ['full', 'grid'] and response._numFound > prmz.MAXRESULTS:
