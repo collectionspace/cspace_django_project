@@ -635,7 +635,8 @@ def doSearch(context, prmz):
                 item['sortkey'] = extractValue(rowDict, prmz.PARMS[p][3])
             elif 'csid' in prmz.PARMS[p][1]:
                 item['csid'] = extractValue(rowDict, prmz.PARMS[p][3])
-            elif 'blobs' in prmz.PARMS[p][1]:
+            # uh oh ... need to fix the blob v. blobs naming someday...
+            elif 'blob' in prmz.PARMS[p][1]:
                 item['blobs'] = extractValue(rowDict, prmz.PARMS[p][3])
                 imageCount += len(item['blobs'])
             elif 'card' in prmz.PARMS[p][1]:
