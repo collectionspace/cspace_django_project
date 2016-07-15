@@ -641,7 +641,11 @@ def doSearch(context, prmz):
                 item['csid'] = extractValue(rowDict, prmz.PARMS[p][3])
             # uh oh ... need to fix the blob v. blobs naming someday...
             if 'blob' in prmz.PARMS[p][1]:
-                item['blobs'] = rowDict[prmz.PARMS[p][3]]
+                # there may not be any blobs for this record...
+                try:
+                    item['blobs'] = rowDict[prmz.PARMS[p][3]]
+                except:
+                    item['blobs'] = []
                 imageCount += len(item['blobs'])
             if 'card' in prmz.PARMS[p][1]:
                 item['card'] = extractValue(rowDict, prmz.PARMS[p][3])
