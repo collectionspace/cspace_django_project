@@ -124,12 +124,12 @@ def uploadmedia(mediaElements, config, http_parms):
         messages.append("posting to media REST API...")
         payload = mediaPayload(mediaElements, http_parms.institution)
         messages.append(payload)
-        hostname = http_parms.hostname
+        server = http_parms.protocol + "://" + http_parms.hostname
         try:
-            hostname = hostname + ':' + http_parms.port
+            server = server + ':' + http_parms.port
         except:
             pass
-        (url, data, mediaCSID, elapsedtime) = postxml('POST', uri, http_parms.realm, hostname, http_parms.username, http_parms.password, payload)
+        (url, data, mediaCSID, elapsedtime) = postxml('POST', uri, http_parms.realm, server, http_parms.username, http_parms.password, payload)
         # elapsedtimetotal += elapsedtime
         messages.append('got mediacsid %s elapsedtime %s ' % (mediaCSID, elapsedtime))
         mediaElements['mediaCSID'] = mediaCSID
@@ -146,7 +146,7 @@ def uploadmedia(mediaElements, config, http_parms):
             """
 
             try:
-                postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, primary_payload)
+                postxml('POST', 'batch/563d0999-d29e-4888-b58d', http_parms.realm, server, http_parms.username, http_parms.password, primary_payload)
             except:
                 print "batch job to set primary image failed."
 
@@ -179,7 +179,7 @@ def uploadmedia(mediaElements, config, http_parms):
             mediaElements['subjectDocumentType'] = 'Media'
 
             payload = relationsPayload(mediaElements)
-            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, payload)
+            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, server, http_parms.username, http_parms.password, payload)
             # elapsedtimetotal += elapsedtime
             messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
             mediaElements['media2objCSID'] = csid
@@ -193,7 +193,7 @@ def uploadmedia(mediaElements, config, http_parms):
             mediaElements['objectDocumentType'] = 'Media'
             mediaElements['subjectDocumentType'] = 'CollectionObject'
             payload = relationsPayload(mediaElements)
-            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, http_parms.hostname, http_parms.username, http_parms.password, payload)
+            (url, data, csid, elapsedtime) = postxml('POST', uri, http_parms.realm, server, http_parms.username, http_parms.password, payload)
             #elapsedtimetotal += elapsedtime
             messages.append('got relation csid %s elapsedtime %s ' % (csid, elapsedtime))
             mediaElements['obj2mediaCSID'] = csid
@@ -260,7 +260,7 @@ if __name__ == "__main__":
         http_parms.cache_path = config.get('files', 'directory')
 
     except:
-        print "could not get at least one of realm, hostname, username, password or institution from config file."
+        print "could not get at least one of alwayscreatemedia, realm, hostname, port, protocol, username, password or institution from config file."
         # print "can't continue, exiting..."
         raise
 
@@ -291,7 +291,7 @@ if __name__ == "__main__":
         for v1, v2 in enumerate(columns):
             mediaElements[v2] = r[v1]
         mediaElements['approvedforweb'] = 'true' if mediaElements['approvedforweb'] == 'on' else 'false'
-        print 'uploading media for objectnumber %s' % mediaElements['objectnumber']
+        print 'MEDIA: uploading media for objectnumber %s' % mediaElements['objectnumber']
         try:
             mediaElements = uploadblob(mediaElements, config, http_parms)
             mediaElements = uploadmedia(mediaElements, config, http_parms)
