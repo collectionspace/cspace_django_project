@@ -17,19 +17,21 @@ TEMPIMAGEDIR = config.get('files', 'directory')
 POSTBLOBPATH = config.get('info', 'postblobpath')
 BATCHPARAMETERS = config.get('info', 'batchparameters')
 BATCHPARAMETERS = BATCHPARAMETERS.replace('.cfg', '')
-JOBDIR = path.join(TEMPIMAGEDIR, '%s')
 SERVERINFO = {
     'serverlabelcolor': config.get('info', 'serverlabelcolor'),
     'serverlabel': config.get('info', 'serverlabel')
 }
 INSTITUTION = config.get('info', 'institution')
-FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(
-    ' ')
+FIELDS2WRITE = 'name size objectnumber date creator contributor rightsholder imagenumber handling approvedforweb'.split(' ')
 
 if isdir(TEMPIMAGEDIR):
     print "Using %s as working directory for images and metadata files" % TEMPIMAGEDIR
 else:
-    raise Exception("BMU working directory %s does not exist. this webapp will not work without it!" % TEMPIMAGEDIR)
+    print "%s is not an existing directory, using /tmp instead" % TEMPIMAGEDIR
+    TEMPIMAGEDIR  = '/tmp'
+    # raise Exception("BMU working directory %s does not exist. this webapp will not work without it!" % TEMPIMAGEDIR)
+
+JOBDIR = path.join(TEMPIMAGEDIR, '%s')
 
 # Get an instance of a logger, log some startup info
 logger = logging.getLogger(__name__)
@@ -137,13 +139,16 @@ def getBMUoptions():
             bmuoptions = config.get('info', 'bmuoptions')
             bmuoptions = json.loads(bmuoptions.replace('\n', ''))
         except:
+            print "Could not find or could not parse BMU options (parameter 'bmuoptions'), defaults will be taken!"
+            if bmuoptions: print bmuoptions
             bmuoptions = []
         # a dict of dicts...
         try:
             bmuconstants = config.get('info', 'bmuconstants')
             bmuconstants = json.loads(bmuconstants.replace('\n', ''))
         except:
-            print "no constants parsed!"
+            print "Could not find or could not parse BMU constants (parameter 'bmuconstants'), none will be inserted into media records!"
+            if bmuconstants: print bmuconstants
             bmuconstants = {}
 
         # add the columns for these constants to the list of output values
@@ -151,10 +156,16 @@ def getBMUoptions():
             for constants in bmuconstants[imagetypes].keys():
                 if not constants in FIELDS2WRITE:
                     FIELDS2WRITE.append(constants)
+    else:
+        print "No BMU options are not enabled. No defaults or special handling of media."
+
     try:
         overrides = config.get('info', 'overrides')
         overrides = json.loads(overrides.replace('\n', ''))
+        for o in overrides:
+            print 'BMU will attempt to configure overrides for %s' % o[0]
     except:
+        print "Could not find or could not parse BMU overrides (parameter 'overrides'). Please check your JSON!"
         overrides = []
 
     for override in overrides:
@@ -163,11 +174,18 @@ def getBMUoptions():
 
     for override in overrides:
         if override[1] == 'dropdown':
-            dropdown = config.get('info', override[2] + 's')
-            dropdown = json.loads(dropdown)
-            override.append(dropdown)
+            dropdown = ''
+            try:
+                dropdown = config.get('info', override[2] + 's')
+                dropdown = json.loads(dropdown)
+                override.append(dropdown)
+                print 'BMU override configured for %ss' % override[2]
+            except:
+                print 'Could not parse overrides for %ss, please check your JSON.' % override[2]
+                if dropdown: print dropdown
         else:
             # add an empty dropdown element -- has to be a dict
+            print 'BMU override configured for %s' % override[2]
             override.append({})
     return {
         'allowintervention': allowintervention,

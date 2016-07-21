@@ -1,7 +1,7 @@
-Django>=1.5
+Python>=2.7,<3.0
+Django>=1.5,<1.8
 Pillow<3.0
 PyGreSQL
-psycopg2
 Pygments
 django-extensions
 django-filter
@@ -11,6 +11,8 @@ django-tables2-reports
 djangorestframework
 itsdangerous
 #numpy
+psycopg2
+#pysmb
 requests
 six
 solrpy

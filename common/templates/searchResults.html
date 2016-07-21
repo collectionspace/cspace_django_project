@@ -8,7 +8,6 @@
     <input type="hidden" name="count" value="{{ count }}"/>
     <input type="hidden" name="lastpage" id="lastpage" value="{{ lastpage }}"/>
     <input type="hidden" name="start" value="{{ start }}"/>
-    <input type="hidden" name="maxresults" value="{{ maxresults }}"/>
     <input type="hidden" name="displayType" value="list"/>
     <input type="hidden" name="querystring" value="{{ querystring }}"/>
     <input type="hidden" name="url" value="{{ url }}"/>
@@ -17,13 +16,13 @@
                 <li><a href="#results">Results</a></li>
                 <li><a href="#facets">Facets</a></li>
                 <li><a href="#maps">Maps</a></li>
-                {% if count <= 30000 %}
+                {% if count <= resultlimit %}
                 <li><a href="#statistics">Statistics</a></li>
                 {% endif %}
                 <!-- li><a href="#configuration">Configuration</a></li -->
             </ul>
             <div style="height: 30px; padding-top: 15px;">
-            <input type="checkbox" id="select-items" checked/> select all
+            <input type="checkbox" id="select-items" name="select-items" checked/> select all
             <button type="submit" name="csv" id="search-csv" class="prettyBtn">download selected as csv</button>
             <!-- button type="submit" name="pdf" id="search-pdf" class="prettyBtn">Print PDF</button -->
             <!-- button type="submit" name="preview" id="search-preview" class="prettyBtn">printable version</button -->
@@ -31,8 +30,8 @@
             {% include "results.html" %}
             {% include "facets.html" %}
             {% include "maps.html" %}
-            {% if count <= 30000 %}
-            {% include "statistics.html" %}
+            {% if count <= resultlimit %}
+                {% include "statistics.html" %}
             {% endif %}
             <!--  include "configuration.html"  -->
         </div>

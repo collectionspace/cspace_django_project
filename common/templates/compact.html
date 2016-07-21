@@ -7,7 +7,8 @@
                 <input type="checkbox" name="item-{{ item.counter }}" value="{{ item.csid }}" checked/>
                 <b><a href="?maxresults=1&displayType=full&{{ item.accessionfield }}={{ item.accession }}">{{ item.accession }}</a></b>
                 {% if user.is_active and user.is_staff %}
-                    <a target="cspace" href="{{ cspaceserver }}/collectionspace/ui/{{ institution }}/html/cataloging.html?csid={{ item.csid }}"><img src="{% static "common/images/open_cspace.png" %}" class="cspaceLink">Open in CSpace</a>
+                <a target="cspace" href="{{ cspaceserver }}/collectionspace/ui/{{ institution }}/html/{{ csrecordtype }}.html?csid={{ item.csid }}">
+                    <img src="{% static "common/images/open_cspace.png" %}" class="cspaceLink">Open in CSpace</a>
                 {% endif %}
                 <h3 style="padding: 9px 0px;">{{ item.mainentry|safe }}</h3>
             </div>
@@ -15,7 +16,7 @@
                 <div>LatLong: {{ item.location }}
                     {% if item.marker %}
                         <a class="map-item">[click for map]</a>
-                        <div data-marker="{{ item.marker }}" class="small-map"
+                        <div data-marker="{{ item.location }}" class="small-map"
                              style="display:none; margin-bottom:10px;">
                             <div class="map-replace"></div>
                             {% for i in item.mapfields %}

@@ -8,6 +8,7 @@ logs/settings.log
 config/*.cfg
 config/*.csv
 config/*.xml
+fixtures/*.json
 *.DS_Store
 .idea
 cspace_django_site/urls.py

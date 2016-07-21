@@ -11,7 +11,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django import forms
 from cspace_django_site.main import cspace_django_site
-from common.utils import writeCsv, doSearch, setupGoogleMap, setupBMapper, computeStats, setupCSV, setup4Print, setDisplayType, setConstants, loginfo
+from common.utils import writeCsv, doSearch, setupGoogleMap, setupBMapper, computeStats, setupCSV, setup4Print, setup4PDF
+from common.utils import setDisplayType, setConstants, loginfo
+
 # from common.utils import CSVPREFIX, CSVEXTENSION
 from common.appconfig import loadFields, loadConfiguration
 from common import cspace  # we use the config file reading function
@@ -64,7 +66,6 @@ def retrieveResults(request):
         loginfo(logger, 'results.%s' % context['displayType'], context, request)
         return render(request, 'searchResults.html', context)
 
-
 @login_required()
 def bmapper(request):
     if request.method == 'POST' and request.POST != {}:
@@ -96,12 +97,11 @@ def gmapper(request):
 @login_required()
 def dispatch(request):
 
-    if True:
-        pass
-
     if request.method == 'POST' and request.POST != {}:
         requestObject = dict(request.POST.iteritems())
         form = forms.Form(requestObject)
+
+    if 'csv' in request.POST or 'downloadstats' in request.POST:
 
         if form.is_valid():
             try:
@@ -119,20 +119,24 @@ def dispatch(request):
                 context['messages'] = messages
                 return search(request)
 
-    if request.method == 'POST' and request.POST != {}:
-        requestObject = dict(request.POST.iteritems())
-        form = forms.Form(requestObject)
+    elif 'pdf' in request.POST:
 
         if form.is_valid():
             try:
                 context = {'searchValues': requestObject}
                 loginfo(logger, 'pdf', context, request)
-                return setup4Print(request, context, prmz)
+                return setup4PDF(request, context, prmz)
 
             except:
-                messages.error(request, 'Problem creating .csv file. Sorry!')
+                messages.error(request, 'Problem creating .pdf file. Sorry!')
                 context['messages'] = messages
                 return search(request)
+
+
+    elif 'preview' in request.POST:
+        messages.error(request, 'Problem creating print version. Sorry!')
+        context = {'messages': messages}
+        return search(request)
 
 
 @login_required()

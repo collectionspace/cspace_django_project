@@ -6,14 +6,17 @@ import json
 #from common.cspace import logged_in_or_basicauth
 from django.shortcuts import render, HttpResponse, redirect
 from django.core.servers.basehttp import FileWrapper
-#from django.conf import settings
-#from django import forms
 from os import path, remove
 import logging
 import time, datetime
 from getNumber import getNumber
 from utils import SERVERINFO, POSTBLOBPATH, INSTITUTION, BATCHPARAMETERS, FIELDS2WRITE
 from utils import getBMUoptions, handle_uploaded_file, assignValue, get_exif, writeCsv, getJobfile, getJoblist, loginfo
+
+# read common config file, just for the version info
+from common.appconfig import loadConfiguration
+prmz = loadConfiguration('common')
+
 import subprocess
 from .models import AdditionalInfo
 
@@ -79,7 +82,7 @@ def prepareFiles(request, validateonly, BMUoptions, constants):
                     # DP-2015-10-08-12-16-43-0001 length: 27
                     # DP-201510081216430001 length: 21
                     # DP-2CBE859E990BFB1 length: 18
-                    # DP-2cbe859e990bfb1 length: 18 the winner!
+                    # DP-2015-10-08-12-16-43-0001 length: 27 the winner! (most legible)
                     mhnumber = jobnumber + ("-%0.4d" % (lineno + 1))
                     #mhnumber = hex(int(mhnumber.replace('-','')))[2:]
                     imageinfo['objectnumber'] = 'DP-' + mhnumber
@@ -178,7 +181,7 @@ def uploadfiles(request):
 
     return render(request, 'uploadmedia.html',
                   {'apptitle': TITLE, 'serverinfo': SERVERINFO, 'images': images, 'count': len(images),
-                   'constants': constants, 'jobinfo': jobinfo, 'validateonly': im.validateonly,
+                   'constants': constants, 'jobinfo': jobinfo, 'validateonly': im.validateonly, 'version': prmz.VERSION,
                    'dropdowns': im.BMUoptions, 'override_options': override_options, 'status': status, 'timestamp': timestamp,
                    'elapsedtime': '%8.2f' % elapsedtime})
 
@@ -197,7 +200,7 @@ def checkfilename(request):
     status = 'up'
     timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
 
-    return render(request, 'uploadmedia.html', {'filenames2check': listoffilenames,
+    return render(request, 'uploadmedia.html', {'filenames2check': listoffilenames, 'version': prmz.VERSION,
                                                 'objectnumbers': objectnumbers, 'dropdowns': im.BMUoptions,
                                                 'override_options': override_options, 'timestamp': timestamp,
                                                 'elapsedtime': '%8.2f' % elapsedtime,
@@ -234,13 +237,12 @@ def showqueue(request):
         jobs = None
     else:
         errors = None
-    BMUoptions = getBMUoptions()
     elapsedtime = time.time() - elapsedtime
     status = 'up'
     timestamp = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
 
     return render(request, 'uploadmedia.html',
-                  {'dropdowns': BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
-                   'elapsedtime': '%8.2f' % elapsedtime,
+                  {'dropdowns': im.BMUoptions, 'override_options': override_options, 'timestamp': timestamp,
+                   'elapsedtime': '%8.2f' % elapsedtime, 'version': prmz.VERSION,
                    'status': status, 'apptitle': TITLE, 'serverinfo': SERVERINFO, 'jobs': jobs, 'jobcount': jobcount,
                    'errors': errors, 'errorcount': errorcount})

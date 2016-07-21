@@ -9,7 +9,8 @@ from os import path
 from copy import deepcopy
 
 from io import BytesIO
-from common.table import makeReport
+# disable reportlab code for now
+# from common.table import makeReport
 from django.http import HttpResponse, HttpResponseRedirect
 
 
@@ -157,7 +158,7 @@ def writeCsv(filehandle, fieldset, items, writeheader=False, csvFormat='csv'):
 
 def getMapPoints(context, requestObject):
     mappableitems = []
-    if 'select-item' in requestObject:
+    if 'select-items' in requestObject:
         mapitems = context['items']
         numSelected = len(mapitems)
     else:
@@ -260,14 +261,14 @@ def setup4PDF(request, context, prmz):
 
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="My Users.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="test.pdf"'
 
     buffer = BytesIO()
 
-    report = makeReport(buffer, 'Letter', 'header', 'footer')
-    pdf = report.fillReport(table)
+    #report = makeReport(buffer, 'Letter', 'header', 'footer')
+    #pdf = report.fillReport(table)
 
-    response.write(pdf)
+    #response.write(pdf)
     return response
 
 
@@ -294,7 +295,7 @@ def setupCSV(requestObject, context, prmz):
         context = doSearch(context, prmz)
         selected = []
         # check to see if 'select all' is clicked...if so, skip checking individual items
-        if 'select-item' in requestObject:
+        if 'select-items' in requestObject:
             csvitems = context['items']
         else:
             for p in requestObject:
@@ -365,9 +366,11 @@ def setConstants(context, prmz):
     context['derivativegrid'] = prmz.DERIVATIVEGRID
     context['sizecompact'] = prmz.SIZECOMPACT
     context['sizegrid'] = prmz.SIZEGRID
+    context['resultlimit'] = prmz.MAXRESULTS
     context['timestamp'] = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     context['qualifiers'] = [{'val': s, 'dis': s} for s in prmz.SEARCH_QUALIFIERS]
     context['resultoptions'] = [100, 500, 1000, 2000, 10000]
+    context['csrecordtype'] = prmz.CSRECORDTYPE
 
     context['searchrows'] = range(prmz.SEARCHROWS + 1)[1:]
     context['searchcolumns'] = range(prmz.SEARCHCOLUMNS + 1)[1:]
@@ -408,7 +411,7 @@ def setConstants(context, prmz):
         if 'querystring' in requestObject: context['querystring'] = requestObject['querystring']
         if 'core' in requestObject: context['core'] = requestObject['core']
         if 'pixonly' in requestObject: context['pixonly'] = requestObject['pixonly']
-        if 'maxresults' in requestObject: context['maxresults'] = int(requestObject['maxresults'])
+        context['maxresults'] = int(requestObject['maxresults']) if 'maxresults' in requestObject else context['resultoptions'][0]
         context['start'] = int(requestObject['start']) if 'start' in requestObject else 1
         context['maxfacets'] = int(requestObject['maxfacets']) if 'maxfacets' in requestObject else prmz.MAXFACETS
         context['sortkey'] = requestObject['sortkey'] if 'sortkey' in requestObject else prmz.DEFAULTSORTKEY
@@ -418,7 +421,7 @@ def setConstants(context, prmz):
         context['url'] = ''
         context['querystring'] = ''
         context['core'] = prmz.SOLRCORE
-        context['maxresults'] = 0
+        context['maxresults'] = context['resultoptions'][0]
         context['start'] = 1
         context['sortkey'] = prmz.DEFAULTSORTKEY
 
@@ -470,11 +473,12 @@ def doSearch(context, prmz):
         querystring = requestObject['querystring']
         url = requestObject['url']
         # Did the user request the full set?
-        if 'select-item' in requestObject:
-            context['maxresults'] = min(requestObject['count'], prmz.MAXRESULTS)
+        if 'select-items' in requestObject:
+            context['maxresults'] = prmz.MAXRESULTS
             context['start'] = 1
     else:
         for p in requestObject:
+            # skip form values that are not strictly input values
             if p in ['csrfmiddlewaretoken', 'displayType', 'resultsOnly', 'maxresults', 'url', 'querystring', 'pane',
                      'pixonly', 'locsonly', 'acceptterms', 'submit', 'start', 'sortkey', 'count', 'summarizeon',
                      'summarize', 'summaryfields', 'lastpage']: continue
@@ -522,7 +526,7 @@ def doSearch(context, prmz):
                             # eliminate some characters that might confuse solr's query parser
                             t = re.sub(r'[\[\]\:\(\)\" ]', ' ', t).strip()
                             # hyphen is allowed, but only as a negation operator
-                            t = re.sub(r'([^ ])-', '\1 ', ' ' + t).strip()
+                            t = re.sub(r'([^ ])-', r'\1 ', ' ' + t).strip()
                             # get rid of muliple spaces in a row
                             t = re.sub(r' +', ' ', t)
                             t = t.split(' ')
@@ -622,14 +626,33 @@ def doSearch(context, prmz):
 
         # pull out the fields that have special functions in the UI
         for p in prmz.PARMS:
-            if 'mainentry' in prmz.PARMS[p][1]:
-                item['mainentry'] = extractValue(rowDict, prmz.PARMS[p][3])
-            elif 'accession' in prmz.PARMS[p][1]:
-                x = prmz.PARMS[p]
-                item['accession'] = extractValue(rowDict, prmz.PARMS[p][3])
-                item['accessionfield'] = prmz.PARMS[p][4]
+            # note please: there is no if-elif construction here...it is possible, for example
+            # for the mainentry and the sortkey to be the same field!
             if 'sortkey' in prmz.PARMS[p][1]:
                 item['sortkey'] = extractValue(rowDict, prmz.PARMS[p][3])
+            if 'mainentry' in prmz.PARMS[p][1]:
+                item['mainentry'] = extractValue(rowDict, prmz.PARMS[p][3])
+            if 'objectno' in prmz.PARMS[p][1]:
+                item['objectno'] = extractValue(rowDict, prmz.PARMS[p][3])
+            if 'accession' in prmz.PARMS[p][1]:
+                item['accession'] = extractValue(rowDict, prmz.PARMS[p][3])
+                item['accessionfield'] = prmz.PARMS[p][4]
+            if 'csid' in prmz.PARMS[p][1]:
+                item['csid'] = extractValue(rowDict, prmz.PARMS[p][3])
+            # uh oh ... need to fix the blob v. blobs naming someday...
+            if 'blob' in prmz.PARMS[p][1]:
+                # there may not be any blobs for this record...
+                try:
+                    item['blobs'] = rowDict[prmz.PARMS[p][3]]
+                except:
+                    item['blobs'] = []
+                imageCount += len(item['blobs'])
+            if 'card' in prmz.PARMS[p][1]:
+                item['card'] = extractValue(rowDict, prmz.PARMS[p][3])
+
+        if prmz.LOCATION in rowDict.keys():
+            item['marker'] = makeMarker(rowDict[prmz.LOCATION])
+            item['location'] = rowDict[prmz.LOCATION]
 
 
         otherfields = []
@@ -646,17 +669,6 @@ def doSearch(context, prmz):
                 #raise
                 otherfields.append({'label': p['label'], 'name': p['name'], 'multi': 0, 'value': ''})
         item['otherfields'] = otherfields
-        if 'csid_s' in rowDict.keys():
-            item['csid'] = rowDict['csid_s']
-        # the list of blob csids need to remain an array, so restore it from psql result
-        if 'blob_ss' in rowDict.keys():
-            item['blobs'] = rowDict['blob_ss']
-            imageCount += len(item['blobs'])
-        if 'card_ss' in rowDict.keys():
-            item['cards'] = rowDict['card_ss']
-        if prmz.LOCATION in rowDict.keys():
-            item['marker'] = makeMarker(rowDict[prmz.LOCATION])
-            item['location'] = rowDict[prmz.LOCATION]
         context['items'].append(item)
 
     # if context['displayType'] in ['full', 'grid'] and response._numFound > prmz.MAXRESULTS:
