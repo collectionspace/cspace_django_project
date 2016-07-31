@@ -1,9 +1,12 @@
 {% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
 {% load staticfiles %}
 
 {% block coltype %}{% endblock %}
 
-{% block loginBtn %}{% endblock %}
+{% block branding %}
+    <h1 class="bannerTitle" id="site-name">&nbsp;</h1>
+{% endblock %}
 
 {% block content %}
     <div id="login" class="line">
@@ -15,7 +18,7 @@
                     {% if form.errors %}
                         <p>Your username and password didn't match. Please try again.</p>
                     {% endif %}
-                    
+
                     <table>
                         <tr>
                             <td>{{ form.username.label_tag }}</td>
@@ -26,9 +29,9 @@
                             <td>{{ form.password }}</td>
                         </tr>
                     </table>
-                    
-                    <input type="submit" class="prettyBtn" value="Sign In" />
-                    <input type="hidden" name="next" value="{{ next }}" />
+
+                    <input type="submit" class="prettyBtn" value="Sign In"/>
+                    <input type="hidden" name="next" value="{{ next }}"/>
                 </div>
             </form>
         </div>

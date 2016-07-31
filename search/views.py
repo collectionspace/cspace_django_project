@@ -61,8 +61,8 @@ def retrieveResults(request):
             context = {'searchValues': requestObject}
             context = doSearch(context, prmz)
 
-        loginfo(logger, 'results.%s' % context['displayType'], context, request)
-        return render(request, 'searchResults.html', context)
+            loginfo(logger, 'results.%s' % context['displayType'], context, request)
+            return render(request, 'searchResults.html', context)
 
 
 def bmapper(request):

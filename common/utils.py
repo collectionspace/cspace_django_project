@@ -5,8 +5,9 @@ import csv
 import solr
 import cgi
 
-from os import path
+from os import path, popen
 from copy import deepcopy
+from cspace_django_site import settings
 
 from io import BytesIO
 # disable reportlab code for now
@@ -672,10 +673,10 @@ def doSearch(context, prmz):
         context['items'].append(item)
 
     # if context['displayType'] in ['full', 'grid'] and response._numFound > prmz.MAXRESULTS:
-    # context['recordlimit'] = '(limited to %s for long display)' % prmz.MAXRESULTS
+    # context['recordlimit'] = '(limited to %s for long display.)' % prmz.MAXRESULTS
     #    context['items'] = context['items'][:prmz.MAXLONGRESULTS]
     if context['displayType'] in ['full', 'grid', 'list'] and response._numFound > context['maxresults']:
-        context['recordlimit'] = '(display limited to %s)' % context['maxresults']
+        context['recordlimit'] = '(display limited to %s.)' % context['maxresults']
 
     # I think this hack works for most values... but really it should be done properly someday... ;-)
     numberOfPages = 1 + int(response._numFound / (context['maxresults'] + 0.001))
@@ -715,4 +716,3 @@ def doSearch(context, prmz):
     context['core'] = solr_core
     context['time'] = '%8.3f' % (time.time() - elapsedtime)
     return context
-

@@ -1,11 +1,11 @@
-<div style="height: 45px; padding-top: 15px;">
+<div id="searchstats" style="height: 45px; padding-top: 15px;">
     {% if time %}
         {{ time }} seconds;
     {% endif %}
     {% if url %}
         {% if count > 0 %}
             {{ count }} items found.
-            {% if recordlimit %}<span style="color: red; font-weight: bold;">{{ recordlimit }}</span>
+            {% if recordlimit %}<span style="color: red;">{{ recordlimit }}</span>
             {% endif %}
             {% if pagesummary %}{{ pagesummary }}{% endif %}
         {% else %}no items found.

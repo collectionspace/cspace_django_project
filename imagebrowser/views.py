@@ -74,5 +74,7 @@ def images(request):
 
     else:
 
-        return render(request, 'showImages.html',
-                      {'title': prmz.TITLE, 'pgNum': 10, 'maxresults': 20})
+        context = setConstants({}, prmz)
+        context['pgNum'] = 10
+        context['maxresults'] = 20
+        return render(request, 'showImages.html', context)
