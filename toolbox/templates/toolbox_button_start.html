@@ -1,0 +1,15 @@
+{% spaceless %}
+    <div style="height: 40px; padding-top: 10px;">
+        <div style="font-style: italic; float: left;">
+            <p>
+                {% for k,field in applayout.items %}
+                    {% if 'button' in field.type and field.name == 'start' %}
+                        <button type="submit" id="{{ field.name }}" name="{{ field.parameter }}" class="prettyBtn"
+                                style="color: darkred">{{ field.label }}</button>&nbsp;
+                        <button type="button" id="search-reset" name="reset-button" class="prettyBtn">Reset</button>
+                    {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+{% endspaceless %}

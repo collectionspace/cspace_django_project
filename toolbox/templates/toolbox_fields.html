@@ -1,0 +1,67 @@
+{% spaceless %}
+    <table>
+        {% for rowid in searchrows %}
+            <tr>
+                {% for colid in searchcolumns %}
+                    {% for k,field in applayout.items %}
+                        {% if field.row == rowid and field.column == colid %}
+                            {% if 'dropdown' in field.type %}
+                                <td {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td>
+                                    <select id="{{ field.name }}" name="{{ field.name }}">
+                                        <option value="">Please select</option>
+                                        {% for value in field.parameter.0 %}
+                                            <option value="{{ value.1 }}"{% if value.1 == field.value %} selected{% endif %}>{{ value.0|slice:":40" }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            {% elif 'text' in field.type %}
+                                <td {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td>
+                                    <input size="{{ field.parameter }}" type="{{ field.type }}"
+                                            {% if suggestions == 'postgres' %}
+                                           id="{{ field.autocomplete }}.{{ field.name }}"
+                                           name="{{ field.autocomplete }}.{{ field.name }}"
+                                           source="postgres"
+                                            {% elif suggestions == 'solr' %}
+                                           id="{{ field.name }}"
+                                           name="{{ field.name }}"
+                                           source="solr"
+                                            {% endif %}
+                                           value="{{ field.value }}"/>
+                                </td>
+                            {% elif 'file' in field.type %}
+                                <td {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td>
+                                    <input type="{{ field.type }}" id="{{ field.name }}" name="{{ field.name }}"/>
+                                </td>
+                            {% elif 'hidden' in field.type %}
+                                <input type="{{ field.type }}" id="{{ field.name }}" name="{{ field.name }}"
+                                       value="{{ field.value }}"/>
+                            {% elif 'date' in field.type %}
+                                <td {% if field.style %} style="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td>
+                                <input type="text" class="datepicker" id="{{ field.name }}" name="{{ field.name }}"
+                                       value="{{ field.value }}"/>
+                                </td>
+                            {% elif 'placeholder' in field.type %}
+                                <td colspan="2"/>
+                            {% else %}
+                            {% endif %}
+                        {% else %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endspaceless %}

@@ -1,0 +1,161 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+
+{% block extrascript %}
+    <script>
+        $(function () {
+            $(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
+        });
+    </script>
+    <script type="text/javascript" src="{% static "cspace_django_site/js/d3.min.js" %}" charset="utf-8"></script>
+{% endblock extrascript %}
+
+{% block branding %}
+    {{ block.super }}
+    <div class="unitnav" style="padding-top: 3px;">
+    <a href="./">Switch Tool</a><span class="expandInfo">||</span>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {% include "toggled.html" %}
+        <input type="hidden" value="{{ institution }}"/>
+        <div class="searchPanel">
+            {% if appname == 'listapps' %}
+                <table cellspace="1" id="resultsListing">
+                    {% for app in apps %}
+                        {% if app.0 != 'listapps' %}
+                            <tr><td><a class="facet-item" href="{{ app.0 }}">{{ app.1.0 }}</a></td></tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            {% else %}
+                <form class="searchForm" id="search" method="POST">
+                    {% csrf_token %}
+                    <div>
+                        {% include "toolbox_fields.html" %}
+                        {% include "toolbox_button_start.html" %}
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+        <div id="waitingImage" style="display: none">
+            <img src="{% static "cspace_django_site/images/timer-animated.gif" %}" alt="Searching..."/>
+        </div>
+        <div id="checkPanel">
+            <form class="reviewForm" id="review" method="POST">
+                {% csrf_token %}
+                {% if checkitems %}
+                    <table>
+                    {% for key,value in checkitems.items %}
+                        <tr><td>{{ value.3 }}</td><td><b>{{ value.2 }}</b></td><td>({{ value.0 }} {{ value.1 }} {{ value.4 }})</td></tr>
+                    {% endfor %}
+                    </table>
+                    <hr/>
+                    {% include "toolbox_button_action.html" %}
+                {% endif %}
+            </form>
+        </div>
+        <div id="reviewPanel">
+            <form class="reviewForm" id="review" method="POST">
+                {% csrf_token %}
+                {% if reviewitems %}
+                    <div id="graph">
+                    <style> /* set the CSS */
+
+                    path {
+                        stroke: steelblue;
+                        stroke-width: 2;
+                        fill: none;
+                    }
+
+                    .axis path,
+                    .axis line {
+                        fill: none;
+                        stroke: grey;
+                        stroke-width: 1;
+                        shape-rendering: crispEdges;
+                    }
+                    </style>
+                    <script>
+                        // Set the dimensions of the canvas / graph
+                        var margin = {top: 30, right: 20, bottom: 30, left: 50},
+                                width = 600 - margin.left - margin.right,
+                                height = 270 - margin.top - margin.bottom;
+                        // Parse the date / time
+                        var parseDate = d3.time.format("%Y-%m-%d").parse;
+                        // Set the ranges
+                        var x = d3.time.scale().range([0, width]);
+                        var y = d3.scale.linear().range([height, 0]);
+                        // Define the axes
+                        var xAxis = d3.svg.axis().scale(x)
+                                .orient("bottom").ticks(5);
+                        var yAxis = d3.svg.axis().scale(y)
+                                .orient("left").ticks(5);
+                        // Define the line
+                        var valueline = d3.svg.line()
+                                .x(function (d) {
+                                    return x(d.date);
+                                })
+                                .y(function (d) {
+                                    return y(d.count);
+                                });
+
+                        // Adds the svg canvas
+                        var svg = d3.select("#graph")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform",
+                                        "translate(" + margin.left + "," + margin.top + ")");
+                        // Get the data
+                        d3.json("data/?activity=collectionobjects&num2ret=100&start=1999-01-01&end=2015-05-01&period=month", function (error, data) {
+                            data.forEach(function (d) {
+                                d.count = +d[0];
+                                d.date = parseDate(d[1]);
+                            });
+                            // Scale the range of the data
+                            x.domain(d3.extent(data, function (d) {
+                                return d.date;
+                            }));
+                            y.domain([0, d3.max(data, function (d) {
+                                return d.count;
+                            })]);
+                            // Add the valueline path.
+                            svg.append("path")
+                                    .attr("class", "line")
+                                    .attr("d", valueline(data));
+                            // Add the X Axis
+                            svg.append("g")
+                                    .attr("class", "x axis")
+                                    .attr("transform", "translate(0," + height + ")")
+                                    .call(xAxis);
+                            // Add the Y Axis
+                            svg.append("g")
+                                    .attr("class", "y axis")
+                                    .call(yAxis);
+                        });
+                    </script>
+                    {% render_table reviewitems %}
+                    <hr/>
+                    {{ numberofitems }} items listed.
+                    {% include "toolbox_button_action.html" %}
+                {% endif %}
+        </div>
+        <div id="resultsPanel">
+            <form class="resultsForm" id="results" method="POST">
+                {% csrf_token %}
+                {% if enumerateditems %}
+                    {% render_table enumerateditems %}
+                    <hr/>
+                    {{ numberofitems }} items listed.
+                    {% include "toolbox_button_action.html" %}
+                {% endif %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

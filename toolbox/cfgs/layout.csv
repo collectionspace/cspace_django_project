@@ -1,0 +1,229 @@
+#	toolbox layout configuration							
+#	V0.9	07/31/16						
+#	app	variable	label	type	parameters	autocomplete	row	column
+0	listapps		Available Webapps	header				
+1	advsearch	location	Location	text	40	lo	1	1
+2	advsearch	taxon	Taxon	text	40	ut	3	2
+3	advsearch	enumerate	Enumerate	button	enumerate			
+4	advsearch	start	Search	button	search			
+5	advsearch	concept	Concept	text	40	cx		
+6	advsearch	place	Place	text	40	px		
+								
+7	barcodeprint	object.start	Start Object	text	40	ob	1	1
+8	barcodeprint	object.end	End Object	text	40	ob	1	2
+9	barcodeprint	print	Enumerate	button	end			
+10	barcodeprint	start	Search	button	enumerate			
+11	barcodeprint	enumerate	Print	button	print			
+11	barcodeprint	printer	Printer	dropdown	printers		1	3
+#								
+12	bedlist	location.start	Garden Location	text	40	lo	1	1
+13	bedlist	dora	alive	radio	alive		1	2
+14	bedlist	dora	dead	radio	dead		1	2
+15	bedlist	groupby	location	radio	location		2	1
+16	bedlist	groupby	none	radio	none		2	1
+17	bedlist	rare	not rare	checkbox	false		2	2
+18	bedlist	rare	rare	checkbox	true		2	2
+19	bedlist	enumerate	Enumerate	button	end			
+20	bedlist	start	Search	button	enumerate			
+#								
+21	bulkedit	object.start	Start Object	text	32	ob	1	1
+22	bulkedit	object.end	End Object	text	32	ob	1	2
+#	bulkedit	update	Enumerate	button	end			
+24	bulkedit	fieldset	Fieldset	dropdown	fieldset		1	3
+24	bulkedit	start	Search	button	review			
+25	bulkedit	review	Update	button	update			
+42	bulkedit	update		button	end			
+#								
+36	governmentholdings	agency	Agency	dropdown	agencies		2	2
+26	governmentholdings	download	Download as CSV	button	download			
+27	governmentholdings	start	View Holdings	button	search			
+#								
+28	hierarchyviewer	authority	Authority to fetch	dropdown	authorities		1	1
+29	hierarchyviewer	start	View Hierarchy	button	enumerate			
+#								
+30	holdings	enumerate	Enumerate	button				
+31	holdings	start	Search	button	enumerate			
+32	holdings	place	Place	text	40	px		
+#								
+33	inventory	location.start	Start Location	text	40	lo	1	1
+34	inventory	location.end	End Location	text	40	lo	1	2
+35	inventory	handler	Handler	dropdown	handlers		2	1
+36	inventory	reason	Reason	dropdown	reasons		2	2
+37	inventory	enumerate	Enumerate	button	end			
+37	inventory	move	Enumerate	button	enumerate			
+38	inventory	start	Search	button	review			
+39	inventory	review	Inventory	button	move			
+#								
+40	keyinfo	location.start	Start Location	text	40	lo	1	1
+41	keyinfo	location.end	End Location	text	40	lo	1	2
+43	keyinfo	fieldset	Fieldset	dropdown	fieldset		1	3
+43	keyinfo	start	Search	button	review			
+44	keyinfo	review	Update Key Info	button	update			
+42	keyinfo	update		button	end			
+#								
+45	locreport	taxon	Taxon	text	40	ut	3	2
+46	locreport	enumerate	Enumerate	button	end			
+47	locreport	start	Search	button	enumerate			
+#								
+48	movecrate	location.start	From Location	text	40	lo	1	1
+49	movecrate	location.end	To Location	text	40	lo	1	2
+49	movecrate			placeholder			2	1
+50	movecrate	crate	To Crate	text	40	lo	2	1
+51	movecrate	handler	Handler	dropdown	handlers		3	1
+52	movecrate	reason	Reason	dropdown	reasons		3	2
+53	movecrate	move	Enumerate	button	end			
+54	movecrate	start	Search	button	movecheck			
+55	movecrate	movecheck	Move crate	button	move			
+#								
+57	moveobject	object.start	Start Object	text	40	ob	1	1
+58	moveobject	object.end	End Object	text	40	ob	1	2
+56	moveobject	location.start	To Location	text	40	lo	2	1
+59	moveobject	crate	To Crate	text	40	lo	2	2
+60	moveobject	handler	Handler	dropdown	handlers		3	1
+61	moveobject	reason	Reason	dropdown	reasons		3	2
+62	moveobject	move	Enumerate	button	end			
+63	moveobject	start	Search	button	movecheck			
+64	moveobject	movecheck	Move objects	button	move			
+#								
+65	objdetails	objectnumber	Museum Number	text	40	ob	1	1
+66	objdetails	enumerate	Search	button	end			
+66	objdetails	start	Search	button	enumerate			
+#								
+67	objinfo	object.start	Start Object	text	32	ob	1	1
+68	objinfo	object.end	End Object	text	32	ob	1	2
+69	objinfo	fieldset	Fieldset	dropdown	fieldset		1	3
+69	objinfo	start	Search	button	review			
+69	objinfo	review	Update Object Info	button	update			
+42	objinfo	update		button	end			
+#								
+70	packinglist	location.start	Start Location	text	40	lo	1	1
+71	packinglist	location.end	End Location	text	40	lo	1	2
+72	packinglist	groupbyculture	groupbyculture	checkbox 			2	1
+73	packinglist	place	Place	text	40	cp	2	2
+74	packinglist	movecheck	Enumerate	button	enumerate			
+75	packinglist	movecheck	Download as CSV	button	save			
+76	packinglist	start	Search	button	movecheck			
+42	packinglist	save		button	end			
+42	packinglist	enumerate		button	end			
+#								
+77	powermove	location.start	From Location	text	40	lo	1	1
+78	powermove	location.end	To Location	text	40	lo	1	2
+79	powermove	crate.start	From Crate	text	40	lo	2	1
+80	powermove	crate.end	To Crate	text	40	lo	2	2
+81	powermove	handler	Handler	dropdown	handlers		3	1
+82	powermove	reason	Reason	dropdown	reasons		3	2
+83	powermove	move	Enumerate	button	end			
+84	powermove	start	Search	button	movecheck			
+85	powermove	movecheck	Move objects	button	move			
+#								
+86	search	objectnumber	Museum Number	text	40	ob	1	1
+87	search	concept	Concept	text	40	co	2	1
+88	search	place	Place	text	40	cp	3	1
+89	search	search	Enumerate	button	end			
+90	search	start	Search	button	search			
+#								
+91	upload	file	Select Files	file			1	1
+91	upload	start	Upload	button			1	1
+100	keyinfo	museumnumber	Museum #	string	100			
+101	keyinfo	objectname	Object name	string	140			
+102	keyinfo	count	Count	integer	40			
+103	keyinfo	fieldcollectionplace	Field Collection Place	string	150			
+104	keyinfo	culturalgroup	Cultural Group	string	150			
+105	keyinfo	ethnographicfilecode	Ethnographic File Code	string	150			
+106	namedesc	museumnumber	Museum #	string	100			
+107	namedesc	objectname	Object name	string	140			
+108	namedesc	briefdescription	Brief Description	string	150			
+109	registration	museumnumber	Museum #	string	100			
+110	registration	objectname	Object name	string	140			
+111	registration	altnum	Alt Num	string	40			
+112	registration	altnumtype	Alt Num Type	string	40			
+113	registration	fieldcollector	Field Collector	string	100			
+114	registration	donor	Donor	string	100			
+115	registration	accession	Accession	string	60			
+116	hsrinfo	museumnumber	Museum #	string	100			
+117	hsrinfo	objectname	Object name	string	140			
+118	hsrinfo	count	Count	integer	40			
+119	hsrinfo	countnote	Count Note	string	40			
+120	hsrinfo	fieldcollectionplace	Field Collection Place	string	150			
+121	objtypecm	museumnumber	Museum #	string	100			
+122	objtypecm	objectname	Object name	string	140			
+123	objtypecm	count	Count	integer	40			
+124	objtypecm	objecttype	Object Type	string	40			
+125	objtypecm	collectionmanager	Collection Manager	string	150			
+126	objtypecm	fieldcollectionplace	Field Collection Place	string	150			
+127	inventory	IDnumber	ID number 	string	40			
+128	inventory	title	Title	string	40			
+129	inventory	artist	Artist	string	150			
+130	inventory	found	Found	string	40			
+131	inventory	notfound	Not Found	string	40			
+132	inventory	museumnumber	Museum #	string	100			
+133	inventory	objectname	Object name	string	140			
+134	inventory	found	Found	string	40			
+135	movecrate	museumnumber	Museum #	string	100			
+136	movecrate	objectname	Object name	string	140			
+137	movecrate	move	Move	string	40			
+138	movecrate	dontmove	Don't move	string	40			
+139	packinglist	IDnumber	ID number	string	40			
+140	packinglist	title	Title	string	150			
+141	packinglist	artist	Artist	string	150			
+142	packinglist	medium	Medium	string	40			
+143	packinglist	dimensions	Dimensions	string	100			
+144	packinglist	creditLine	Credit Line	string	150			
+145	packinglist	museumnumber	Museum #	string	100			
+146	packinglist	objectname	Object name	string	140			
+147	packinglist	count	Count	integer	40			
+148	packinglist	fieldcollectionplace	Field Collection Place	string	150			
+149	packinglist	culturalgroup	Cultural Group	string	150			
+150	packinglist	ethnographicfilecode	Ethnographic File Code	string	150			
+151	packinglistbyculture	museumnumber	Museum #	string	100			
+152	packinglistbyculture	objectname	Object name	string	140			
+153	packinglistbyculture	count	Count	integer	40			
+154	packinglistbyculture	location	Location	string	150			
+155	packinglistbyculture	fieldcollectionplace	Field Collection Place	string	150			
+156	moveobject	move	Move?	checkbox	40			
+157	moveobject	museumnumber	Museum #	string	100			
+158	moveobject	objectname	Object name	string	140			
+159	moveobject	count	Count	integer	40			
+160	moveobject	location	Location	string	150			
+161	bedlist	accession	Accession	float	60			
+162	bedlist	taxonomicname	Taxonomic Name	string	40			
+163	bedlist	family	Family	string	150			
+164	bedlist	gardenlocation	Garden Location	string	150			
+165	bedlist	locality	Locality	string	150			
+166	bedlist	rare	Rare?	string	40			
+167	bedlist	accessiondead	Accession Dead?	string	40			
+168	locreport	accession	Accession	float	60			
+169	locreport	taxonomicname	Taxonomic Name	string	40			
+170	locreport	family	Family	string	150			
+171	locreport	gardenlocation	Garden Location	string	150			
+172	locreport	locality	Locality	string	150			
+173	locreport	rare	Rare?	string	40			
+174	locreport	accessiondead	Accession Dead?	string	40			
+175	keyinforesult	museumnumber	Museum #	string	100			
+176	keyinforesult	csid	CSID	string	40			
+177	keyinforesult	status	Status	string	40			
+178	keyinforesult	museumnumber	Museum #	string	100			
+179	keyinforesult	csid	CSID	string	40			
+180	keyinforesult	status	Status	string	40			
+181	keyinforesult	museumnumber	Museum #	string	100			
+182	objinforesult	museumnumber	Museum #	string	100			
+183	objinforesult	updatedInventorystatus	Updated Inventory Status	string	40			
+184	objinforesult	note	Note	string	40			
+185	objinforesult	updatestatus	Update status	string	40			
+186	barcodeprint	location	Location	string	150			
+187	barcodeprint	objectsfound	Objects found	string	140			
+188	barcodeprint	barcodefilename	Barcode Filename	string	150			
+189	barcodeprint	notes	Notes	string	40			
+190	barcodeprintlocations	locationslisted	Locations listed	string	40			
+191	barcodeprintlocations	barcodefilename	Barcode Filename	string	150			
+192	upload	museumnumber	Museum #	string	100			
+193	upload	note	Note	string	40			
+194	upload	updatestatus	Update status	string	40			
+#								
+195	activityviewer	activity	Activity	dropdown	activities		1	1
+196	activityviewer	date.start	Start Date	date	40		2	1
+197	activityviewer	date.end	End Date	date	40		2	2
+199	activityviewer	start	View Activity	button			1	1
+195	activityviewer	period	Period	dropdown	periods		1	2
+#								
+196	data	data	data	data				
