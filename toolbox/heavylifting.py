@@ -79,19 +79,28 @@ def getData(context,request):
 
 def doActivity(context, request):
     context['checkitems'] = getFields(request, context)
+
     forminput = getFields(request, context)
     if 'items' in context: del context['items']
     context['action'] = 'enumerate'
 
-    import datelist
+    # import datelist
+    # daterange = datelist.datelist
     # getitems(table, num2ret, start_date, end_date, period)
     # print getitems('collectionobjects', 100, '1999-01-01', '2015-05-01', 'month')
 
-    daterange = datelist.datelist
-    num2ret = 100
+    num2ret = 500
     period = forminput['period'][2]
     table = forminput['activity'][2]
-    #daterange = activity2db.getitems(table, num2ret, forminput['date.start'][2], forminput['date.end'][2], period)
+    start = forminput['date.start'][2]
+    end = forminput['date.end'][2]
+
+    context['num2ret'] = num2ret
+    context['period'] = period
+    context['activity'] = table
+    context['start'] = start
+    context['end'] = end
+    daterange = activity2db.getitems(table, num2ret, start, end, period)
 
     rows = []
     for d in daterange:

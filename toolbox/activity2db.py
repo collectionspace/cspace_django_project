@@ -37,7 +37,4 @@ limit %s;
 ''' % (period, table, start_date, end_date, period, num2ret)
 
     items.execute(getitems)
-    # for object in items.fetchall():
-    # print object
-    # return items.fetchall()
     return [list(item) for item in items.fetchall()]
