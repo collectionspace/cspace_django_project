@@ -497,6 +497,16 @@ def doSearch(context, prmz):
                 if t == 'Null':
                     t = '[* TO *]'
                     index = '-' + prmz.PARMS[p][3]
+                # if we are testing for 'presence' or 'absence', this is handled elsewhere
+                elif prmz.PARMS[p][1] == 'present':
+                    if t == 'yes':
+                        index = prmz.PARMS[p][3]
+                    else:
+                        index = '-' + prmz.PARMS[p][3]
+                    if '_p' in prmz.PARMS[p][3]:
+                        t = "[-90,-180 TO 90,180]"
+                    else:
+                        t = '[* TO *]'
                 else:
                     if p in prmz.DROPDOWNS:
                         # if it's a value in a dropdown, it must always be an "exact search"
@@ -550,7 +560,8 @@ def doSearch(context, prmz):
                 if t == 'AND': t = '"AND"'
                 ORs.append(querypattern % (index, t))
             searchTerm = ' OR '.join(ORs)
-            if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
+            if ' ' in searchTerm and not ' TO ' in searchTerm: searchTerm = ' (' + searchTerm + ') '
+            #if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
             # print searchTerm
             queryterms.append(searchTerm)
             urlterms.append('%s=%s' % (p, cgi.escape(requestObject[p])))
@@ -589,6 +600,8 @@ def doSearch(context, prmz):
     except:
         startpage = 0
         context['start'] = 1
+
+    print 'query: %s' % querystring
     try:
         solrtime = time.time()
         response = s.query(querystring, facet='true', facet_field=facetfields, fq={}, fields=solrfl,
