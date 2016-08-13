@@ -531,7 +531,7 @@ We should be all set, all that remains for deployment is to restart the Apache2 
 service apache2 restart
 ```
 
-That should do it. Go ahead and navigate to <your_ip_address>/webapp in your browser to check if the CSpace Django Application was deployed successfully. 
+That should do it. Go ahead and navigate to http://your_ip_address/webapp in your browser to check if the CSpace Django Application was deployed successfully. 
 
 ##### Troubleshooting
 
@@ -564,7 +564,7 @@ tail -f logfile.txt
 
 ##### Step 10: Connecting to your PostgreSQL database
 
-Hopefully by now you have an instance of the CSpace Django Application running at <your_ip_address>/webapp. If not, feel free to post a question on the CollectionSpace Talk list, found here: http://lists.collectionspace.org/mailman/listinfo/talk_lists.collectionspace.org
+Hopefully by now you have an instance of the CSpace Django Application running at http://your_ip_address/webapp. If not, feel free to post a question on the CollectionSpace Talk list, found here: http://lists.collectionspace.org/mailman/listinfo/talk_lists.collectionspace.org
 
 Continuing on, we will need to connect to your PostgreSQL database by editing various provided configuration files.
 
@@ -705,7 +705,7 @@ source set-tenant-default.sh <your_tenant_name>
 nohup ./solrETL-template.sh
 ```
 
-From here, navigate to http://<your_ip_address>:8983/solr/#/<your_tenant_id>-public/query and hit 'search.' You should see a mass of data in JSON format that was effectively indexed. If not, review the file 'nohup.out' for any errors that may have occurred during the indexing.
+From here, navigate to http://your_ip_address:8983/solr/#/<your_tenant_id>-public/query and hit 'search.' You should see a mass of data in JSON format that was effectively indexed. If not, review the file 'nohup.out' for any errors that may have occurred during the indexing.
  
 Finally, restart the Apache2 web server to apply these new changes. 
 
@@ -714,7 +714,7 @@ Finally, restart the Apache2 web server to apply these new changes.
 service apache2 restart
 ```
 
-Navigate to the application landing page in your browser, and then the public search application. Likely located at 'http:<your_ip_address>/webapp/search/search' and execute a keyword search using an asterisk as the parameter. If all went well, you should see populated search results containing indexed data from your CollectionSpace tenant database complete with images. 
+Navigate to the application landing page in your browser, and then the public search application. Likely located at 'http:your_ip_address/webapp/search/search' and execute a keyword search using an asterisk as the parameter. If all went well, you should see populated search results containing indexed data from your CollectionSpace tenant database complete with images. 
  
 Congratulations! You've effectively deployed your very own UCB CSpace Django Application. 
 
