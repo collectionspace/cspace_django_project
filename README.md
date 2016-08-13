@@ -1,10 +1,11 @@
 ## cspace-django-project
 
-This Django project supports easy access to various CollectionSpace services.
+This Django project supports easy access to various CollectionSpace services. To preview
+several deployments of this project, visit: https://webapps.cspace.berkeley.edu.
 
-The following components are provided:
+The following components are provided with this project:
 
-#### Core apps (user-facing apps that you might actually use)
+#### Core Applications (user-facing apps that you might actually use)
 
 * imagebrowser - a "lightbox-like" app that tiles images based on a keyword query to Solr backend
 * imageserver - cacheing proxy server to serve images from CSpace server
@@ -15,7 +16,7 @@ The following components are provided:
 * ireports - interface to installed reports that take inputs other than CSIDs
 * uploadmedia - "bulk media uploader" (BMU)
 
-#### Helper Apps (needed by other apps, e.g. search)
+#### Helper Applications (needed by other apps, e.g. search)
 
 * suggest - provides term suggestions (GET request, returns JSON)
 * suggestpostgres - provides term suggestions from via Postgres queries
@@ -23,20 +24,20 @@ The following components are provided:
 * landing - a "landing page" to ease navigation between apps
 * mobileesp - mobile device support; only slightly used so far
 
-#### "Demo" Apps (only to show how this 'framework' works, and to show how to access cspace)
+#### "Demo" Applications (only to show how this 'framework' works, and to show how to access CSpace)
 
-* hello - simple app to help you figure out if your Django deployment is working
+* hello - simple default app to help you figure out if your Django deployment is working
 * service - proxies calls to services; mostly for test purposes
 
-#### Not apps but directories you'll need to understand and or put stuff in
+#### Directories (in which you'll need to understand, and/or put stuff in)
 
 * config - put your config files here. This directory is git-ignored
 * cspace_django_site - "core" site code -- urls.py, settings.py, etc.
 * fixtures - fixtures are used by several apps to provision nav bar and other items
 * authn - need by authentication backend. Basically: do not touch
-* common - code used across apps
+* common - code used across all apps
 
-#### More obsure apps (disabled by default, but available)
+#### More Obsure Applications (disabled by default, but available)
 
 * simplesearch - make query (kw=) to collectionobjects service
 * batchuploadimages -- RESTful interface to upload images in bulk
@@ -65,17 +66,17 @@ http://localhost:8000
 # if so, your webapps are pretty much working!
 ```
 
-### Less Quick Guide: Setting Up for Development and Other Environments
+### Less Quick Guide: Setting Up for Development or Production
 
 ##### Caveats and General Observations
 
 * As illustrated in the Quick Start Guide, the process to deploy this Django project is pretty conventional: get code, resolve system dependencies, configure, and start 'er up. At the moment, the project does not use any of the popular deployment systems out there, e.g. Kubernetes or Docker. Instead, you have to do it by hand, but there are helpers!
 
-* To start with, need to set up Django and install some Python modules (see the various `*_requirements.txt` files)
+* For starters, you'll need to set up Django and install some Python modules (see the various `*_requirements.txt` files)
 
-* The project does run in a variety of different environments, 
+* The project does run in a variety of different environments.
 
-* Next you'll need to `configure` your project for a particular target environment: `prod`, `dev`, or `pycharm`.  The first two option are of course intended to support running the webapps in either of two server environments; currently, they are suitable for OSX, RedHat, and Ubuntu deployments.  As a developer, you'll probably want to use the `pycharm` target, which is only a little different from the other two: it doesn't deploy the image cacheing option, and it turns off Universal Analytics.
+* Next you'll need to `configure` your project for a particular target environment: `prod`, `dev`, or `pycharm`.  The first two option are of course intended to support running the webapps in either of two server environments; currently, they are suitable for OSX, RedHat, and Ubuntu deployments.  As a developer, you'll probably want to use the `pycharm` target, which is only a little different from the other two: it does not deploy the image caching option, and it turns off Universal Analytics.
 
 * You need to have a CollectionSpace server to point to. Even before you start playing with your own, you should consider deploying the *Sample Deployment*, which points to the development server at `nightly.collectionspace.org`.  This setup is quite easy to get working -- few dependencies, and all the assumptions about configuration are made for you.
 
@@ -88,7 +89,7 @@ located in `config.examples/` and you will need to copy them to the working dire
 
 * So. To summarize. Almost all webapps require a config file, some require two. Therefore, the `config` will be quite full of config files for the varioius apps. An example configuration file for each webapp is included, but you *will* eventually need to make your own. If the webapp is called `webapp`, the corresponding configuration file should be called `webapp.cfg` unless there is a good reason not to.
 
-##### Recipe for Development deployments
+##### Recipe for Development Deployments
 
 The following recipe assumes you are deploying in a development environment, on a Mac, RedHat, or Ubuntu system. And that you will use the development server that comes with Django or that you'll be using PyCharm as your IDE (it has a builtin server). If you are deploying in a UCB-managed server environment (i.e. Red Hat), see further below.
 
@@ -117,7 +118,7 @@ sudo pip install -r pycharm_requirements.txt
 ```
 
 NB: Yes, you can, and indeed may have to, run your apps in a virtual environment if you are unable or unwilling to use the system defaults. This is covered below.  Also note that PyCharm can help you resolve module dependencies -- `venv` comes pretty much builtin
-with PyCharm and supports multiple Python interpreters. However, this document doesn't cover how to do that, please RTFM.
+with PyCharm and supports multiple Python interpreters. 
 
 (At the moment, there are few version constraints for this project: Python 2.6.8+ and Django 1.5+; requirements.txt
 specifies Django 1.5 or higher, but minor code changes seem to be required to run with Django > 1.8. This project has not been tried with Python 3.)
@@ -304,46 +305,424 @@ You will be rewarded with a landing page. Or more likely, you will have failed t
 
 ### Development and Production Deployments in Linux Environments
 
-The following steps _should_ work to set up a "default" configuration in Ubuntu and Red Hat environments,
-(but be careful with SELinux...)
+#### Ubuntu 14.04+
 
-Assumptions:
+We assume that you already have CollectionSpace properly installed, configured, and running on your machine. Furthermore, this sections walks you through the steps to setup the CSpace Django Applications as a service on your machine.
 
-* You can install as the superuser `root`
-* Apache will run everything, so user and group is apache:apache (it might be www-data:www-data or something else...)
-* Everything goes in /user/local/share/django/myproject
+##### Step 1: Get the source code
 
+This is pretty self explanatory, although we will manipulate the location of the source code to make our lives a little
+ easier when configuring our web server and enabling our site. 
 
 ```bash
-sudo su -
+# Switch to the root user, being careful and mindful of your actions from here on out
+$ sudo su -
+
+# Navigate to the local shared directory
 cd /usr/local/share/
-mkdir django
-git clone https://github.com/cspace-deployment/cspace_django_project.git myproject
-cd myproject
-# you'll need to have wsgi enabled, and the appropriate Django project directories set up.
-# there is a sample file showing a typical configuration for a project named "xxxxx"
-diff config/000-default.conf /etc/apache2/sites-enabled/000-default.conf
-# configure Python/Django for your environment. 'pycharm' is the least demanding.
-# ('pycharm' does not setup Google Analytics, and does not setup an image cache
-# (you may wish to use a virtual environment...in which case, install and start it now, before continuing)
-pip install -r pycharm_requirements.txt
-./setup.sh configure pycharm
-# deploy a tenant. 'default' points to 'nightly.collectionspace.org'. otherwise, roll your own.
-./setup.sh deploy default
-# you will probably need to change ownship and/or permissions for some files and directories:
-chown apache:apache logs/*
-chmod a+w ..
-chmod a+w .
-chmod a+w logs/*
-chmod a+wx db.sqlite3
-# you may need to edit the WSGI file. NB: there is also an alternative wsgi.py for Django > 1.7
-sudo vi cspace_django_site/wsgi.py
-# if the server comes up OK, you should see a landing page in your browser at
-http://localhost:8000
-# troubleshooting: if you see error, look in the Apache log:
-less /var/log/apache2/error.log
-# or in the Django logs
-less logs/logfile.txt
-# restart apache whenever you need to pick up a change.
-service apache2ctl restart
+
+# Create a new directory to store your code 
+sudo mkdir -p django/webapp
+
+# Jump to that directory
+cd django/webapp/
+
+# Clone the code from the remote GitHub repository 
+git clone https://github.com/cspace-deployment/cspace_django_project.git
+
+# Note: if you don't have git
+apt-get install git
+
+# Copy source code to the parent directory while within the parent directory ...
+# ... this isn't entirely necessary, but it helps to keep the default url path neat.
+# You'll see why later, when configuring your Apache2 server.  
+cp -r cspace_django_project/* .
+
+# Remove the old directory
+rm -r cspace_django_project
 ```
+
+
+##### Step 2: Get the Apache2 Web Server
+
+This is one of the most common web servers for Linux systems, and is used to serve webpages to the client machine, i.e. a web server. You can read more about it here: https://httpd.apache.org/
+
+```bash
+# Switch to the root user, being careful and mindful of your actions from here on out
+$ sudo su -
+
+# Use the Advanced Packaging Tool (apt) to update your system packages
+apt-get update
+
+# Use 'apt' to install Apache2, effectively installing it in the directory...
+# ... /etc/apache2
+apt installl apache2
+
+# Start up your new Apache2 Web Server
+service apache2 start
+```
+
+##### Step 2: Install Apache Solr
+
+A free, open source, blazing fast, and highly popular enterprise search platform written in Java. We suggest you familiarize yourself with the Solr documentation, as it will come in handy later when extending your CSpace Django Web Applications. You can read more about Apache Solr, here: http://lucene.apache.org/solr/resources.html#documentation.
+
+Also, you'll see later how we use Solr with the default public search application, but for now feel free to take a look at the fields definition file found here: https://wiki.collectionspace.org/pages/viewpage.action?pageId=158302621
+
+```bash
+# Still, as the root user, navigate to your home directory
+cd ~
+```
+
+Go to Solr's downloads page, and get the latest release, as a compressed tar file, i.e. solr-#.#.#.tgz from a local mirror site. The '#' represents a place holder for the latest release version, as of July, this is 6.1.0. Copy the link location of your preferred mirror site. Then...
+
+```bash
+# Using the non-interactive network downloader utility provided by Ubuntu
+wget [paste link here]
+
+# For example...
+wget http://mirrors.ocf.berkeley.edu/apache/lucene/solr/6.1.0/solr-6.1.0.tgz
+
+# Once download is complete, extract, or strip, the Solr installation script
+tar zxf solr-#.#.#.tgz solr-#.#.#/bin/install_solr_service.sh --strip-components=2
+
+# See note below
+
+# Now, install Apache Solr as a service on your machine
+# This will install the default Solr configurations, such as ports, owner, log directory, etc., however you can...
+# ... change this by declaring and setting various options
+# Check out the Solr reference guide for more info
+bash ./install_solr_service.sh solr-#.#.#.tgz
+```
+
+Note: ensure that the current Java version being used by your machine meets the the dependency requirements of your Solr instance. The script will fail otherwise. Use 'update-alternatives' to configure the proper Java version if you happen to have multiple installations. 
+
+If the above command executed successfully, you should receive something along the lines...
+
+```bash
+"Waiting up to 30 seconds to see Solr running on port 8983[/]
+Started Solr server on port 8983 (pid=10310). Happy searching!
+
+Found 1 Solr nodes: ...
+"
+```
+
+##### Step 3: Get Python related packages and set up your Virtual Environment
+
+We will install and designate a Virtual Environment for our CSpace Django Application in order to separate
+its dependencies from other current or future Django applications. For now, we will just install them. 
+
+```bash
+# As root user, check your Python version, you'll need 2.7 not 3+
+python -V
+
+# Check your 'Pip Installs Packages' Python package manager (pip) version
+# It should be the latest if you updated your system packages as done earlier here
+pip -V
+
+# Use Ubuntu's package manger to install the following Python packages to deal with PyGreSQL errors you're likely...
+# ... to encouter with out them
+apt-get install python-psycopg2
+
+apt-get install libpq-dev
+
+# Now, install virtualenvironemnt
+pip install virtualenv
+
+# Navigate to the source code directory, or /usr/local/share/django/webapp/
+# Create a dedicated virtual environment ('cspace_venv' in this case, but feel free to name it whatever you want)
+virtualenv cspace_venv
+
+# Activate your new virtual environment
+source cspace_venv/bin/active
+
+# Now, install the application dependencies, from within your new virtual environment
+# This should work, however, if you happen to get any errors, it's likely due to the lack of some system wide Python...
+# dependencies. Therefore, a simple search of the error should provide a solution, or multiple
+pip install -r pycharm_requirements.txt
+```
+
+##### Step 4: Get the Apache mod_wsgi Django module
+
+This module is used to host Python WSGI applications on your Apache2 Web Server. You can inquire more about this module
+by navigating to: https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/modwsgi/
+
+```bash
+# Install the Apache mod_wsgi module
+apt-get install libapache2-mod-wsgi
+```
+
+##### Step 5: Configuring the CSpace Django Web Application
+
+As mentioned earlier, in several places, you'll need to provide your own configurations files prior to deployment.
+Lucky for you, many default examples have been provided in the 'config.examples' directory. Hence, we will need to copy
+them over to our 'config' directory prior to running the 'setup.sh' script. 
+
+```bash
+# While still, as the root user, within our dedicated virtual environment the (cspace_venv), and the 'webapp' directory
+# Copy over the provided configuration files
+cp -r config.examples/*.cfg config
+
+# Use the provided 'setup.sh' script to configure
+./setup.sh configure pycharm
+
+# And, to deploy
+# Ignore the warnings for now, however, not errors if you happen to experience any
+./setup.sh deploy default
+```
+
+##### Step 6: Edit the wsgi.py script
+
+We will need to let our Apache2 web server know where to find the dependencies we've dedicated for our CSpace Django
+Application, within our virtual environment. Uncomment the following lines from the wsgi.py script found in the 
+'webapp/cspace_django_site' directory. 
+
+```bash
+1 # import site
+.
+.
+.
+14 # activate_env = os.path.expanduser('/usr/local/share/django/webapp/cspace_venv/bin/activate_this.py')
+15 # execfile(activate_env, dict(__file__=activate_env))
+.
+.
+.
+31 # from django.core.wsgi import get_wsgi_application
+32 # application = get_wsgi_application()
+```
+
+And, comment out the line...
+
+```bash
+28 application = django.core.handlers.wsgi.WSGIHandler()
+```
+
+##### Step 7: Configure the Apache2 Web Server
+
+Necessary in order to allow the web server to talk to our CSpace Django Application, copy the 000-default-Ubuntu-VE.conf found in the 'webapp/config.examples' directory to the Apache2 'site-enabled' directory. 
+
+```bash
+# Still, as the root user, from within the config.examples directory
+cp ./000-default-Ubuntu-VE.conf /etc/apache2/site-enabled/
+
+# Rename the default Apache2 conf file, just to have
+# From within the '/etc/apache2/site-enabled/' directory
+mv 000-default.conf 000-default-OLD.conf
+
+# Then, rename the Ubuntu-VE conf file to replace Apache2's default
+mv 000-default-Ubuntu-VE.conf 000-default.conf
+```
+
+##### Step 8: Collect the static files
+
+We will need to collect all of the static files for our CSpace Django Application. Otherwise, if you restart the Apache2 server now, everything will be in plain HTML.
+
+```bash
+# From within the webapp directory, and our activate virtual environment ('cspace_venv')
+# Type 'yes' when prompted
+python manage.py collectstatic
+```
+
+##### Step 9: Restart Apache2
+
+We should be all set, all that remains for deployment is to restart the Apache2 web server. 
+
+```bash
+# restart the Apache2 web server
+service apache2 restart
+```
+
+That should do it. Go ahead and navigate to <your_ip_address>/webapp in your browser to check if the CSpace Django Application was deployed successfully. 
+
+##### Troubleshooting
+
+If you happen to run into errors, the Apache2 server log is a great place to start. This can be found in the 'var/logs/apache2/' directory.  
+
+```bash
+# As the root user
+tail -f /var/logs/apache2/error.log
+```
+
+Note: It's quite possible that you'll need to change the permissions on the Apache2 log directory so that the web server can write to the error log, among others.
+
+You may also need to disable some of the pre-installed web apps, as described at the beginning of this document. 
+
+```bash
+# Again, form within the webapp directory, and the virutal environment
+# To show all of the currently installed web apps
+./setup show
+
+# And, to disable any web apps giving you errors, likely due to configurations that still need to be completed
+./setup disable [app]
+```
+
+In addition, the Django logs can be found in the 'webapp/logs' directory.
+
+```bash
+# From within the 'webapp/logs' directory
+tail -f logfile.txt
+```
+
+##### Step 10: Connecting to your PostgreSQL database
+
+Hopefully by now you have an instance of the CSpace Django Application running at <your_ip_address>/webapp. If not, feel free to post a question on the CollectionSpace Talk list, found here: http://lists.collectionspace.org/mailman/listinfo/talk_lists.collectionspace.org
+
+Continuing on, we will need to connect to your PostgreSQL database by editing various provided configuration files.
+
+Within the settings.py module, found at 'webapp/cspace_django_site/', update the following lines with your PostgreSQL credentials. 
+
+```bash
+29 DATABASES = {
+30     'default': {
+31         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3    ' or 'oracle'.
+32         'NAME': '<your_database_name>', # BASE_PARENT_DIR + os.sep + 'db.sqlite3',  # Or path todatabase file     if using sqlite3.
+33         # The following settings are not used with sqlite3:
+34         'USER': '<your_database_user>',
+35         'PASSWORD': '<your_databse_password>',
+36         'HOST': '', # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+37         'PORT': '<your_postgres_connection_port>', # Set to empty string for default (5432)
+38     }
+39 }
+```
+
+Next, jump back out to the 'webapp' directory and run:
+
+```bash
+# As root user, and within our activated virtual environment ('cspace_venv')
+python manage.py syncdb
+```
+
+##### Step 11: Indexing Apache Solr 
+###### (Important: bash scripts need to be created for Solr, which is already installed and running as a service)
+
+There is so much more to understand regarding Solr, its configuration files, and UCB developed scripts. We won't go into 
+a lot of detail here, but you can learn more from reading the README.md located in the 'webapp/solr/' directory.
+For now, let's just get set up. 
+
+Navigate to the 'webapp/solr' directory and edit the 'set-tenant-default' script with your database connection information.
+ 
+```bash
+# Still, as the root user, edit the following lines with your information
+10   export SERVER="localhost port=5432 sslmode=prefer" # Typical default settings, changes if needed
+11   export USERNAME="<user_name>"
+12   export DATABASE="<database_name>"
+13   # note that the password is not here. best practice is to
+14   # store it in .pgpass. 
+15   # if you need to set it here, add it to the CONNECT_STRING
+16   export CONNECTSTRING="host=$SERVER password='<database_user_password>' dbname=$DATABASE"
+```
+
+That should do it. Now go ahead and use the UCB script to configure a multi core Solr instance that is already installed, and running as a service.
+
+TODO: Develop this script 'configMultiCoreSolrAsService.sh' from the existing script -YN
+```bash
+# as the root user
+# The top node refers to the parent directory of all Solr realted files beloging to your tenant, you're free...
+# ... to name this whatever you'd like
+./configMultiCoreSolrAsService.sh <the_top_node> <your_tenant_name>
+```
+
+Once that is completed, rename the following PostgreSQL scripts using your tenant name.
+
+```bash
+# as the root user, and within the 'webapp/solr' directory
+mv core.public.sql <your_tenant_name>.public.sql
+mv core.internal.sql <your_tenant_name>.internal.sql
+```
+
+Next, in addition to some edits, do the same with the field definition files, found in the 'webapp/config' directory.
+
+```bash
+# as the root user, and within the 'webapp/config' directory
+mv corepublicparms.csv <your_tenant_name>publicparms.csv
+mv coreinternalparms.csv <your_tenant_name>internalparms.csv
+```
+
+Now, open up both files and edit line #14 to match the name of your tenant. 
+
+For example, for the <your_tenant_name>publicparms.csv file:
+
+```bash
+     # From
+14   core core-public 
+     # To
+14   <your_tenant_name> <your_tenant_name>-public
+```
+
+While we're here, within the 'webapp/config' directory, we will need to edit some configuration files to reflect the changes that we just made. 
+
+In the 'common.cfg' file:
+
+```bash
+12 # the following is used to construct URLs that link this app to a CSpace server
+13 CSPACESERVER        = http://<your_cspace_ip_address>:8180/
+14 INSTITUTION         = <institution_name>
+.
+.
+17 IMAGESERVER        = http://<your_cspace_ip_address>/webapp/imageserver
+.
+.
+.
+32 # csv filename construction parameters
+33 CSVPREFIX           = <your_tenant_id>
+34 CSVEXTENSION        = csv
+```
+
+In the 'search.cfg' file:
+
+```bash
+3 FIELDDEFINITIONS    = <your_tenant_name>publicparms.csv
+```
+
+In the 'suggestsolr.cfg' file:
+
+```bash
+3 FIELDDEFINITIONS    = <your_tenant_name>publicparms.csv
+```
+
+In the 'imageserver.cfg' file:
+
+```bash
+1 [connect]
+2 protocol          = http
+3 port              = 8180
+4 realm             = org.collectionspace.services
+5 hostname          = <your_cspace_ip>
+6 username          = <a_dedicated_user_with_cspace_access>
+7 password          = <password>
+```
+
+Excellent. Now that we have that out of the way, we can go ahead and jump back into the 'webapp/solr' directory. Here we will use the provided script effectively index Solr. What do this mean exactly? In brief, when we index Solr, we are querying the CollectionSpace tenant database using the recently renamed PostgreSQL script, populating a csv file (defined by our fields definitions file and a provided CSpace Solr schema), and pushing it the Solr server. Which, in effect, is where the CSpace Django Application pulls its data. Got it? Good.
+
+Again, you can learn more by checking out the dedicated readme in the 'webapp/solr' directory.
+ 
+TODO: Update or create scripts to effectively index Solr, already running as a service. The script listed below does not work. -YN
+
+Moving on, go ahead and execute the following in sequence. 
+
+```bash
+source set-tenant-default.sh <your_tenant_name>
+
+nohup ./solrETL-template.sh
+```
+
+From here, navigate to http://<your_ip_address>:8983/solr/#/<your_tenant_id>-public/query and hit 'search.' You should see a mass of data in JSON format that was effectively indexed. If not, review the file 'nohup.out' for any errors that may have occurred during the indexing.
+ 
+Finally, restart the Apache2 web server to apply these new changes. 
+
+```bash
+# as root user
+service apache2 restart
+```
+
+Navigate to the application landing page in your browser, and then the public search application. Likely located at 'http:<your_ip_address>/webapp/search/search' and execute a keyword search using an asterisk as the parameter. If all went well, you should see populated search results containing indexed data from your CollectionSpace tenant database complete with images. 
+ 
+Congratulations! You've effectively deployed your very own UCB CSpace Django Application. 
+
+
+#### RHEL
+###### Coming soon...
+
+For now, you can supplement what has been provided above, for Ubuntu, with general tools and managers that are specific 
+to your Linux distribution.
+
+TODO: Build this section out -YN
