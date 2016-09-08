@@ -1,3 +1,4 @@
+# import site
 import os
 import sys
 import django.core.handlers.wsgi
@@ -8,7 +9,11 @@ PROJECT_NAME = os.path.basename(PROJECT_DIR)
  
 if PROJECT_DIR not in sys.path:
     sys.path.append(PROJECT_DIR)
- 
+
+# NOTE: Uncomment for, Virtual Environment (not Wrapper) deployment
+# activate_env = os.path.expanduser('/usr/local/share/django/webapp/cspace_venv/bin/activate_this.py')
+# execfile(activate_env, dict(__file__=activate_env))
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cspace_django_site.settings")
 
 #
@@ -18,5 +23,10 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cspace_django_site.settings")
 #
 WSGI_BASE = '/%s' % PROJECT_NAME
 os.environ.setdefault("cspace_django_site.WSGI_BASE", WSGI_BASE)
- 
+
+# NOTE: Comment out for Ubuntu, Apache2, production deployment
 application = django.core.handlers.wsgi.WSGIHandler()
+
+# NOTE: Uncomment lines below for Ubuntu, Apache2, production deployment
+# from django.core.wsgi import get_wsgi_application
+# application = get_wsgi_application()
