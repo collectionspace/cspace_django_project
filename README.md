@@ -12,7 +12,6 @@ The following components are provided with this project:
 * imaginator - "google-lookalike" search app -- provides "N blue links" for a keyword search
 * internal - internal (authenticating) search appliance
 * search - public (non-authenticating) search appliance
-* searchmedia - public (non-authenticating) search appliance for media record
 * ireports - interface to installed reports that take inputs other than CSIDs
 * uploadmedia - "bulk media uploader" (BMU)
 
@@ -40,7 +39,7 @@ The following components are provided with this project:
 #### More Obsure Applications (disabled by default, but available)
 
 * simplesearch - make query (kw=) to collectionobjects service
-* batchuploadimages -- RESTful interface to upload images in bulk
+* batchuploadimages -- RESTful interface to upload images in bulk (_EXPERIMENTAL!_)
 
 ### Quick Start Guide
 
@@ -97,7 +96,7 @@ First, fork the `cspace-deployment/cspace_django_project` in your own account on
 
 Then on your development system, you'll want to clone your development fork of the repo in whatever directory you do your PyCharm development in. For me, I put them all in `~/PyCharmProjects`.
 
-You'll need to install a number of Python modules (see `*_*requirements.txt`).  PyCharm can help you with this, or you can
+You'll need to install a number of Python modules (see `*_requirements.txt`).  PyCharm can help you with this, or you can
 do something like the following:
 
 Note: Before running `pip install -r pycharm_requirements.txt`, make sure that you have PostgreSQL, as well as the Python setuptools package installed, otherwise there will be errors. 
@@ -127,9 +126,23 @@ You are now ready to configure your environment and deploy your tenant-specific 
 
 ##### Using setup.sh
 
-There is no `make` or `mvn` build process for Django webapps, and the deployment process consists of place the code where it can be executed and customizing the parameters used for your particular case (which means editing configuration files by hand).
+There is no `make` or `mvn` build process for Django webapps, and the deployment process consists of placing the code where it can be executed and customizing the parameters used for your particular case (which means editing configuration files by hand).
 
 Instead there is a shell script called `setup.sh` which does the few steps required to make your webapps go.
+
+```bash
+$ ./setup.sh 
+Usage: ./setup.sh <enable|disable|deploy|redeploy|configure|show> <TENANT|CONFIGURATION|WEBAPP>
+
+where: TENANT = 'default' or the name of a deployable tenant
+       CONFIGURATION = <pycharm|dev|prod>
+       WEBAPP = one of the available webapps, e.g. 'search' or 'ireports'
+
+e.g. ./setup.sh disable ireports
+     ./setup.sh configure pycharm
+     ./setup.sh deploy botgarden
+     ./setup.sh show
+```
 
 ```bash
 # OPTION 1: sample deployment to see if you can get the project to run.
@@ -180,16 +193,16 @@ To enable a disabled webapp do the following and restart the webserver you are u
 ./setup.sh enable uploadmedia
 ```
 
-NB: this will show *all* apps, including the various helper apps, Django admin apps, etc.
-
-(all the enable/disable functionality does is to comment out these webapps in urls.py and settings.py; you could just
-do it yourself by hand.)
-
 To see which apps are enabled:
 
 ```bash
 ./setup.sh show
 ```
+
+NB: this will show *all* apps, including the various helper apps, Django admin apps, etc.
+
+(all the enable/disable functionality does is to comment out these webapps in urls.py and settings.py; you could just
+do it yourself by hand.)
 
 ##### Configuration files
 

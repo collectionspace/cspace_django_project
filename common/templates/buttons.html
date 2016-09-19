@@ -1,18 +1,10 @@
-<div style="height: 40px; padding-top: 6px;">
-    <!-- span class="big">Search:</span -->
-    <div style="font-style: italic; float: left; padding-top: 8px;">
-        <p>
-            <button type="button" id="search-list" name="search-list" class="prettyBtn">Search</button>
-            &nbsp;
-            <button type="button" id="search-reset" name="reset-button" class="prettyBtn">Reset</button>
-        </p>
-    </div>
-    <div style="background-color: #e8e8e8; padding: 5px 10px 5px 10px; float: right">
+<div style="height: 40px; padding-top: 6px; background-color: #e8e8e8; padding: 5px 10px 5px 10px;">
            <div style="float:left; padding-top: 6px">
             Display options: &nbsp; &nbsp;
             <button type="button" id="search-list" name="search-list" class="prettyBtn">List</button>
             <button type="button" id="search-full" name="search-full" class="prettyBtn">Full</button>
             <button type="button" id="search-grid" name="search-grid" class="prettyBtn">Grid</button>
+               <button type="button" id="search-reset" name="reset-button" class="prettyBtn">Reset</button>
             &nbsp;
             <select id="maxresults" name="maxresults">
                 {% for option in resultoptions %}
@@ -26,12 +18,11 @@
             <input style="text-align: center;" type="text" min="1" name="start" id="start" size="3" value="{{ start }}">
             <a href="#" id="next">&gt;</a>
         </div>
-        <div style="float:left">
+        <!-- div style="float:left">
             <input type="checkbox" {% if pixonly %}checked {% endif %} name='pixonly' value="pixonly"> Include only items with images.
             <br/>
             <input type="checkbox" {% if locsonly %}checked {% endif %} name='locsonly' value="locsonly"> Include only items with latlongs.
-        </div>
-    </div>
+        </div -->
     <!--span id="acceptterms" class="tiny" style="float: right;">
         <input type="checkbox" {% if acceptterms %}checked {% endif %} name='acceptterms' value="acceptterms">
         I accept the <a href="http://ucjeps.berkeley.edu/useterms.html">data-use terms</a></span -->

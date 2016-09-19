@@ -42,16 +42,7 @@ logger.info('%s :: %s :: %s' % ('imaginator startup', '-', '%s | %s' % (prmz.SOL
 @login_required()
 def index(request):
 
-    context = setConstants({}, prmz)
-
-    # http://blog.mobileesp.com/
-    # the middleware must be installed for the following to work...
-    if request.is_phone:
-        context['device'] = 'phone'
-    elif request.is_tablet:
-        context['device'] = 'tablet'
-    else:
-        context['device'] = 'other'
+    context = setConstants({}, prmz, request)
 
     if request.method == 'GET':
         context['searchValues'] = request.GET
@@ -79,7 +70,7 @@ def index(request):
 
         # do search
         loginfo(logger, 'start imaginator search', context, request)
-        context = doSearch(context, prmz)
+        context = doSearch(context, prmz, request)
         context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
 
         return render(request, 'imagineImages.html', context)

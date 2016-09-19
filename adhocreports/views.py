@@ -22,38 +22,38 @@ from .models import AdditionalInfo
 from cspace_django_site import settings
 
 # read common config file
-prmz = loadConfiguration('common')
+adhocprmz = loadConfiguration('common')
 print 'Configuration for common successfully read'
 
 # on startup, setup this webapp layout...
-config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'internal')
+config = cspace.getConfig(path.join(settings.BASE_PARENT_DIR, 'config'), 'adhocreports')
 fielddefinitions = config.get('search', 'FIELDDEFINITIONS')
-prmz = loadFields(fielddefinitions, prmz)
+adhocprmz = loadFields(fielddefinitions, adhocprmz)
+# nb: we override the app title here with the one configured for ad hoc reports
+adhocprmz.TITLE = config.get('search', 'TITLE')
 
 # Get an instance of a logger, log some startup info
 logger = logging.getLogger(__name__)
-logger.info('%s :: %s :: %s' % ('internal portal startup', '-', '%s | %s | %s' % (prmz.SOLRSERVER, prmz.IMAGESERVER, prmz.BMAPPERSERVER)))
+logger.info('%s :: %s :: %s' % ('ad hoc reports startup', '-', '%s | %s | %s' % (adhocprmz.SOLRSERVER, adhocprmz.IMAGESERVER, adhocprmz.BMAPPERSERVER)))
 
 
 def direct(request):
     return redirect('search/')
 
 
-@login_required()
 def search(request):
     if request.method == 'GET' and request.GET != {}:
         context = {'searchValues': dict(request.GET.iteritems())}
-        context = doSearch(context, prmz, request)
+        context = doSearch(context, adhocprmz, request)
 
     else:
-        context = setConstants({}, prmz, request)
+        context = setConstants({}, adhocprmz, request)
 
-    loginfo(logger, 'start search', context, request)
+    loginfo(logger, 'start adhocreport', context, request)
     context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
-    return render(request, 'search.html', context)
+    return render(request, 'adhocreports.html', context)
 
 
-@login_required()
 def retrieveResults(request):
     if request.method == 'POST' and request.POST != {}:
         requestObject = dict(request.POST.iteritems())
@@ -61,12 +61,12 @@ def retrieveResults(request):
 
         if form.is_valid():
             context = {'searchValues': requestObject}
-            context = doSearch(context, prmz, request)
+            context = doSearch(context, adhocprmz, request)
 
-        loginfo(logger, 'results.%s' % context['displayType'], context, request)
-        return render(request, 'searchResults.html', context)
+            loginfo(logger, 'results.%s' % context['displayType'], context, request)
+            return render(request, 'adhocresults.html', context)
 
-@login_required()
+
 def bmapper(request):
     if request.method == 'POST' and request.POST != {}:
         requestObject = dict(request.POST.iteritems())
@@ -74,13 +74,12 @@ def bmapper(request):
 
         if form.is_valid():
             context = {'searchValues': requestObject}
-            context = setupBMapper(requestObject, context, prmz)
+            context = setupBMapper(requestObject, context, adhocprmz)
 
             loginfo(logger, 'bmapper', context, request)
             return HttpResponse(context['bmapperurl'])
 
 
-@login_required()
 def gmapper(request):
     if request.method == 'POST' and request.POST != {}:
         requestObject = dict(request.POST.iteritems())
@@ -88,13 +87,12 @@ def gmapper(request):
 
         if form.is_valid():
             context = {'searchValues': requestObject}
-            context = setupGoogleMap(requestObject, context, prmz)
+            context = setupGoogleMap(requestObject, context, adhocprmz)
 
             loginfo(logger, 'gmapper', context, request)
             return render(request, 'maps.html', context)
 
 
-@login_required()
 def dispatch(request):
 
     if request.method == 'POST' and request.POST != {}:
@@ -106,13 +104,13 @@ def dispatch(request):
         if form.is_valid():
             try:
                 context = {'searchValues': requestObject}
-                csvformat, fieldset, csvitems = setupCSV(requestObject, context, prmz)
+                csvformat, fieldset, csvitems = setupCSV(requestObject, context, adhocprmz)
                 loginfo(logger, 'csv', context, request)
 
                 # create the HttpResponse object with the appropriate CSV header.
                 response = HttpResponse(content_type='text/csv')
                 response['Content-Disposition'] = 'attachment; filename="%s-%s.%s"' % (
-                    prmz.CSVPREFIX, datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S"), prmz.CSVEXTENSION)
+                    adhocprmz.CSVPREFIX, datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S"), adhocprmz.CSVEXTENSION)
                 return writeCsv(response, fieldset, csvitems, writeheader=True, csvFormat=csvformat)
             except:
                 messages.error(request, 'Problem creating .csv file. Sorry!')
@@ -125,7 +123,7 @@ def dispatch(request):
             try:
                 context = {'searchValues': requestObject}
                 loginfo(logger, 'pdf', context, request)
-                return setup4PDF(request, context, prmz)
+                return setup4PDF(request, context, adhocprmz)
 
             except:
                 messages.error(request, 'Problem creating .pdf file. Sorry!')
@@ -139,7 +137,6 @@ def dispatch(request):
         return search(request)
 
 
-@login_required()
 def statistics(request):
     if request.method == 'POST' and request.POST != {}:
         requestObject = dict(request.POST.iteritems())
@@ -150,7 +147,7 @@ def statistics(request):
             try:
                 context = {'searchValues': requestObject}
                 loginfo(logger, 'statistics1', context, request)
-                context = computeStats(requestObject, context, prmz)
+                context = computeStats(requestObject, context, adhocprmz)
                 loginfo(logger, 'statistics2', context, request)
                 context['summarytime'] = '%8.2f' % (time.time() - elapsedtime)
                 # 'downloadstats' is handled in writeCSV, via post
@@ -165,4 +162,4 @@ def loadNewFields(request, fieldfile, prmz):
 
     context = setConstants({}, prmz, request)
     loginfo(logger, 'loaded fields', context, request)
-    return render(request, 'search.html', context)
+    return render(request, 'adhocreports.html', context)

@@ -14,7 +14,7 @@ body {
 td, th {
     vertical-align: top;
     padding: 5px;
-    font-family: Helvetica, Arial, freesans, clean, sans serif;
+    font-family: Helvetica, Arial, freesans, clean, sans-serif;
     border-bottom: 1px solid #eee;
 }
 

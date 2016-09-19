@@ -183,7 +183,7 @@ def getMapPoints(context, requestObject):
 
 
 def setupGoogleMap(requestObject, context, prmz):
-    context = doSearch(context, prmz)
+    context = doSearch(context, prmz, request)
     selected = []
     for p in requestObject:
         if 'item-' in p:
@@ -223,7 +223,7 @@ def setupGoogleMap(requestObject, context, prmz):
 
 def setupBMapper(requestObject, context, prmz):
     context['berkeleymapper'] = 'set'
-    context = doSearch(context, prmz)
+    context = doSearch(context, prmz, request)
     mappableitems, numSelected = getMapPoints(context, requestObject)
     context['mapmsg'] = []
     filename = 'bmapper%s.csv' % datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
@@ -282,7 +282,7 @@ def computeStats(requestObject, context, prmz):
     context['summarizeon'] = requestObject['summarizeon']
     context['summaryrows'] = [requestObject[z] for z in requestObject if 'include-' in z]
     context['summarylabels'] = [prmz.PARMS[var][0] for var in context['summaryrows']]
-    context = doSearch(context, prmz)
+    context = doSearch(context, prmz, request)
     return context
 
 
@@ -293,7 +293,7 @@ def setupCSV(requestObject, context, prmz):
         format = 'statistics'
     else:
         format = 'csv'
-        context = doSearch(context, prmz)
+        context = doSearch(context, prmz, request)
         selected = []
         # check to see if 'select all' is clicked...if so, skip checking individual items
         if 'select-items' in requestObject:
@@ -351,7 +351,7 @@ def extractValue(listItem, key):
     return temp
 
 
-def setConstants(context, prmz):
+def setConstants(context, prmz, request):
     if not SolrIsUp: context['errormsg'] = 'Solr is down!'
     context['suggestsource'] = prmz.SUGGESTIONS
     context['title'] = prmz.TITLE
@@ -432,14 +432,23 @@ def setConstants(context, prmz):
     if not 'FIELDS' in context:
         context['FIELDS'] = prmz.FIELDS
 
+    # http://blog.mobileesp.com/
+    # the middleware must be installed for the following to work...
+    if request.is_phone:
+        context['device'] = 'phone'
+    elif request.is_tablet:
+        context['device'] = 'tablet'
+    else:
+        context['device'] = 'other'
+
     return context
 
 
-def doSearch(context, prmz):
+def doSearch(context, prmz, request):
     elapsedtime = time.time()
     solr_server = prmz.SOLRSERVER
     solr_core = prmz.SOLRCORE
-    context = setConstants(context, prmz)
+    context = setConstants(context, prmz, request)
     requestObject = context['searchValues']
 
     formFields = deepcopy(prmz.FIELDS)

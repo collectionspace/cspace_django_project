@@ -1,0 +1,36 @@
+<div id="adhocfacets">
+    <table width="100%">
+        <tr>
+            {% for f in fields %}
+                <th>{{ f }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for facet in facets %}
+                <td style="max-width: 220px;">
+                    <table id="Facet.{{ facet.0 }}" class="tablesorter-blue">
+                        <thead>
+                        <tr>
+                            <th>Value</th><th>F</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for f in facet.1 %}
+                            <tr><td class="facet"><a href="#" class="facet-item" data-facetType={{ facet.0 }}>{{ f.0 }}</a></td><td>{{ f.1 }}</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+<script>
+    $('[id]').map(function () {
+        var elementID = $(this).attr('id');
+        var elementClass = $(this).attr('class');
+        if (elementClass == 'tablesorter') {
+            $(this).tablesorter();
+        }
+    });
+</script>

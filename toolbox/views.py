@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse
 from django import forms
 import json
+from .models import AdditionalInfo
 
 from utils import loginfo, dispatch, appLayout, setconstants, APPS
 
@@ -14,6 +15,7 @@ def index(request):
     # APPS is a dict of configured webapps, show the list sorted by "app title"
     sorted_apps = sorted(APPS.items(), key=operator.itemgetter(1))
     context = setconstants({'apps': sorted_apps}, 'listapps')
+    context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
     return render(request, 'toolbox.html', context)
 
 
@@ -38,6 +40,7 @@ def tool(request, appname):
         context = setconstants(context, appname)
         loginfo(appname, context, request)
 
+    context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
     # special case: the data endpoint returns JSON
     if appname == 'data':
         return HttpResponse(json.dumps(context['data']))
