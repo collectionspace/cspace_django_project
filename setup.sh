@@ -85,7 +85,7 @@ elif [ "${COMMAND}" = "deploy" ]; then
     # just to be sure, we start over with this...
     rm db.sqlite3
     python manage.py syncdb --noinput
-    python manage.py migrate
+    # python manage.py migrate
     python manage.py loaddata fixtures/*.json
     python manage.py collectstatic --noinput
     echo

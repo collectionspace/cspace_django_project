@@ -1,0 +1,14 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+{% load staticfiles %}
+
+{% block content %}
+    <div id="content-main">
+        {% include "toggled.html" %}
+        <div id="waitingImage" style="display: none">
+            <h1><img style="vertical-align: middle" src="{% static "cspace_django_site/images/timer-animated.gif" %}"
+                     alt="Searching..."/> Searching...</h1>
+        </div>
+    {% include "adhocfields.html" %}
+    </div>
+{% endblock %}

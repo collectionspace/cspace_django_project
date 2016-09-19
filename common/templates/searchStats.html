@@ -1,20 +1,22 @@
-<div style="height: 45px; padding-top: 15px;">
-    {% if time %}
-        {{ time }} seconds;
-    {% endif %}
+<div id="searchstats" style="background-color: #e8e8e8; height: 45px;">
     {% if url %}
         {% if count > 0 %}
-            {{ count }} items found.
-            {% if recordlimit %}<span style="color: red; font-weight: bold;">{{ recordlimit }}</span>
-            {% endif %}
+            <b>{{ count }} item{{ count|pluralize }} found.</b>
+            {% if recordlimit %}<span style="color: red;">{{ recordlimit }}</span>
+            {% endif %}<br/>
             {% if pagesummary %}{{ pagesummary }}{% endif %}
-        {% else %}no items found.
+        {% else %}<b>no items found.</b>
         {% endif %}
-        emailable version of query: <i><a href="{{ emailableurl }}?{{ url }}">{{ url }}</a></i>
+        <a onclick="$('#emailablequery').toggle(); return false;" id="showequery">show emailable URL</a>
+        <span id="emailablequery" style="display: none"><i><a href="{{ emailableurl }}?{{ url }}">{{ url }}</a></i></span>
         <input type="hidden" name="url" value="{{ url }}"/>
         <br/>
-        {% if querystring %}
-            solr query: <i>{{ querystring }}</i>
-        {% endif %}
+    {% endif %}
+    {% if time %}
+        Solr query took {{ time }} seconds.&nbsp;
+    {% endif %}
+    {% if querystring %}
+        <a onclick="$('#solrquery').toggle(); return false;" id="showquery">show solr query</a>
+        <span id="solrquery" style="display: none"><b><i>{{ querystring }}</i></b></span>
     {% endif %}
 </div>

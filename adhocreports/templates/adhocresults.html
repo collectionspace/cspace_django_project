@@ -1,0 +1,42 @@
+{% spaceless %}
+<div id="resultsPanel">
+<table cellspace="1" id="resultsListing" class="tablesorter-blue">
+    <thead>
+    <tr>
+        <th></th>
+        {% for label in labels %}
+            <th>{{ label }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>
+            <td><input type="checkbox" class="sel-item" name="item-{{ item.counter }}" value="{{ item.csid }}" checked></td>
+            {% for i in item.otherfields %}
+                {% if i.name == item.accessionfield %}
+                    <td><a class="facet-item" data-facetType="{{ i.name }}" data-sort="{{ item.sortkey }}">{{ i.value }}</a></td>
+                {% else %}
+                    {% if i.multi == 1 %}
+                        <td>
+                        {% for t in i.value %}
+                            <a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a>
+                        {% endfor %}
+                        </td>
+                    {% elif i.multi > 1 %}
+                        <td>
+                        {% for t in i.value %}
+                            <li><a class="facet-item" data-facetType="{{ i.name }}">{{ t|safe }}</a></li>
+                        {% endfor %}
+                        </td>
+                    {% else %}
+                        <td><a class="facet-item" data-facetType="{{ i.name }}">{{ i.value|safe }}</a></td>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endspaceless %}

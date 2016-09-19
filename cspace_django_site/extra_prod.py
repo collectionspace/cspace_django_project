@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     #'batchuploadimages',
     # 'standard' apps
     #'asura',
+    #'adhocreports',
     'imagebrowser',
     'imageserver',
     'imaginator',

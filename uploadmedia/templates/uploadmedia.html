@@ -2,31 +2,6 @@
 {% load i18n admin_static %}
 {% load staticfiles %}
 
-{% block scripts %}
-    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-1.10.0.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-ui-1.10.3.custom.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "cspace_django_site/js/jquery.tablesorter.min.js" %}"></script>
-{% endblock %}
-
-<!-- Overwrite default placement of login button, included below in branding block -->
-{% block loginBtn %}{% endblock %}
-
-{% block branding %}
-    <h4 class="bannerLeft"></h4>
-    <h4 class="bannerRight"></h4>
-    <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
-
-    <!-- div class="user-tools" -->
-    <div class="unitnav">
-        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="showqueue/" %}
-    </div>
-    <div class="unitnav">
-        {% for info in additionalInfo %}
-            <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
-        {% endfor %}
-    </div>
-{% endblock %}
-
 {% block content %}
     <div id="content-main">
         {% include "toggled.html" %}

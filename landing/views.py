@@ -5,9 +5,11 @@ from django.shortcuts import render, HttpResponse
 import json
 from django.conf import settings
 from os import path
+import time
 
 from cspace_django_site.main import cspace_django_site
 from common import cspace
+from common import appconfig
 
 config = cspace_django_site.getConfig()
 hostname = cspace.getConfigOptionWithSection(config,
@@ -33,8 +35,14 @@ def index(request):
     appList = getapplist(request)
     if not request.user.is_authenticated():
         appList = [app for app in appList if not app[0] in loginRequiredApps]
-    return render(request, 'listApps.html',
-                  {'appList': appList, 'labels': 'name file'.split(' '), 'apptitle': TITLE, 'hostname': hostname})
+    context = {}
+    context['version'] = appconfig.getversion()
+    context['appList'] = appList
+    context['labels'] = 'name file'.split(' ')
+    context['apptitle'] = TITLE
+    context['hostname'] = hostname
+    context['timestamp'] = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
+    return render(request, 'listApps.html', context)
 
 
 def applist(request):

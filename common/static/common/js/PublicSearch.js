@@ -117,7 +117,7 @@ $(document).ready(function () {
       chooseSlideDirection("#" + $(this).attr('id') + "Target");
       $('.expandedInfo').not("#" + $(this).attr('id') + "Target").slideUp();
     });
-    
+
     $("#acceptterms").click(function () {
         $(this).css({
             background: "",
@@ -131,7 +131,6 @@ $(document).ready(function () {
     });
 
     $('#search-list, #search-full, #search-grid').click(function () {
-        display = $(this).attr('name');
         submitForm($(this).attr('name'));
 
     });
@@ -193,9 +192,6 @@ $(document).ready(function () {
                 });
         }
         else {
-            $('#resultsPanel').css({
-                display: "none"
-            });
 
             $('#waitingImage').css({
                 display: "block"
@@ -222,10 +218,6 @@ $(document).ready(function () {
 
                 $('#waitingImage').css({
                     display: "none"
-                });
-
-                $('#resultsPanel').css({
-                    display: "block"
                 });
 
                 enablega('send', 'pageview', { 'page': '/search' }, googleAnalytics);

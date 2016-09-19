@@ -5,8 +5,9 @@ import csv
 import solr
 import cgi
 
-from os import path
+from os import path, popen
 from copy import deepcopy
+from cspace_django_site import settings
 
 from io import BytesIO
 # disable reportlab code for now
@@ -182,7 +183,7 @@ def getMapPoints(context, requestObject):
 
 
 def setupGoogleMap(requestObject, context, prmz):
-    context = doSearch(context, prmz)
+    context = doSearch(context, prmz, request)
     selected = []
     for p in requestObject:
         if 'item-' in p:
@@ -222,7 +223,7 @@ def setupGoogleMap(requestObject, context, prmz):
 
 def setupBMapper(requestObject, context, prmz):
     context['berkeleymapper'] = 'set'
-    context = doSearch(context, prmz)
+    context = doSearch(context, prmz, request)
     mappableitems, numSelected = getMapPoints(context, requestObject)
     context['mapmsg'] = []
     filename = 'bmapper%s.csv' % datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
@@ -281,7 +282,7 @@ def computeStats(requestObject, context, prmz):
     context['summarizeon'] = requestObject['summarizeon']
     context['summaryrows'] = [requestObject[z] for z in requestObject if 'include-' in z]
     context['summarylabels'] = [prmz.PARMS[var][0] for var in context['summaryrows']]
-    context = doSearch(context, prmz)
+    context = doSearch(context, prmz, request)
     return context
 
 
@@ -292,7 +293,7 @@ def setupCSV(requestObject, context, prmz):
         format = 'statistics'
     else:
         format = 'csv'
-        context = doSearch(context, prmz)
+        context = doSearch(context, prmz, request)
         selected = []
         # check to see if 'select all' is clicked...if so, skip checking individual items
         if 'select-items' in requestObject:
@@ -350,7 +351,7 @@ def extractValue(listItem, key):
     return temp
 
 
-def setConstants(context, prmz):
+def setConstants(context, prmz, request):
     if not SolrIsUp: context['errormsg'] = 'Solr is down!'
     context['suggestsource'] = prmz.SUGGESTIONS
     context['title'] = prmz.TITLE
@@ -431,14 +432,23 @@ def setConstants(context, prmz):
     if not 'FIELDS' in context:
         context['FIELDS'] = prmz.FIELDS
 
+    # http://blog.mobileesp.com/
+    # the middleware must be installed for the following to work...
+    if request.is_phone:
+        context['device'] = 'phone'
+    elif request.is_tablet:
+        context['device'] = 'tablet'
+    else:
+        context['device'] = 'other'
+
     return context
 
 
-def doSearch(context, prmz):
+def doSearch(context, prmz, request):
     elapsedtime = time.time()
     solr_server = prmz.SOLRSERVER
     solr_core = prmz.SOLRCORE
-    context = setConstants(context, prmz)
+    context = setConstants(context, prmz, request)
     requestObject = context['searchValues']
 
     formFields = deepcopy(prmz.FIELDS)
@@ -496,6 +506,16 @@ def doSearch(context, prmz):
                 if t == 'Null':
                     t = '[* TO *]'
                     index = '-' + prmz.PARMS[p][3]
+                # if we are testing for 'presence' or 'absence', this is handled elsewhere
+                elif prmz.PARMS[p][1] == 'present':
+                    if t == 'yes':
+                        index = prmz.PARMS[p][3]
+                    else:
+                        index = '-' + prmz.PARMS[p][3]
+                    if '_p' in prmz.PARMS[p][3]:
+                        t = "[-90,-180 TO 90,180]"
+                    else:
+                        t = '[* TO *]'
                 else:
                     if p in prmz.DROPDOWNS:
                         # if it's a value in a dropdown, it must always be an "exact search"
@@ -549,7 +569,8 @@ def doSearch(context, prmz):
                 if t == 'AND': t = '"AND"'
                 ORs.append(querypattern % (index, t))
             searchTerm = ' OR '.join(ORs)
-            if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
+            if ' ' in searchTerm and not ' TO ' in searchTerm: searchTerm = ' (' + searchTerm + ') '
+            #if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
             # print searchTerm
             queryterms.append(searchTerm)
             urlterms.append('%s=%s' % (p, cgi.escape(requestObject[p])))
@@ -588,6 +609,8 @@ def doSearch(context, prmz):
     except:
         startpage = 0
         context['start'] = 1
+
+    print 'query: %s' % querystring
     try:
         solrtime = time.time()
         response = s.query(querystring, facet='true', facet_field=facetfields, fq={}, fields=solrfl,
@@ -672,10 +695,10 @@ def doSearch(context, prmz):
         context['items'].append(item)
 
     # if context['displayType'] in ['full', 'grid'] and response._numFound > prmz.MAXRESULTS:
-    # context['recordlimit'] = '(limited to %s for long display)' % prmz.MAXRESULTS
+    # context['recordlimit'] = '(limited to %s for long display.)' % prmz.MAXRESULTS
     #    context['items'] = context['items'][:prmz.MAXLONGRESULTS]
     if context['displayType'] in ['full', 'grid', 'list'] and response._numFound > context['maxresults']:
-        context['recordlimit'] = '(display limited to %s)' % context['maxresults']
+        context['recordlimit'] = '(display limited to %s.)' % context['maxresults']
 
     # I think this hack works for most values... but really it should be done properly someday... ;-)
     numberOfPages = 1 + int(response._numFound / (context['maxresults'] + 0.001))
@@ -715,4 +738,3 @@ def doSearch(context, prmz):
     context['core'] = solr_core
     context['time'] = '%8.3f' % (time.time() - elapsedtime)
     return context
-

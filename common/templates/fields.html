@@ -64,6 +64,17 @@
                                     {% endfor %}
                                     <div class="expandInfo"><input type="radio" name="{{ field.name }}" value="">Reset</div>
                                 </td>
+                            {% elif 'present' in field.fieldtype %}
+                                <td {% if field.style %} class="{{ field.style }}"{% endif %}>
+                                    <label>{{ field.label }}</label>
+                                </td>
+                                <td colspan="2">
+                                    <select id="{{ field.name }}" name="{{ field.name }}">
+                                        <option value="">Please select</option>
+                                        <option value="yes"{% if 'yes' == field.value %} selected{% endif %}>yes</option>
+                                        <option value="no"{% if 'no' == field.value %} selected{% endif %}>no</option>
+                                    </select>
+                                </td>
                             {% else %}
                                 <td colspan="2" {% if field.style %} class="{{ field.style }}"{% endif %}>
                                     <label>{{ field.label }}</label>

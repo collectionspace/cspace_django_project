@@ -1,10 +1,33 @@
 {% extends "cspace_django_site/base.html" %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{% if title %}{{ title }}{% else %}{{ apptitle }}{% endif %} | {% trans 'CollectionSpace' %}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">{% trans ' ' %}</h1>
+    <div class="unit"><h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1></div>
+    <!-- div class="user-tools" -->
+    <div class="unitnav">
+        {% if additionalInfo %}
+            {% for info in additionalInfo %}
+                <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
+            {% endfor %}
+            <span class="expandInfo">||</span>
+        {% endif %}
+        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
+    </div>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
+
+{% block footer %}
+    <table width="100%">
+        <tbody>
+        <tr>
+            <td style="vertical-align: middle">Current time: {{ timestamp }}. This is version {{ version }}</td>
+            <td style="vertical-align: middle;width: 70px;">powered by</td>
+            <td style="text-align: right; width: 160px;"><img src="{% static "cspace_django_site/images/header-logo-cspace.png" %}" height="30px"></td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}

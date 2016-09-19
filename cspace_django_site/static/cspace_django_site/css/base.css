@@ -14,7 +14,7 @@ body {
 td, th {
     vertical-align: top;
     padding: 5px;
-    font-family: Helvetica, Arial, freesans, clean, sans serif;
+    font-family: Helvetica, Arial, freesans, clean, sans-serif;
     border-bottom: 1px solid #eee;
 }
 
@@ -221,7 +221,7 @@ li.facet {
 a#logout:link, a#logout:visited {
     background-color: #F3F3F3;
     color: #333;
-    margin: 0 0 0 15px;
+    /* margin: 0 0 0 15px; */
 }
 a#logout:hover { background-color: #333; color: #FFF; }
 
@@ -254,10 +254,12 @@ a#logout:hover { background-color: #333; color: #FFF; }
     
     /* To add your own institution's header image, place the image in: 
         cspace_django_project/cspace_django_site/static/cspace_django_site/images/header-logo.png
-        Then comment the following background line, and uncomment the line after that. */
+        (Of course, you can use a different name or type, edit the file name below.)
+        (Also, the image should be no taller than 50px or you'll need to edit the height above.)
+    */
     
-    #background: url(../images/header-logo-cspace.png) no-repeat right top;
-    background: url(../images/header-logo.png) no-repeat left top, url(../images/header-logo-cspace.png) no-repeat right top;
+    background: url(../images/header-logo.png) no-repeat left top;
+    #background: url(../images/header-logo.png) no-repeat left top, url(../images/header-logo-cspace.png) no-repeat right top;
 }
 
 #login-content p {

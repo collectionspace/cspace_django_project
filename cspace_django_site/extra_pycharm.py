@@ -1,4 +1,3 @@
-import os
 
 GOOGLE_ANALYTICS = -1
 
@@ -26,6 +25,7 @@ INSTALLED_APPS = (
     #'batchuploadimages',
     # 'standard' apps
     #'asura',
+    #'adhocreports',
     'imagebrowser',
     'imageserver',
     'imaginator',
