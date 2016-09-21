@@ -27,7 +27,7 @@
             {% if appname == 'listapps' %}
                 <table cellspace="1" id="resultsListing">
                     {% for app in apps %}
-                        {% if app.0 != 'listapps' %}
+                        {% if app.0 != 'listapps' and app.0 != 'data' %}
                             <tr><td><a class="facet-item" href="{{ app.0 }}">{{ app.1.0 }}</a></td></tr>
                         {% endif %}
                     {% endfor %}

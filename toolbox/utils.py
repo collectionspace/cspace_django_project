@@ -6,6 +6,7 @@ import csv
 import logging
 
 from common import cspace  # we use the config file reading function
+from common.utils import devicetype
 from cspace_django_site import settings
 from .models import AdditionalInfo
 
@@ -60,7 +61,7 @@ def loginfo(infotype, context, request):
     logger.info('%s :: %s :: %s :: %s' % (infotype, count, username, logdata))
 
 
-def setconstants(context, appname):
+def setconstants(request, context, appname):
     context['timestamp'] = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     context['searchrows'] = range(1, 4)
     context['searchcolumns'] = range(1, 4)
@@ -70,6 +71,7 @@ def setconstants(context, appname):
     context['institution'] = institution
     context['version'] = VERSION
     context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
+    context['device'] = devicetype(request)
 
     return context
 
