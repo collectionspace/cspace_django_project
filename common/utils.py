@@ -14,7 +14,6 @@ from io import BytesIO
 # from common.table import makeReport
 from django.http import HttpResponse, HttpResponseRedirect
 
-
 SolrIsUp = True  # an initial guess! this is verified below...
 
 
@@ -116,7 +115,7 @@ def writeCsv(filehandle, fieldset, items, writeheader=False, csvFormat='csv'):
     writer = csv.writer(filehandle, delimiter='\t')
     # write the header
     if writeheader:
-        writer.writerow(fieldset) 
+        writer.writerow(fieldset)
     for item in items:
         # get the cells from the item dict in the order specified; make empty cells if key is not found.
         row = []
@@ -240,8 +239,8 @@ def setupBMapper(request, requestObject, context, prmz):
     return context
     # return HttpResponseRedirect(context['bmapperurl'])
 
-def setup4PDF(request, context, prmz):
 
+def setup4PDF(request, context, prmz):
     csvformat, fieldset, csvitems = setupCSV(request, context, prmz)
     table = []
     table.append(context['fields'])
@@ -259,17 +258,16 @@ def setup4PDF(request, context, prmz):
     response['Content-Disposition'] = 'attachment; filename="%s-%s.%s"' % (
         prmz.CSVPREFIX, datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S"), 'pdf')
 
-
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="test.pdf"'
 
     buffer = BytesIO()
 
-    #report = makeReport(buffer, 'Letter', 'header', 'footer')
-    #pdf = report.fillReport(table)
+    # report = makeReport(buffer, 'Letter', 'header', 'footer')
+    # pdf = report.fillReport(table)
 
-    #response.write(pdf)
+    # response.write(pdf)
     return response
 
 
@@ -361,7 +359,7 @@ def setConstants(context, prmz, request):
     context['institution'] = prmz.INSTITUTION
     context['emailableurl'] = prmz.EMAILABLEURL
     context['version'] = prmz.VERSION
-    #context['layout'] = prmz.LAYOUT
+    # context['layout'] = prmz.LAYOUT
     context['dropdowns'] = prmz.FACETS
     context['derivativecompact'] = prmz.DERIVATIVECOMPACT
     context['derivativegrid'] = prmz.DERIVATIVEGRID
@@ -438,7 +436,6 @@ def setConstants(context, prmz, request):
 
 
 def devicetype(request):
-
     # http://blog.mobileesp.com/
     # the middleware must be installed for the following to work...
     try:
@@ -528,7 +525,7 @@ def doSearch(context, prmz, request):
                     if p in prmz.DROPDOWNS:
                         # if it's a value in a dropdown, it must always be an "exact search"
                         # only our own double quotes are unescaped
-                        t = t.replace('"','\\"')
+                        t = t.replace('"', '\\"')
                         t = '"' + t + '"'
                         index = prmz.PARMS[p][3].replace('_txt', '_s')
                     elif p + '_qualifier' in requestObject:
@@ -543,7 +540,7 @@ def doSearch(context, prmz, request):
                             index = prmz.PARMS[p][3]
                             index = index.replace('_txt', '_s')
                             # only our own double quotes are unescaped
-                            t = t.replace('"','\\"')
+                            t = t.replace('"', '\\"')
                             t = '"' + t + '"'
                         elif qualifier == 'phrase':
                             index = index.replace('_ss', '_txt').replace('_s', '_txt')
@@ -569,16 +566,16 @@ def doSearch(context, prmz, request):
                         # if no search qualifier is specified use the 'phrase' approach, copied from above
                         # eliminate some characters that might confuse solr's query parser
                         index = prmz.PARMS[p][3]
-                        #index = index.replace('_ss', '_txt').replace('_s', '_txt')
+                        # index = index.replace('_ss', '_txt').replace('_s', '_txt')
                         # escape funny characters
                         t = re.sub(r'([\[\]\:\(\)\")\-\. ])', r'\\\g<1>', t)
-                        #t = '"' + t + '"'
+                        # t = '"' + t + '"'
                 if t == 'OR': t = '"OR"'
                 if t == 'AND': t = '"AND"'
                 ORs.append(querypattern % (index, t))
             searchTerm = ' OR '.join(ORs)
             if ' ' in searchTerm and not ' TO ' in searchTerm: searchTerm = ' (' + searchTerm + ') '
-            #if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
+            # if ' ' in searchTerm and not '[* TO *]' in searchTerm: searchTerm = ' (' + searchTerm + ') '
             # print searchTerm
             queryterms.append(searchTerm)
             urlterms.append('%s=%s' % (p, cgi.escape(requestObject[p])))
@@ -685,7 +682,6 @@ def doSearch(context, prmz, request):
             item['marker'] = makeMarker(rowDict[prmz.LOCATION])
             item['location'] = rowDict[prmz.LOCATION]
 
-
         otherfields = []
         for p in prmz.FIELDS[displayFields]:
             try:
@@ -697,7 +693,7 @@ def doSearch(context, prmz, request):
                 else:
                     otherfields.append({'label': p['label'], 'name': p['name'], 'multi': multi, 'value': value2use})
             except:
-                #raise
+                # raise
                 otherfields.append({'label': p['label'], 'name': p['name'], 'multi': 0, 'value': ''})
         item['otherfields'] = otherfields
         context['items'].append(item)
