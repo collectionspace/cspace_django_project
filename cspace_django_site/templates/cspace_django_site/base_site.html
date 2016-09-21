@@ -5,7 +5,12 @@
 {% block title %}{% if title %}{{ title }}{% else %}{{ apptitle }}{% endif %} | {% trans 'CollectionSpace' %}{% endblock %}
 
 {% block branding %}
-    <div class="unit"><h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1></div>
+    <div class="unit size1of3">
+      <div id="logo"></div>
+    </div>
+    <div class="unit size1of3" style="text-align: center">
+      <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
+    </div>
     <!-- div class="user-tools" -->
     <div class="unitnav">
         {% if additionalInfo %}

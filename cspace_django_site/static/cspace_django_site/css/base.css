@@ -73,6 +73,7 @@ label {
 .unitnav{float:right; text-align: center;}
 .unit{float:left;}
 
+.size1of2{width: 50%;}
 .size1of3{width:33.33333%;}
 .size2of3{width:66.66666%;}
 
@@ -141,8 +142,7 @@ li.facet {
 }
 
 #branding {
-    padding: 0 10px;
-    margin: 6px 0px 0px 0px;
+    padding: 10px 10px;
 }
 
 #login {
@@ -247,19 +247,19 @@ a#logout:hover { background-color: #333; color: #FFF; }
     width: 350px;
 }
 
-#branding h1 {
-    /* text-indent: -9999px; Hides the text in the h1 tag, but still makes text available for screenreaders */
-    text-indent: 360px;
-    height: 50px; /* The height of the tallest image referenced above in background-image */
-    
-    /* To add your own institution's header image, place the image in: 
-        cspace_django_project/cspace_django_site/static/cspace_django_site/images/header-logo.png
-        (Of course, you can use a different name or type, edit the file name below.)
-        (Also, the image should be no taller than 50px or you'll need to edit the height above.)
-    */
-    
-    background: url(../images/header-logo.png) no-repeat left top;
-    #background: url(../images/header-logo.png) no-repeat left top, url(../images/header-logo-cspace.png) no-repeat right top;
+#branding #logo {
+  /* text-indent: -9999px; Hides the text in the h1 tag, but still makes text available for screenreaders */
+  text-indent: 360px;
+  height: 70px; /* The height of the tallest image referenced above in background-image */
+
+  /* To add your own institution's header image, place the image in:
+      cspace_django_project/cspace_django_site/static/cspace_django_site/images/header-logo.png
+      (Of course, you can use a different name or type, edit the file name below.)
+      (Also, the image should be no taller than 50px or you'll need to edit the height above.)
+  */
+
+  background: url(../images/header-logo.png) no-repeat left top;
+  #background: url(../images/header-logo.png) no-repeat left top, url(../images/header-logo-cspace.png) no-repeat right top;
 }
 
 #login-content p {
