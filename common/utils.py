@@ -182,7 +182,7 @@ def getMapPoints(context, requestObject):
     return mappableitems, numSelected
 
 
-def setupGoogleMap(requestObject, context, prmz):
+def setupGoogleMap(request, requestObject, context, prmz):
     context = doSearch(context, prmz, request)
     selected = []
     for p in requestObject:
@@ -221,7 +221,7 @@ def setupGoogleMap(requestObject, context, prmz):
     return context
 
 
-def setupBMapper(requestObject, context, prmz):
+def setupBMapper(request, requestObject, context, prmz):
     context['berkeleymapper'] = 'set'
     context = doSearch(context, prmz, request)
     mappableitems, numSelected = getMapPoints(context, requestObject)
@@ -277,7 +277,7 @@ def setup4Print(request, context, prmz):
     return
 
 
-def computeStats(requestObject, context, prmz):
+def computeStats(request, requestObject, context, prmz):
     context['summarizeonlabel'] = prmz.PARMS[requestObject['summarizeon']][0]
     context['summarizeon'] = requestObject['summarizeon']
     context['summaryrows'] = [requestObject[z] for z in requestObject if 'include-' in z]
@@ -286,9 +286,9 @@ def computeStats(requestObject, context, prmz):
     return context
 
 
-def setupCSV(requestObject, context, prmz):
+def setupCSV(request, requestObject, context, prmz):
     if 'downloadstats' in requestObject:
-        context = computeStats(requestObject, context, prmz)
+        context = computeStats(request, requestObject, context, prmz)
         csvitems = context['summaryrows']
         format = 'statistics'
     else:
@@ -432,16 +432,24 @@ def setConstants(context, prmz, request):
     if not 'FIELDS' in context:
         context['FIELDS'] = prmz.FIELDS
 
-    # http://blog.mobileesp.com/
-    # the middleware must be installed for the following to work...
-    if request.is_phone:
-        context['device'] = 'phone'
-    elif request.is_tablet:
-        context['device'] = 'tablet'
-    else:
-        context['device'] = 'other'
+    context['device'] = devicetype(request)
 
     return context
+
+
+def devicetype(request):
+
+    # http://blog.mobileesp.com/
+    # the middleware must be installed for the following to work...
+    try:
+        if request.is_phone:
+            return 'phone'
+        elif request.is_tablet:
+            return 'tablet'
+        else:
+            return 'other'
+    except:
+        return 'other'
 
 
 def doSearch(context, prmz, request):
