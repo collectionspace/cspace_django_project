@@ -220,7 +220,7 @@ $(document).ready(function () {
                     display: "none"
                 });
 
-                enablega('send', 'pageview', { 'page': '/search' }, googleAnalytics);
+                enablega('send', 'pageview', { 'page': 'search' }, googleAnalytics);
             });
         }
     };
