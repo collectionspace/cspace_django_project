@@ -28,15 +28,7 @@
     <link rel="stylesheet" type="text/css" href="{% static "common/css/PublicSearch.css" %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/' %}{{ device }}.css"/>
     {% block extrastyle %}{% endblock %}
-    <style>
-        @media print {
-            #search { display: none;  }
-            .unitnav { display: none; }
-            #searchstats { display: none; }
-            #selectedresults { display: none; }
-            h1 { font-size: 14px;}
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static "cspace_django_site/css/print.css" %}"/>
 
     {% block extrahead %}{% endblock %}
     {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
