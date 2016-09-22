@@ -1,22 +1,31 @@
-<div id="searchstats" style="background-color: #e8e8e8; height: 45px;">
-    {% if url %}
-        {% if count > 0 %}
-            <b>{{ count }} item{{ count|pluralize }} found.</b>
-            {% if recordlimit %}<span style="color: red;">{{ recordlimit }}</span>
-            {% endif %}<br/>
-            {% if pagesummary %}{{ pagesummary }}{% endif %}
-        {% else %}<b>no items found.</b>
-        {% endif %}
+<div id="searchstats" style="display: flex; align-items: flex-end; width: 100%; margin-bottom: 5px; margin-top: 13px;">
+  {% if url %}
+      {% if count > 0 %}
+        <div style="flex: 1 1 auto; padding-right: 10px;">
+          <h2 style="display: inline">{{ count }} item{{ count|pluralize }} found.</h2>
+          {# {% if recordlimit %} #}<!-- <span style="color: red;">{{ recordlimit }}</span> -->{# {% endif %} #}<!-- <br/> -->
+          {% if pagesummary %}{{ pagesummary }}{% endif %}
+        </div>
+      {% else %}
+        <div style="flex: 1 1 auto; padding-right: 10px;">
+          <h2 style="display: inline">no items found.</h2>
+        </div>
+      {% endif %}
+      <div style="flex: 0 1 auto; padding-right: 10px; margin-bottom: 1px;">
         <a onclick="$('#emailablequery').toggle(); return false;" id="showequery">show emailable URL</a>
         <span id="emailablequery" style="display: none"><i><a href="{{ emailableurl }}?{{ url }}">{{ url }}</a></i></span>
         <input type="hidden" name="url" value="{{ url }}"/>
-        <br/>
-    {% endif %}
-    {% if time %}
+      </div>
+  {% endif %}
+  {% if time %}
+      <div style="flex: 0 1 auto; margin-bottom: 1px;">
         Solr query took {{ time }} seconds.&nbsp;
-    {% endif %}
-    {% if querystring %}
+      </div>
+  {% endif %}
+  {% if querystring %}
+      <div style="flex: 0 1 auto; margin-bottom: 1px;">
         <a onclick="$('#solrquery').toggle(); return false;" id="showquery">show solr query</a>
         <span id="solrquery" style="display: none"><b><i>{{ querystring }}</i></b></span>
-    {% endif %}
+      </div>
+  {% endif %}
 </div>
