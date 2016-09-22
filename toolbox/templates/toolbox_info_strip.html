@@ -1,17 +1,18 @@
 {% load i18n admin_static %}
 {% block branding %}
-    <h4 class="bannerLeft"></h4>
-    <h4 class="bannerRight"></h4>
-    <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
-
-    <!-- div class="user-tools" -->
-    <div class="unitnav">
-        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
+    <div class="unit size1of3">
+      <img src="{% static "cspace_django_site/images/header-logo.png" %}">
     </div>
-    <div class="unitnav">
+    <div class="unit size1of3 center">
+      <h1>{{ apptitle }}</h1>
+    </div>
+
+    <div class="unit size1of3 right">
         {% for info in additionalInfo %}
             <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
         {% endfor %}
         <a href="./">Switch Tool</a>
+
+        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
     </div>
 {% endblock %}
