@@ -70,15 +70,18 @@ label {
 .line:after{content: ".";display: block;height: 0;clear: both;visibility: hidden;}
 .lastUnit:after{content: " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";visibility:hidden; clear:both;height:0 !important;display:block;line-height:0;}
 .line{*zoom:1;}
-.unitnav{float:right; text-align: center;}
 .unit{float:left;}
 
-.size1of2{width: 50%;}
+.size1of2{width:50%;}
 .size1of3{width:33.33333%;}
 .size2of3{width:66.66666%;}
+.size1of4{width:25%;}
 
 .size1of10{width:10%;}
 .size2of10{width:20%;}
+
+.center{text-align: center;}
+.right{text-align: right;}
 
 .grid{
     margin: 5px;
@@ -245,21 +248,6 @@ a#logout:hover { background-color: #333; color: #FFF; }
 
 #report-params input[type=text] {
     width: 350px;
-}
-
-#branding #logo {
-  /* text-indent: -9999px; Hides the text in the h1 tag, but still makes text available for screenreaders */
-  text-indent: 360px;
-  height: 70px; /* The height of the tallest image referenced above in background-image */
-
-  /* To add your own institution's header image, place the image in:
-      cspace_django_project/cspace_django_site/static/cspace_django_site/images/header-logo.png
-      (Of course, you can use a different name or type, edit the file name below.)
-      (Also, the image should be no taller than 50px or you'll need to edit the height above.)
-  */
-
-  background: url(../images/header-logo.png) no-repeat left top;
-  #background: url(../images/header-logo.png) no-repeat left top, url(../images/header-logo-cspace.png) no-repeat right top;
 }
 
 #login-content p {
