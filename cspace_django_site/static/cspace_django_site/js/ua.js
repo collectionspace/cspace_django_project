@@ -5,11 +5,13 @@
  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-/* Default tracking object for webapps-dev.cspace */
- ga('create', 'UA-54952024-6', 'auto');
-
-/* Tracking object for pahma.cspace.berkeley.edu */
- ga('create', 'UA-54952024-10', 'auto', {'name': 'uitracker'});
-
-/* Tracking object for webapps.cspace.berkeley.edu */
- ga('create', 'UA-54952024-5', 'auto', {'name': 'prodtracker'});
+function xga(method, id, obj, trackerid) {
+    // if there is a tracker id, go ahead and send something to UA...
+    if (trackerid != '') {
+       if (typeof obj === undefined) {
+          ga(method, id);
+       } else {
+          ga(method, id, obj);
+       }
+    }
+}

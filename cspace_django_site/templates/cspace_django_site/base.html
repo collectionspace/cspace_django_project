@@ -8,11 +8,14 @@
         <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-ui-1.10.3.custom.min.js" %}"></script>
         <script type="text/javascript" src="{% static "common/js/PublicSearch.js" %}"></script>
         <script type="text/javascript" src="{% static "cspace_django_site/js/jquery.tablesorter.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "cspace_django_site/js/enable.js" %}"></script>
         <script type="text/javascript" src="{% static "cspace_django_site/js/ua.js" %}"></script>
         <script type="text/javascript">
-            var googleAnalytics = {{ googleAnalytics }};
-            enablega('send', 'pageview', undefined, googleAnalytics);
+            var trackingid = '{{ UA_TRACKING_ID }}';
+            // if there is a tracker id, go ahead and create a tracking object...
+            if (trackingid != '') {
+                ga('create', trackingid, 'auto');
+                xga('send', 'pageview', undefined, trackingid);
+            }
         </script>
     {% endblock %}
     {% block extrascript %}{% endblock %}

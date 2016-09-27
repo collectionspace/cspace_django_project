@@ -1,6 +1,16 @@
 # settings needed for Development
 
-GOOGLE_ANALYTICS = 0
+# get the tracking id for dev
+from trackingids import trackingids
+
+UA_TRACKING_ID = trackingids['webapps-dev'][0]
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+# Hosts/domain names that are valid for this site; required if DEBUG is False
+# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = (
     'django.contrib.auth',

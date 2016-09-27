@@ -10,6 +10,7 @@ import time
 from cspace_django_site.main import cspace_django_site
 from common import cspace
 from common import appconfig
+from common.utils import devicetype
 
 config = cspace_django_site.getConfig()
 hostname = cspace.getConfigOptionWithSection(config,
@@ -41,6 +42,7 @@ def index(request):
     context['labels'] = 'name file'.split(' ')
     context['apptitle'] = TITLE
     context['hostname'] = hostname
+    context['device'] = devicetype(request)
     context['timestamp'] = time.strftime("%b %d %Y %H:%M:%S", time.localtime())
     return render(request, 'listApps.html', context)
 
