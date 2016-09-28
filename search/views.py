@@ -3,6 +3,8 @@ __author__ = 'jblowe, amywieliczka'
 import time, datetime
 from os import path
 import logging
+import json
+
 #from cspace_django_site.profile import profile
 
 from django.contrib.auth.decorators import login_required
@@ -64,6 +66,25 @@ def retrieveResults(request):
 
             loginfo(logger, 'results.%s' % context['displayType'], context, request)
             return render(request, 'searchResults.html', context)
+
+def retrieveJSON(request):
+    if request.method == 'GET' and request.GET != {}:
+        requestObject = dict(request.GET.iteritems())
+        form = forms.Form(requestObject)
+
+        if form.is_valid():
+            context = {'searchValues': requestObject}
+            context = doSearch(context, prmz, request)
+
+            loginfo(logger, 'results.%s' % context['displayType'], context, request)
+            #del context['FIELDS']
+            #del context['facets']
+            if not 'items' in context:
+                return HttpResponse(json.dumps('error'))
+            else:
+                return HttpResponse(json.dumps(context['items']))
+    else:
+        return HttpResponse(json.dumps('no data seen'))
 
 
 def bmapper(request):
