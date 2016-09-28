@@ -82,7 +82,7 @@ def retrieveJSON(request):
             if not 'items' in context:
                 return HttpResponse(json.dumps('error'))
             else:
-                return HttpResponse(json.dumps(context['items']))
+                return HttpResponse(json.dumps({'items': context['items'],'labels': context['labels']}))
     else:
         return HttpResponse(json.dumps('no data seen'))
 
