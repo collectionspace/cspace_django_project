@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './client_modules/cspace_django_site/js/app.js',
+  entry: './client_modules/js/app.js',
   output: {
     path: './webpack_dist',
     filename: 'app.bundle.js'
