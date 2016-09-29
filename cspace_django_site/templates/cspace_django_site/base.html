@@ -4,12 +4,7 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
     {% block scripts %}
-        <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-1.10.0.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "cspace_django_site/js/jquery-ui-1.10.3.custom.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "common/js/PublicSearch.js" %}"></script>
-        <script type="text/javascript" src="{% static "cspace_django_site/js/jquery.tablesorter.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "cspace_django_site/js/enable.js" %}"></script>
-        <script type="text/javascript" src="{% static "cspace_django_site/js/ua.js" %}"></script>
+        <script type="text/javascript" src="{% static "app.bundle.js" %}"></script>
         <script type="text/javascript">
             var googleAnalytics = {{ googleAnalytics }};
             enablega('send', 'pageview', undefined, googleAnalytics);

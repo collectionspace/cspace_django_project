@@ -16,3 +16,4 @@ cspace_django_site/secret_key.py
 cspace_django_site/extra_settings.py
 cspace_django_site/main.cfg
 node_modules
+webpack_dist

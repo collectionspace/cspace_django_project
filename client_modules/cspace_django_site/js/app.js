@@ -1,0 +1,11 @@
+var autocomplete = require('../../../node_modules/jquery-ui/ui/widgets/autocomplete');
+var tabs = require('../../../node_modules/jquery-ui/ui/widgets/tabs');
+var tablesorter = require('../../../node_modules/tablesorter/dist/js/jquery.tablesorter');
+var imagesLoaded = require('imagesloaded');
+imagesLoaded.makeJQueryPlugin( $ );
+var d3 = require('d3');
+var Masonry = require('masonry-layout');
+var Clipboard = require('clipboard');
+var enablega = require('./enable.js');
+var ga = require('./ua.js');
+require('../../common/js/PublicSearch.js');

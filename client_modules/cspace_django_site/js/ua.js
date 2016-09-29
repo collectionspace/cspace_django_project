@@ -13,3 +13,5 @@
 
 /* Tracking object for webapps.cspace.berkeley.edu */
  ga('create', 'UA-54952024-5', 'auto', {'name': 'prodtracker'});
+
+module.exports = ga

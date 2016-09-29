@@ -1,4 +1,4 @@
-function enablega(method, id, obj, googleAnalytics) {
+enablega = function(method, id, obj, googleAnalytics) {
     var tracker = '';
     if (googleAnalytics == 1) {
         tracker = 'prodtracker.';
@@ -11,3 +11,5 @@ function enablega(method, id, obj, googleAnalytics) {
         ga(tracker + method, id, obj);
     }
 }
+
+module.exports = enablega
