@@ -1,15 +1,8 @@
 {% extends "cspace_django_site/base_site.html" %}
 {% load i18n admin_static %}
 
-{% block loginBtn %}
-  {% if user.is_active %}
-    {% include "cspace_django_site/loginBtn.html" %}
-  {% endif %}
-{% endblock %}
-
 {% block content %}
     <div id="content-main">
-        <h1>{{ apptitle }}</h1>
         {% if appList %}
             <table>
                 <tr>
@@ -22,22 +15,18 @@
                 {% endfor %}
             </table>
             <br><br>
-            {% if not user.is_active %}
-              {% include "cspace_django_site/loginBtn.html" %} to view all available applications
-            {% endif %}
-            <br><br>
-            <hr/>
-            <table>
-                <tr>
-                    <td><a target="_new" href="https://{{ hostname }}">CollectionSpace UI ({{ hostname }})</a>
-                    </td>
-                </tr>
-            </table>
         {% else %}
             <p>{% trans "No apps" %}</p>
-            {% if not user.is_active %}
-              {% include "cspace_django_site/loginBtn.html" %} to view all available applications
-            {% endif %}
         {% endif %}
+        {% if not user.is_active %}
+            <b><a href="{% url 'login' %}?next={% url request.resolver_match.view_name %}" id="login">{% trans 'Sign in' %}</a></b>
+            to view all available applications.
+        {% endif %}
+        <hr/>
+        <div>
+            Visit the "standard" <a target="_new" href="https://{{ hostname }}">CollectionSpace UI ({{ hostname }})</a>
+            (login required!)
+        </div>
+        <hr/>
     </div>
 {% endblock %}

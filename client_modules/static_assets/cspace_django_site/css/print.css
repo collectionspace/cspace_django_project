@@ -1,0 +1,9 @@
+@media print {
+  #branding { display: none; }
+  #search { display: none; }
+  #searchstats { display: none; }
+  #selectedresults { display: none; }
+  h1 { font-size: 14px;}
+  .ui-tabs-nav { display: none; }
+  #tabs.ui-widget-content { border: 0; }
+}

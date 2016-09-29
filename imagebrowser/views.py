@@ -38,7 +38,7 @@ logger.info('%s :: %s :: %s' % ('imagebrowser startup', '-', '-'))
 # @login_required()
 def images(request):
 
-    context = setConstants({}, prmz)
+    context = setConstants({}, prmz, request)
 
     # http://blog.mobileesp.com/
     # the middleware must be installed for the following to work...
@@ -67,12 +67,14 @@ def images(request):
 
         # do search
         loginfo(logger, 'start imagebrowser search', context, request)
-        context = doSearch(context, prmz)
+        context = doSearch(context, prmz, request)
         context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
 
         return render(request, 'showImages.html', context)
 
     else:
 
-        return render(request, 'showImages.html',
-                      {'title': prmz.TITLE, 'pgNum': 10, 'maxresults': 20})
+        context = setConstants({}, prmz, request)
+        context['pgNum'] = 10
+        context['maxresults'] = 20
+        return render(request, 'showImages.html', context)

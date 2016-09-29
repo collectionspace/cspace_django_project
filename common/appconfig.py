@@ -174,12 +174,7 @@ def loadConfiguration(configFileName):
         prmz.SUGGESTIONS = config.get('search', 'SUGGESTIONS')
         #LAYOUT = config.get('search', 'LAYOUT')
 
-        try:
-            prmz.VERSION = popen("cd " + settings.BASE_PARENT_DIR + " ; /usr/bin/git describe --always").read().strip()
-            if prmz.VERSION == '':  # try alternate location for git (this is the usual Mac location)
-                prmz.VERSION = popen("/usr/local/bin/git describe --always").read().strip()
-        except:
-            prmz.VERSION = 'Unknown'
+        prmz.VERSION = getversion()
 
     except:
         print 'error in configuration file %s' % path.join(settings.BASE_PARENT_DIR, 'config/' + configFileName)
@@ -266,4 +261,15 @@ def loadFields(fieldFile, prmz):
                     prmz.REQUIRED.append(prmz.PARMS[p][3])
 
     return prmz
+
+
+def getversion():
+    try:
+        version = popen("cd " + settings.BASE_PARENT_DIR + " ; /usr/bin/git describe --always").read().strip()
+        if version == '':  # try alternate location for git (this is the usual Mac location)
+            version = popen("/usr/local/bin/git describe --always").read().strip()
+    except:
+        version = 'Unknown'
+    return version
+
 

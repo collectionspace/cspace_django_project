@@ -1,0 +1,18 @@
+{% load i18n admin_static %}
+{% block branding %}
+    <div class="unit size1of3">
+      <img src="{% static "cspace_django_site/images/header-logo.png" %}">
+    </div>
+    <div class="unit size1of3 center">
+      <h1>{{ apptitle }}</h1>
+    </div>
+
+    <div class="unit size1of3 right">
+        {% for info in additionalInfo %}
+            <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
+        {% endfor %}
+        <a href="./">Switch Tool</a>
+
+        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
+    </div>
+{% endblock %}

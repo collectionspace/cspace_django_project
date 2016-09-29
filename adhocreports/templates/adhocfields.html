@@ -1,0 +1,12 @@
+{% spaceless %}
+        <div id="tabs">
+            <ul>
+                <li><a href="#adhocselectfields">Search Fields</a></li>
+                <!-- li><a href="#facets">Facets</a></li -->
+                <li><a href="#resultsPanel">Results</a></li>
+            </ul>
+            {% include "adhocselectfields.html" %}
+            {% include "facets.html" %}
+            {% include "adhocresults.html" %}
+        </div>
+{% endspaceless %}

@@ -2,25 +2,6 @@
 {% load i18n admin_static %}
 {% load staticfiles %}
 
-<!-- Overwrite default placement of login button, included below in branding block -->
-{% block loginBtn %}{% endblock %}
-
-{% block branding %}
-    <h4 class="bannerLeft"></h4>
-    <h4 class="bannerRight"></h4>
-    <h1 class="bannerTitle" id="site-name">{{ apptitle }}</h1>
-
-    <!-- div class="user-tools" -->
-    <div class="unitnav">
-        {% include "cspace_django_site/loginBtn.html" with loginBtnNext="search/" %}
-    </div>
-    <div class="unitnav">
-        {% for info in additionalInfo %}
-            <a href="#" id="{{ info.slug }}" class="expandInfo">{{ info.name }}</a>
-        {% endfor %}
-    </div>
-{% endblock %}
-
 {% block content %}
     {% include "toggled.html" %}
     {% if error %}

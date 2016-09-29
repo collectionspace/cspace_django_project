@@ -1,0 +1,85 @@
+{% extends "cspace_django_site/base_site.html" %}
+{% load i18n admin_static %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+
+{% block extrascript %}
+    <script>
+        $(function () {
+            $(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
+        });
+    </script>
+    <script type="text/javascript" src="{% static "cspace_django_site/js/d3.min.js" %}" charset="utf-8"></script>
+{% endblock extrascript %}
+
+{% block branding %}
+    {{ block.super }}
+    <div class="right" style="padding-top: 3px;">
+    <a href="./">Switch Tool</a><span class="expandInfo">||</span>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="content-main">
+        {% include "toggled.html" %}
+        <input type="hidden" value="{{ institution }}"/>
+        <div class="searchPanel">
+            {% if appname == 'listapps' %}
+                <table id="resultsListing">
+                    {% for app in apps %}
+                        {% if app.0 != 'listapps' and app.0 != 'data' %}
+                            <tr><td><a class="facet-item" href="{{ app.0 }}">{{ app.1.0 }}</a></td></tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            {% else %}
+                <form class="searchForm" id="search" method="POST">
+                    {% csrf_token %}
+                    <div>
+                        {% include "toolbox_fields.html" %}
+                        {% include "toolbox_button_start.html" %}
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+        <div id="waitingImage" style="display: none">
+            <img src="{% static "cspace_django_site/images/timer-animated.gif" %}" alt="Searching..."/>
+        </div>
+        <div id="checkPanel">
+            <form class="reviewForm" id="review" method="POST">
+                {% csrf_token %}
+                {% if checkitems %}
+                    <table>
+                    {% for key,value in checkitems.items %}
+                        <tr><td>{{ value.3 }}</td><td><b>{{ value.2 }}</b></td><td>({{ value.0 }} {{ value.1 }} {{ value.4 }})</td></tr>
+                    {% endfor %}
+                    </table>
+                    <hr/>
+                    {% include "toolbox_button_action.html" %}
+                {% endif %}
+            </form>
+        </div>
+        <div id="reviewPanel">
+            <form class="reviewForm" id="review" method="POST">
+                {% csrf_token %}
+                {% if reviewitems %}
+                    {% include "toolbox_activity_graphs.html" %}
+                    {% render_table reviewitems %}
+                    <hr/>
+                    {{ numberofitems }} items listed.
+                    {% include "toolbox_button_action.html" %}
+                {% endif %}
+        </div>
+        <div id="resultsPanel">
+            <form class="resultsForm" id="results" method="POST">
+                {% csrf_token %}
+                {% if enumerateditems %}
+                    {% render_table enumerateditems %}
+                    <hr/>
+                    {{ numberofitems }} items listed.
+                    {% include "toolbox_button_action.html" %}
+                {% endif %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

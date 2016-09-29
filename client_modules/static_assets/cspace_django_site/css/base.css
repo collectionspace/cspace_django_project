@@ -1,0 +1,268 @@
+/*****************************************************
+    SOME BASIC STYLES - STYLES FOR HTML ELEMENTS
+    RESET.CSS STRIPS ALL USER-AGENT STYLES, SO HERE
+    WE BUILD BACK UP SOME OF THOSE BASIC STYLES
+ *****************************************************/
+
+body {
+    font-size: 12px;
+    font-family: Helvetica, Arial, freesans, clean, sans-serif;
+    color: #333;
+    background: #FFF;
+}
+
+td, th {
+    vertical-align: top;
+    padding: 5px;
+    font-family: Helvetica, Arial, freesans, clean, sans-serif;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    text-align: left;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+h1, h2, h3, h4, h5 { font-weight: bold; }
+
+h1 {
+    font-size: 28px;
+    color: #666;
+    padding: 20px 6px 0 0;
+    margin: 0 0 .5em 0;
+}
+
+h2 {
+    font-size: 16px;
+    margin: 1em 0 .5em 0;
+}
+
+p {
+    margin: 0 0 3px 0;
+}
+
+input, textarea, select, .form-row p {
+    padding: 2px 3px;
+    vertical-align: middle;
+    font-family: Helvetica, Arial, freesans, clean, sans-serif;
+    font-size: 12px;
+}
+input[type=text], input[type=password], textarea { border: 1px solid #C7CFD4; background-clip: padding-box; }
+input[type=submit], button { border: none; }
+
+a:link, a:visited { color: #5b80b2; text-decoration: none; }
+a:hover { color: #036; }
+
+label {
+    font-weight: bold;
+    font-size: 11px;
+    min-width: 100px;
+}
+
+/********************************************
+    GENERIC LAYOUT STYLES - LAYOUT CLASSES
+    ------------------------------------
+    CLASS-ONLY STYLES FOR BLOCK LEVEL 
+    ELEMENTS SUCH AS DIVS, ULS, NAVS, ETC
+ ********************************************/
+
+.line:after{content: ".";display: block;height: 0;clear: both;visibility: hidden;}
+.lastUnit:after{content: " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ";visibility:hidden; clear:both;height:0 !important;display:block;line-height:0;}
+.line{*zoom:1;}
+.unit{float:left;}
+
+.size1of2{width:50%;}
+.size1of3{width:33.33333%;}
+.size2of3{width:66.66666%;}
+.size1of4{width:25%;}
+
+.size1of10{width:10%;}
+.size2of10{width:20%;}
+
+.center{text-align: center;}
+.right{text-align: right;}
+
+.grid{
+    margin: 5px;
+    /* chrome & firefox only */
+	display: inline-block;
+    width: 180px;
+    vertical-align: top;
+    position: relative;
+    /* min-height: 320px; */
+    max-width: 600px;
+    overflow: hidden;
+}
+
+p.tiny{
+    font-size:10px;
+    margin: 0 0 0 0;
+}
+
+.sectionheader {
+    width: 100%;
+    padding-top: 10px;
+    height: 20px;
+    background: lightgray;
+    text-align: left;
+    padding: 3px;
+    margin-bottom: 6px;
+    display: inline;
+}
+
+li.facet {
+    padding-left: 20px ;
+    text-indent: -20px ;
+}
+/*******************************************
+    SPECIFIC LAYOUT STYLES - LAYOUT IDS
+    ------------------------------------
+    ID-RELATED STYLES FOR BLOCK LEVEL 
+    ELEMENTS SUCH AS DIVS, ULS, NAVS, ETC
+ *******************************************/
+
+#container {
+    /* width: 1050px;
+    margin-left: auto;
+    margin-right: auto;  */
+    margin-left: 8px;
+    margin-right: 8px;
+    display: block;
+}
+
+#header {
+    background: #fff;
+    color: #000;
+    overflow: hidden;
+}
+
+#user-tools {
+    top: 0;
+    right: 0;
+    padding: 1.2em 10px;
+    text-align: right;
+}
+
+#branding {
+    padding: 10px 10px;
+}
+
+#login {
+    margin-top: 50px;
+}
+
+#login-header {
+    font-size: 20px;
+    font-weight: bold;
+    color: #FFF;
+    background-color: #93BC7F;
+    padding: 12px 18px 6px 18px;
+
+    border-radius: 6px 6px 0 0;
+    -webkit-border-radius: 6px 6px 0 0;
+    -moz-border-radius: 6px 6px 0 0;
+}
+
+#login-form {
+    background-color: #E8E7E7;
+    padding: 18px;
+}
+
+#login-form table {
+    width: 100%;
+}
+
+#login-form td {
+    padding-bottom: 20px;
+    border: none;
+}
+
+#content-main {
+    float: left;
+    width: 100%;
+}
+
+/**********************************************
+    GENERIC CONTENT STYLES - CONTENT CLASSES
+    ------------------------------------
+    CLASS-ONLY STYLES FOR INLINE LEVEL
+    ELEMENTS SUCH AS P, FONT, A, INPUT, ETC
+ **********************************************/
+ 
+.prettyBtn {
+    /* This style gets used frequently to decorate buttons like Sign In and Log Out */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    background-color: #73AA4F;
+    color: #f5f5f5;
+    height: 21px;
+    padding: 3px 13px 3px 13px;
+
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 13px;
+}
+
+.big {
+    font-weight: bold;
+    font-size: 14px;
+    padding-right: 10px;
+}
+/*********************************************
+    SPECIFIC CONTENT STYLES - CONTENT IDS
+    ------------------------------------
+    ID-RELATED STYLES FOR INLINE LEVEL
+    ELEMENTS SUCH AS P, FONT, A, INPUT, ETC
+ *********************************************/
+
+#username { color: #6F9ECD; }
+
+a#logout:link, a#logout:visited {
+    background-color: #F3F3F3;
+    color: #333;
+    /* margin: 0 0 0 15px; */
+}
+a#logout:hover { background-color: #333; color: #FFF; }
+
+#login-form input[type=submit] {
+    background-color: #93BC7F;
+    color: #fff;
+}
+#login-form input[type=submit]:hover, #login-form input[type=submit]:focus { background-color: #48722D; }
+
+#params-submit {
+    background-color: #73AA4F;
+    color: #fff;
+}
+#params-submit:hover { background-color: #48722D; }
+
+#params-reset {
+    color: #669922;
+    background-color: #fff;
+}
+#params-reset:hover { background-color: #DAEDD1; }
+
+#report-params input[type=text] {
+    width: 350px;
+}
+
+#login-content p {
+    padding: 30px;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+#login-form label {
+    width: 80px;
+    font-weight: bold;
+    color: #333;
+    font-size: 13px;
+}
+
+#login-form input[type=text], #login-form input[type=password] {
+    width: 95%;
+}
