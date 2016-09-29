@@ -13,8 +13,11 @@ except ImportError, exp:
     print 'you must configure one of the extra_*.py settings files as extra_settings.py!'
     exit(0)
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+# DEBUG, TEMPLATE_DEBUG, and ALLOWED_HOSTS and now set based on configuration type in extra_*.py
+# set them here only if you want to override settings there...
+# DEBUG = True
+# TEMPLATE_DEBUG = DEBUG
+# ALLOWED_HOSTS = []
 
 import django.conf.global_settings as DEFAULT_SETTINGS  # http://stackoverflow.com/a/15446953/1763984
 TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + (
@@ -47,10 +50,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
-
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -112,7 +111,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-#SECRET_KEY = 'createdatruntime.see.secret_key_gen'
+# SECRET_KEY = 'created.at.runtime.see.secret_key_gen'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -144,7 +143,6 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'co
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 #)
-
 
 
 # A sample logging configuration. The only tangible logging

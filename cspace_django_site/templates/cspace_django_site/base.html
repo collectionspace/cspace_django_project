@@ -6,8 +6,12 @@
     {% block scripts %}
         <script type="text/javascript" src="{% static "app.bundle.js" %}"></script>
         <script type="text/javascript">
-            var googleAnalytics = {{ googleAnalytics }};
-            enablega('send', 'pageview', undefined, googleAnalytics);
+            var trackingid = '{{ UA_TRACKING_ID }}';
+            // if there is a tracker id, go ahead and create a tracking object...
+            if (trackingid != '') {
+                xga('create', trackingid, 'auto', true);
+                xga('send', 'pageview', undefined, trackingid);
+            }
         </script>
     {% endblock %}
     {% block extrascript %}{% endblock %}

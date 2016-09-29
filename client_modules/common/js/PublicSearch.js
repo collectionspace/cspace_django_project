@@ -192,7 +192,6 @@ $(document).ready(function () {
                 });
         }
         else {
-
             $('#waitingImage').css({
                 display: "block"
             });
@@ -219,8 +218,7 @@ $(document).ready(function () {
                 $('#waitingImage').css({
                     display: "none"
                 });
-
-                enablega('send', 'pageview', { 'page': 'search' }, googleAnalytics);
+                xga('send', 'pageview', { 'page': 'search' }, trackingid);
             });
         }
     };
@@ -254,15 +252,15 @@ $(document).ready(function () {
                 $('#waitingImage').css({
                     display: "none"
                 });
-                enablega('send', 'pageview', { 'page': '/summarize/display' }, googleAnalytics);
+                xga('send', 'pageview', { 'page': 'summarize' }, trackingid);
             });
 //        } else if ($(this).attr('id') == 'downloadstats') {
 //            $.post("../statistics/", formData).done(function (data) {
 //                alert( "success" );
 //            });
-//            enablega('send', 'pageview', { 'page': '/summarize/download' }, googleAnalytics);
+//            xga('send', 'pageview', { 'page': 'summarize/download' }, trackingid);
         }
-//      enablega('send', 'pageview', { 'page': '/statistics' }, googleAnalytics);
+//      xga('send', 'pageview', { 'page': 'statistics' }, trackingid);
     });
 
     $(document).on('click', '.map-item', function () {
@@ -272,7 +270,7 @@ $(document).ready(function () {
             console.log('img ' + marker);
             $(Elem).html('<iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q='+marker+'&key=AIzaSyBeDzud2rQvl70-TFgsdlMa9vsUl_vidZk&maptype=satellite" allowfullscreen></iframe>');
             Elem.slideDown();
-            enablega('send', 'pageview', { 'page': '/map/inline' }, googleAnalytics);
+            xga('send', 'pageview', { 'page': 'map/inline' }, trackingid);
         }
         else {
             Elem.slideUp();
@@ -316,7 +314,7 @@ $(document).ready(function () {
             });
 
             $('#tabs').tabs({ active: 1 });
-            enablega('send', 'pageview', { 'page': '/search/refine' }, googleAnalytics);
+            xga('send', 'pageview', { 'page': 'search/refine' }, trackingid);
         });
     });
 
@@ -328,12 +326,12 @@ $(document).ready(function () {
             $.post("../bmapper/", formData).done(function (data) {
                 window.open(data, '_blank');
             });
-            enablega('send', 'pageview', { 'page': '/map/bmapper' }, googleAnalytics);
+            xga('send', 'pageview', { 'page': 'map/bmapper' }, trackingid);
         } else if ($(this).attr('id') == 'map-google') {
             $.post("../gmapper/", formData).done(function (data) {
                 $('#maps').html(data);
             });
-            enablega('send', 'pageview', { 'page': '/map/google' }, googleAnalytics);
+            xga('send', 'pageview', { 'page': 'map/google' }, trackingid);
         }
     });
 // we need to make sure this gets done in the event the page is created anew (e.g. via a pasted URL)

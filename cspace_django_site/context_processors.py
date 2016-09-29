@@ -4,5 +4,5 @@ def settings(request):
     """
     from django.conf import settings
     return {
-        'googleAnalytics': settings.GOOGLE_ANALYTICS,
+        'UA_TRACKING_ID': settings.UA_TRACKING_ID,
     }

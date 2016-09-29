@@ -3,6 +3,8 @@ __author__ = 'jblowe, amywieliczka'
 import time, datetime
 from os import path
 import logging
+import json
+
 #from cspace_django_site.profile import profile
 
 from django.contrib.auth.decorators import login_required
@@ -52,7 +54,7 @@ def search(request):
     context['additionalInfo'] = AdditionalInfo.objects.filter(live=True)
     return render(request, 'search.html', context)
 
-#@profile("retrieve.prof")
+# @profile("retrieve.prof")
 def retrieveResults(request):
     if request.method == 'POST' and request.POST != {}:
         requestObject = dict(request.POST.iteritems())
@@ -65,6 +67,25 @@ def retrieveResults(request):
             loginfo(logger, 'results.%s' % context['displayType'], context, request)
             return render(request, 'searchResults.html', context)
 
+def retrieveJSON(request):
+    if request.method == 'GET' and request.GET != {}:
+        requestObject = dict(request.GET.iteritems())
+        form = forms.Form(requestObject)
+
+        if form.is_valid():
+            context = {'searchValues': requestObject}
+            context = doSearch(context, prmz, request)
+
+            loginfo(logger, 'results.%s' % context['displayType'], context, request)
+            #del context['FIELDS']
+            #del context['facets']
+            if not 'items' in context:
+                return HttpResponse(json.dumps('error'))
+            else:
+                return HttpResponse(json.dumps({'items': context['items'],'labels': context['labels']}))
+    else:
+        return HttpResponse(json.dumps('no data seen'))
+
 
 def bmapper(request):
     if request.method == 'POST' and request.POST != {}:
@@ -73,7 +94,7 @@ def bmapper(request):
 
         if form.is_valid():
             context = {'searchValues': requestObject}
-            context = setupBMapper(requestObject, context, prmz)
+            context = setupBMapper(request, requestObject, context, prmz)
 
             loginfo(logger, 'bmapper', context, request)
             return HttpResponse(context['bmapperurl'])
@@ -86,7 +107,7 @@ def gmapper(request):
 
         if form.is_valid():
             context = {'searchValues': requestObject}
-            context = setupGoogleMap(requestObject, context, prmz)
+            context = setupGoogleMap(request, requestObject, context, prmz)
 
             loginfo(logger, 'gmapper', context, request)
             return render(request, 'maps.html', context)
@@ -103,7 +124,7 @@ def dispatch(request):
         if form.is_valid():
             try:
                 context = {'searchValues': requestObject}
-                csvformat, fieldset, csvitems = setupCSV(requestObject, context, prmz)
+                csvformat, fieldset, csvitems = setupCSV(request, requestObject, context, prmz)
                 loginfo(logger, 'csv', context, request)
 
                 # create the HttpResponse object with the appropriate CSV header.
@@ -146,7 +167,7 @@ def statistics(request):
             try:
                 context = {'searchValues': requestObject}
                 loginfo(logger, 'statistics1', context, request)
-                context = computeStats(requestObject, context, prmz)
+                context = computeStats(request, requestObject, context, prmz)
                 loginfo(logger, 'statistics2', context, request)
                 context['summarytime'] = '%8.2f' % (time.time() - elapsedtime)
                 # 'downloadstats' is handled in writeCSV, via post
@@ -156,9 +177,9 @@ def statistics(request):
                 return HttpResponse('Please pick some values!')
 
 
-def loadNewFields(request, fieldfile, prmz):
-    loadFields(fieldfile + '.csv', prmz)
+def loadNewFields(request, fieldfile, prmx):
+    loadFields(fieldfile + '.csv', prmx)
 
-    context = setConstants({}, prmz, request)
+    context = setConstants({}, prmx, request)
     loginfo(logger, 'loaded fields', context, request)
     return render(request, 'search.html', context)
