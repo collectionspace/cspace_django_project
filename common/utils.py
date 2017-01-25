@@ -333,7 +333,7 @@ def extractValue(listItem, key):
     # make all arrays into strings for display
     if key in listItem:
         if type(listItem[key]) == type([]):
-            temp = ', '.join(listItem[key])
+            temp = '|'.join(listItem[key])
         else:
             temp = listItem[key]
     else:
