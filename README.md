@@ -355,7 +355,7 @@ apt-get update
 
 # Use 'apt' to install Apache2, effectively installing it in the directory...
 # ... /etc/apache2
-apt install apache2
+apt-get install apache2
 
 # Check that Apache2 is running
 service apache2 status
