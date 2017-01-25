@@ -322,7 +322,7 @@ $ sudo su -
 cd /usr/local/share/
 
 # Create a new directory to store your code 
-sudo mkdir -p django/webapp
+mkdir -p django/webapp
 
 # Jump to that directory
 cd django/webapp/
@@ -345,65 +345,23 @@ rm -r cspace_django_project
 
 ##### Step 2: Get the Apache2 Web Server
 
-This is one of the most common web servers for Linux systems, and is used to serve webpages to the client machine, i.e. a web server. You can read more about it here: https://httpd.apache.org/
+This is one of the most common web servers for Linux systems, and is used to serve webpages to the client machine, i.e. a web server. You can read more about it here: https://httpd.apache.org/.
+
+If you already have Apache2 installed, you can skip this step.
 
 ```bash
-# Switch to the root user, being careful and mindful of your actions from here on out
-$ sudo su -
-
 # Use the Advanced Packaging Tool (apt) to update your system packages
 apt-get update
 
 # Use 'apt' to install Apache2, effectively installing it in the directory...
 # ... /etc/apache2
-apt installl apache2
+apt install apache2
 
-# Start up your new Apache2 Web Server
+# Check that Apache2 is running
+service apache2 status
+
+# If not, start up your new Apache2 Web Server
 service apache2 start
-```
-
-##### Step 2: Install Apache Solr
-
-A free, open source, blazing fast, and highly popular enterprise search platform written in Java. We suggest you familiarize yourself with the Solr documentation, as it will come in handy later when extending your CSpace Django Web Applications. You can read more about Apache Solr, here: http://lucene.apache.org/solr/resources.html#documentation.
-
-Also, you'll see later how we use Solr with the default public search application, but for now feel free to take a look at the fields definition file found here: https://wiki.collectionspace.org/pages/viewpage.action?pageId=158302621
-
-```bash
-# Still, as the root user, navigate to your home directory
-cd ~
-```
-
-Go to Solr's downloads page, and get the latest release, as a compressed tar file, i.e. solr-#.#.#.tgz from a local mirror site. The '#' represents a place holder for the latest release version, as of July, this is 6.1.0. Copy the link location of your preferred mirror site. Then...
-
-```bash
-# Using the non-interactive network downloader utility provided by Ubuntu
-wget [paste link here]
-
-# For example...
-wget http://mirrors.ocf.berkeley.edu/apache/lucene/solr/6.1.0/solr-6.1.0.tgz
-
-# Once download is complete, extract, or strip, the Solr installation script
-tar zxf solr-#.#.#.tgz solr-#.#.#/bin/install_solr_service.sh --strip-components=2
-
-# See note below
-
-# Now, install Apache Solr as a service on your machine
-# This will install the default Solr configurations, such as ports, owner, log directory, etc., however you can...
-# ... change this by declaring and setting various options
-# Check out the Solr reference guide for more info
-bash ./install_solr_service.sh solr-#.#.#.tgz
-```
-
-Note: ensure that the current Java version being used by your machine meets the the dependency requirements of your Solr instance. The script will fail otherwise. Use 'update-alternatives' to configure the proper Java version if you happen to have multiple installations. 
-
-If the above command executed successfully, you should receive something along the lines...
-
-```bash
-"Waiting up to 30 seconds to see Solr running on port 8983[/]
-Started Solr server on port 8983 (pid=10310). Happy searching!
-
-Found 1 Solr nodes: ...
-"
 ```
 
 ##### Step 3: Get Python related packages and set up your Virtual Environment
@@ -591,8 +549,40 @@ Next, jump back out to the 'webapp' directory and run:
 python manage.py syncdb
 ```
 
-##### Step 11: Indexing Apache Solr 
-###### (Important: bash scripts need to be created for Solr, which is already installed and running as a service)
+##### Step 11: Install and Setup Apache Solr
+
+A free, open source, blazing fast, and highly popular enterprise search platform written in Java. We suggest you familiarize yourself with the Solr documentation, as it will come in handy later when extending your CSpace Django Web Applications. You can read more about Apache Solr, here: http://lucene.apache.org/solr/resources.html#documentation.
+
+Also, you'll see later how we use Solr with the default public search application, but for now feel free to take a look at the fields definition file found here: https://wiki.collectionspace.org/pages/viewpage.action?pageId=158302621
+
+```bash
+# Still, as the root user, navigate to the solr directory
+cd /usr/local/share/django/webapp/solr
+
+# Use the provided script to install Solr with multiple cores for your tenant
+# Calls with four arguments: fullpathtosolr4dir solrversion topnode tenants
+# topnode is the directory with fullpathtosolr4dir in which the data and 
+# configuration for all solr tenants goes
+# List of 1 or more tenants as a quoted string, e.g. "pahma botgarden ucjeps",
+# this will create 3 cores for each tenant, x-public, x-internal, x-media
+./configureMultiCoreSolr.sh /usr/local/share/solr4 4.10.4 topnode "your_tenants"
+```
+
+You should see something like this:
+
+```bash
+"Waiting up to 30 seconds to see Solr running on port 8983[/]
+Started Solr server on port 8983 (pid=10310). Happy searching!
+
+Found 1 Solr nodes: ...
+"
+```
+
+There is another script developed to help with calling your Solr server, solrserver.sh. You may need to configure this properly so that it points to your Solr server, either editing the script or adding it as environmental variable, i.e. SOLRDIR="/usr/local/share/solr4/xxx
+
+
+
+##### Step 12: Indexing Apache Solr 
 
 There is so much more to understand regarding Solr, its configuration files, and UCB developed scripts. We won't go into 
 a lot of detail here, but you can learn more from reading the README.md located in the 'webapp/solr/' directory.
@@ -609,16 +599,6 @@ Navigate to the 'webapp/solr' directory and edit the 'set-tenant-default' script
 14   # store it in .pgpass. 
 15   # if you need to set it here, add it to the CONNECT_STRING
 16   export CONNECTSTRING="host=$SERVER password='<database_user_password>' dbname=$DATABASE"
-```
-
-That should do it. Now go ahead and use the UCB script to configure a multi core Solr instance that is already installed, and running as a service.
-
-TODO: Develop this script 'configMultiCoreSolrAsService.sh' from the existing script -YN
-```bash
-# as the root user
-# The top node refers to the parent directory of all Solr realted files beloging to your tenant, you're free...
-# ... to name this whatever you'd like
-./configMultiCoreSolrAsService.sh <the_top_node> <your_tenant_name>
 ```
 
 Once that is completed, rename the following PostgreSQL scripts using your tenant name.
@@ -645,7 +625,7 @@ For example, for the <your_tenant_name>publicparms.csv file:
      # From
 14   core core-public 
      # To
-14   <your_tenant_name> <your_tenant_name>-public
+14   <your_tenant_name><your_tenant_name>-public
 ```
 
 While we're here, within the 'webapp/config' directory, we will need to edit some configuration files to reflect the changes that we just made. 
@@ -694,12 +674,11 @@ In the 'imageserver.cfg' file:
 Excellent. Now that we have that out of the way, we can go ahead and jump back into the 'webapp/solr' directory. Here we will use the provided script effectively index Solr. What do this mean exactly? In brief, when we index Solr, we are querying the CollectionSpace tenant database using the recently renamed PostgreSQL script, populating a csv file (defined by our fields definitions file and a provided CSpace Solr schema), and pushing it the Solr server. Which, in effect, is where the CSpace Django Application pulls its data. Got it? Good.
 
 Again, you can learn more by checking out the dedicated readme in the 'webapp/solr' directory.
- 
-TODO: Update or create scripts to effectively index Solr, already running as a service. The script listed below does not work. -YN
 
 Moving on, go ahead and execute the following in sequence. 
 
 ```bash
+# from within the webapp/solr/ directory
 source set-tenant-default.sh <your_tenant_name>
 
 nohup ./solrETL-template.sh
@@ -707,7 +686,7 @@ nohup ./solrETL-template.sh
 
 From here, navigate to http://your_ip_address:8983/solr/#/<your_tenant_id>-public/query and hit 'search.' You should see a mass of data in JSON format that was effectively indexed. If not, review the file 'nohup.out' for any errors that may have occurred during the indexing.
  
-Finally, restart the Apache2 web server to apply these new changes. 
+Finally, restart the Apache2 web server for good measure (usually only needed when making changes to UI components and configurations). 
 
 ```bash
 # as root user
@@ -725,4 +704,16 @@ Congratulations! You've effectively deployed your very own UCB CSpace Django App
 For now, you can supplement what has been provided above, for Ubuntu, with general tools and managers that are specific 
 to your Linux distribution.
 
-TODO: Build this section out -YN
+#### Configuring your Django App
+##### Coming soon...
+
+For now, please see the CollectionSpace Wiki on how to configure the field definitions file used for the Search portal (https://wiki.collectionspace.org/pages/viewpage.action?pageId=158302621), as well as the Wiki for UC Berkeley web applications: https://wiki.collectionspace.org/display/deploy/UC+Berkeley+web+applications
+ 
+##### Search Portal
+
+##### Image Browser
+
+##### Inventorinator
+
+
+#### Troubleshooting your Django App within a production environment
