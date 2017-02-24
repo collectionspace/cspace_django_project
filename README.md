@@ -420,9 +420,11 @@ them over to our 'config' directory prior to running the 'setup.sh' script.
 ```bash
 # While still, as the root user, within our dedicated virtual environment the (cspace_venv), and the 'webapp' directory
 # Copy over the provided configuration files
+# NOTE: Need other files with other extensions since setup.sh checks for them, so cp -r config.examples/* config/ doesn't hurt
 cp -r config.examples/*.cfg config
 
 # Use the provided 'setup.sh' script to configure
+# NOTE: Open up the setup.sh and set the config directory variable to /usr/local/share/django/webapp/config
 ./setup.sh configure pycharm
 
 # And, to deploy
