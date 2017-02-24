@@ -379,7 +379,9 @@ pip -V
 
 # Use Ubuntu's package manger to install the following Python packages to deal with PyGreSQL errors you're likely...
 # ... to encouter with out them
+apt-get install python-dev
 apt-get install python-psycopg2
+
 
 apt-get install libpq-dev
 
