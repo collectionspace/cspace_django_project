@@ -432,7 +432,7 @@ cp -r config.examples/*.cfg config
 ./setup.sh deploy default
 ```
 
-##### Step 6: Edit the wsgi.py script
+##### Step 6: Edit the wsgi.py script and give Apache server permissions
 
 We will need to let our Apache2 web server know where to find the dependencies we've dedicated for our CSpace Django
 Application, within our virtual environment. Uncomment the following lines from the wsgi.py script found in the 
@@ -457,6 +457,18 @@ And, comment out the line...
 ```bash
 28 application = django.core.handlers.wsgi.WSGIHandler()
 ```
+
+We'll need to give the Apache server access to log files. To do so:
+
+```bash
+cd /usr/local/share/django/webapp/logs
+
+chown www-data: settings.log 
+chown www-data: logfile.txt
+
+```
+
+
 
 ##### Step 7: Configure the Apache2 Web Server
 
