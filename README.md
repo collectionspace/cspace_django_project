@@ -564,6 +564,7 @@ Next, jump back out to the 'webapp' directory and run:
 # As root user, and within our activated virtual environment ('cspace_venv')
 python manage.py syncdb
 ```
+NOTE: if auth fails, and your password contains special characters, you may need to wrap your password in triple quotes, ie. 'PASSWORD': """mySpecial1231412!@#$$@$%%(password"""
 
 ##### Step 11: Install and Setup Apache Solr
 
