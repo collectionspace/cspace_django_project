@@ -12,7 +12,8 @@
         var googleAnalytics = {{ googleAnalytics }};
         enablega('send', 'pageview', undefined, googleAnalytics);
     </script>
-
+    
+    <link rel="shortcut icon" type="image/png" href="{% static "cspace_django_site/images/cspace_fav.png" %}"/>
     <link rel="stylesheet" type="text/css" href="{% static "cspace_django_site/css/reset.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "cspace_django_site/css/base.css" %}{% endblock %}" />
     <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" /><![endif]-->
