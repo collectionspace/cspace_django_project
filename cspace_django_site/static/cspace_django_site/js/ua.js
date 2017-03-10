@@ -6,10 +6,10 @@
  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 /* Default tracking object for webapps-dev.cspace */
- ga('create', 'UA-54952024-6', 'auto');
+ ga('create', 'UA-XXXXXXXX-X', 'auto');
 
 /* Tracking object for pahma.cspace.berkeley.edu */
- ga('create', 'UA-54952024-10', 'auto', {'name': 'uitracker'});
+ ga('create', 'UA-XXXXXXXX-X', 'auto', {'name': 'uitracker'});
 
 /* Tracking object for webapps.cspace.berkeley.edu */
- ga('create', 'UA-54952024-5', 'auto', {'name': 'prodtracker'});
+ ga('create', 'UA-XXXXXXXX-X', 'auto', {'name': 'prodtracker'});
