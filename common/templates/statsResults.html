@@ -17,9 +17,17 @@
                     <td>{{ row.1 }}</td>
                     {% for cells in row.2 %}
                         <td>
-                            {% for cell in cells %}
-                                {{ cell|safe }}<br/>
-                            {% endfor %}
+                            {% if cells|length <= 1 %}
+                                {% for cell in cells %}
+                                    {{ cell|safe }}
+                                {% endfor %}
+                            {% else %}
+                                {% for cell in cells %}
+                                    {% if cell %}
+                                        <li>{{ cell|safe }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         </td>
                     {% endfor %}
                 </tr>
