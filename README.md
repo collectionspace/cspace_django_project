@@ -1,5 +1,12 @@
 ## cspace-django-project
 
+**This project is no longer maintained. If you're looking at this project you may be interested in:**
+
+https://github.com/cspace-deployment/cspace-webapps-common
+
+**Note: cspace-webapps-common is maintained by the University of California, Berkeley and not by the
+CollectionSpace Program Team (CPT).**
+
 This Django project supports easy access to various CollectionSpace services. To preview
 several deployments of this project, visit: https://webapps.cspace.berkeley.edu.
 
